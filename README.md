@@ -34,5 +34,6 @@ Changelog - Kernel - 3.0.8-alok+
 - Integrated BCM40181, rtl8188eu support - so that you no longer need to separately look for modules for basic wifi
 - Three graphic driver kernels - 1080p, 720, VGA are released.
 - No it does not yet have support for MX1 wifi, RK802III/s - wifi - I am still hunting for the source.
+
 =======
 
