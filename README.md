@@ -1,5 +1,9 @@
-<<<<<<< HEAD
-rk3066-kernel
+picuntu-3.0.8-alok
+==================
+
+rk3066-kernel - derived from mix of andrew source, omegamoon, 0.3a kernel, driver sources
+
+Integrated kernel for Picuntu 3.0.8-alok+ 
 =============
 
 Linux/Android kernel for the Rockchip RK3066 SoC
@@ -30,8 +34,3 @@ Changelog - Kernel - 3.0.8-alok+
 - No it does not yet have support for MX1 wifi, RK802III/s - wifi - I am still hunting for the source.
 
 =======
-picuntu-3.0.8-alok
-==================
-
-Integrated kernel for Picuntu 3.0.8-alok+ 
->>>>>>> 984b34e9ef628f30d34c036ee9aedc1734caefcd
