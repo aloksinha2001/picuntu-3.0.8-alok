@@ -881,6 +881,7 @@ config ARCH_RK30
 	select MIGHT_HAVE_CACHE_L2X0
 	select ARM_ERRATA_764369
 	select ARM_ERRATA_754322
+	select ARM_ERRATA_775420
 	help
 	  Support for Rockchip's RK30xx SoCs.
 
@@ -1271,6 +1272,15 @@ config ARM_ERRATA_754327
 	  continuously polls a memory location waiting to observe an update.
 	  This workaround defines cpu_relax() as smp_mb(), preventing correctly
 	  written polling loops from denying visibility of updates to memory.
+config ARM_ERRATA_775420
+       bool "ARM errata: A data cache maintenance operation which aborts, might lead to deadlock"
+       depends on CPU_V7
+       help
+	 This option enables the workaround for the 775420 Cortex-A9 (r2p2,
+	 r2p6,r2p8,r2p10,r3p0) erratum. In case a date cache maintenance
+	 operation aborts with MMU exception, it might cause the processor
+	 to deadlock. This workaround puts DSB before executing ISB if
+	 an abort may occur on cache maintenance.
 
 endmenu
 
