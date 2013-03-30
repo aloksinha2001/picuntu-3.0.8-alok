@@ -142,10 +142,10 @@
 #define CONFIG_SENSOR_SVGA_FPS_FIXED_01      15000
 #define CONFIG_SENSOR_720P_FPS_FIXED_01     30000
 
-#define CONFIG_SENSOR_02 RK29_CAM_SENSOR_OV5640                      /* back camera sensor 2 */
-#define CONFIG_SENSOR_IIC_ADDR_02 	    0x00
-#define CONFIG_SENSOR_CIF_INDEX_02                    1
-#define CONFIG_SENSOR_IIC_ADAPTER_ID_02    4
+#define CONFIG_SENSOR_02 RK29_CAM_SENSOR_GC2035                      /* back camera sensor 2 */
+#define CONFIG_SENSOR_IIC_ADDR_02 	    0x78
+#define CONFIG_SENSOR_CIF_INDEX_02                    0
+#define CONFIG_SENSOR_IIC_ADAPTER_ID_02    3
 #define CONFIG_SENSOR_ORIENTATION_02       90
 #define CONFIG_SENSOR_POWER_PIN_02         INVALID_GPIO
 #define CONFIG_SENSOR_RESET_PIN_02         INVALID_GPIO
@@ -211,14 +211,14 @@
 #define CONFIG_SENSOR_SVGA_FPS_FIXED_11      15000
 #define CONFIG_SENSOR_720P_FPS_FIXED_11      30000
 
-#define CONFIG_SENSOR_12 RK29_CAM_SENSOR_OV2659//RK29_CAM_SENSOR_OV2655                      /* front camera sensor 2 */
-#define CONFIG_SENSOR_IIC_ADDR_12 	   0x00
+#define CONFIG_SENSOR_12 RK29_CAM_SENSOR_GC2035                     /* front camera sensor 2 */
+#define CONFIG_SENSOR_IIC_ADDR_12 	   0x78
 #define CONFIG_SENSOR_IIC_ADAPTER_ID_12    3
 #define CONFIG_SENSOR_CIF_INDEX_12				  0
 #define CONFIG_SENSOR_ORIENTATION_12       270
 #define CONFIG_SENSOR_POWER_PIN_12         INVALID_GPIO
 #define CONFIG_SENSOR_RESET_PIN_12         INVALID_GPIO
-#define CONFIG_SENSOR_POWERDN_PIN_12       INVALID_GPIO//RK30_PIN1_PB7
+#define CONFIG_SENSOR_POWERDN_PIN_12       RK30_PIN1_PB7
 #define CONFIG_SENSOR_FALSH_PIN_12         INVALID_GPIO
 #define CONFIG_SENSOR_POWERACTIVE_LEVEL_12 RK29_CAM_POWERACTIVE_L
 #define CONFIG_SENSOR_RESETACTIVE_LEVEL_12 RK29_CAM_RESETACTIVE_L
@@ -256,6 +256,10 @@ static void rk_cif_power(int on)
     struct regulator *ldo_18,*ldo_28;
 	ldo_28 = regulator_get(NULL, "ldo7");	// vcc28_cif
 	ldo_18 = regulator_get(NULL, "ldo1");	// vcc18_cif
+#if defined (CONFIG_MFD_TPS65910)
+	ldo_28 = regulator_get(NULL, "vmmc");	// vcc28_cif
+	ldo_18 = regulator_get(NULL, "vdig1");	// vcc18_cif
+#endif
 	if (ldo_28 == NULL || IS_ERR(ldo_28) || ldo_18 == NULL || IS_ERR(ldo_18)){
         printk("get cif ldo failed!\n");
 		return;
