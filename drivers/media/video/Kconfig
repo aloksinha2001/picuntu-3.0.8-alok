@@ -1162,6 +1162,16 @@ config GC2015_USER_DEFINED_SERIES
 	bool "GC2015 user defined init series"
 	default n
 
+config SOC_CAMERA_GC2035
+	tristate "GC2035 support for rockchip"
+	depends on SOC_CAMERA && I2C
+	help
+	  This is a GC2035 camera driver for rockchip
+
+config GC2035_USER_DEFINED_SERIES
+	depends on SOC_CAMERA_GC2035
+	bool "GC2035 user defined init series"
+	default n
 config SOC_CAMERA_HI253
 	tristate "HI253 support for rockchip"
 	depends on SOC_CAMERA && I2C
