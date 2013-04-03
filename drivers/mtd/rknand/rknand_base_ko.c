@@ -23,10 +23,11 @@
 //#include "api_flash.h"
 #include "rknand_base.h"
 #include <linux/clk.h>
+#include <linux/cpufreq.h>
 
 #define DRIVER_NAME	"rk29xxnand"
 
-const char rknand_base_version[] = "rknand_base.c version: 4.34 20120401";
+const char rknand_base_version[] = "rknand_base.c version: 4.40 20120824";
 #define NAND_DEBUG_LEVEL0 0
 #define NAND_DEBUG_LEVEL1 1
 #define NAND_DEBUG_LEVEL2 2
@@ -65,12 +66,25 @@ static struct proc_dir_entry *my_trac_proc_entry;
 #define MAX_TRAC_BUFFER_SIZE     (long)(2048 * 8 * 512) //sector
 static char grknand_trac_buf[MAX_TRAC_BUFFER_SIZE];
 static char *ptrac_buf = grknand_trac_buf;
-void trac_log(long lba,int len, int mod)
+void trac_log(long lba,int len,int *pbuf,int mod)
 {
+	unsigned long long t;
+    unsigned long nanosec_rem;
+    t = cpu_clock(UINT_MAX);
+    nanosec_rem = do_div(t, 1000000000);
     if(mod)
-        ptrac_buf += sprintf(ptrac_buf,"W %d %d \n",lba,len);
+        ptrac_buf += sprintf(ptrac_buf,"[%5lu.%06lu] W %d %d %8x %8x\n",(unsigned long) t, nanosec_rem / 1000,lba,len,pbuf[0],pbuf[1]);
     else
-        ptrac_buf += sprintf(ptrac_buf,"R %d %d \n",lba,len);
+        ptrac_buf += sprintf(ptrac_buf,"[%5lu.%06lu] R %d %d %8x %8x\n",(unsigned long) t, nanosec_rem / 1000,lba,len,pbuf[0],pbuf[1]);
+}
+
+void trac_logs(char *s)
+{
+	unsigned long long t;
+    unsigned long nanosec_rem;
+    t = cpu_clock(UINT_MAX);
+    nanosec_rem = do_div(t, 1000000000);
+	ptrac_buf += sprintf(ptrac_buf,"[%5lu.%06lu] %s\n",(unsigned long) t, nanosec_rem / 1000,s);
 }
 
 static int rkNand_trac_read(char *page, char **start, off_t off, int count, int *eof,
@@ -80,7 +94,7 @@ static int rkNand_trac_read(char *page, char **start, off_t off, int count, int 
 	int len;
 
 	 len = ptrac_buf - grknand_trac_buf - off;
-     printk("rkNand_trac_read: page=%x,off=%x,count=%x ,len=%x \n",(int)page,(int)off,count,len);
+     //printk("rkNand_trac_read: page=%x,off=%x,count=%x ,len=%x \n",(int)page,(int)off,count,len);
 
 	if (len < 0)
 		len = 0;
@@ -173,7 +187,7 @@ static int rknand_read(struct mtd_info *mtd, loff_t from, size_t len,
 	int sector = len>>9;
 	int LBA = (int)(from>>9);
 #ifdef RKNAND_TRAC_EN
-    //trac_log(LBA,sector,0);
+    trac_log(LBA,sector,buf,0);
 #endif
 	//printk("R %d %d \n",(int)LBA,sector);
 	//if(rknand_debug)
@@ -193,7 +207,7 @@ static int rknand_write(struct mtd_info *mtd, loff_t from, size_t len,
 	int sector = len>>9;
 	int LBA = (int)(from>>9);
 #ifdef RKNAND_TRAC_EN
-    trac_log(LBA,sector,1);
+    trac_log(LBA,sector,buf,1);
 #endif
 	//printk("W %d %d \n",(int)LBA,sector);
     //return 0;
@@ -263,6 +277,15 @@ char GetSNSectorInfo(char * pbuf)
 	   return( gpNandInfo->GetSNSectorInfo( pbuf));
     return 0;
 }
+EXPORT_SYMBOL(GetSNSectorInfo); //Galland: required by drivers/bluetooth/vflash.c
+
+char GetSNSectorInfoBeforeNandInit(char * pbuf)
+{
+    char * sn_addr = ioremap(0x10501600,0x200);
+    memcpy(pbuf,sn_addr,0x200);
+	//print_hex_dump(KERN_WARNING, "sn:", DUMP_PREFIX_NONE, 16,1, sn_addr, 16, 0);
+    return 0;
+} 
 
 char GetChipSectorInfo(char * pbuf)
 {
@@ -321,7 +344,7 @@ static int rknand_nand_timing_cfg(void)
         if(gpNandInfo->nand_timing_config)
         {
             nandc_clk_rate = newclk;
-            gpNandInfo->nand_timing_config( nandc_clk_rate / 1000); // KHz
+            //gpNandInfo->nand_timing_config( nandc_clk_rate / 1000); // KHz
         }
 	}
 	return 0;
@@ -493,12 +516,16 @@ exit_free:
 static int rknand_suspend(struct platform_device *pdev, pm_message_t state)
 {
     gpNandInfo->rknand.rknand_schedule_enable = 0;
+    if(gpNandInfo->rknand_suspend)
+        gpNandInfo->rknand_suspend();  
 	NAND_DEBUG(NAND_DEBUG_LEVEL0,"rknand_suspend: \n");
 	return 0;
 }
 
 static int rknand_resume(struct platform_device *pdev)
 {
+    if(gpNandInfo->rknand_resume)
+       gpNandInfo->rknand_resume();  
     gpNandInfo->rknand.rknand_schedule_enable = 1;
 	NAND_DEBUG(NAND_DEBUG_LEVEL0,"rknand_resume: \n");
 	return 0;
