@@ -1036,7 +1036,7 @@ static int rk_sensor_io_init(void)
 
 		if (camera_powerdown != INVALID_GPIO) {
             ret = gpio_request(camera_powerdown, "camera powerdown");
-            if (ret) {
+            /*if (ret) {
                 for (j=0; j<i; j++) {
                     if (camera_powerdown == plat_data->gpio_res[j].gpio_powerdown) {                        
                         break;
@@ -1053,7 +1053,7 @@ static int rk_sensor_io_init(void)
             if (rk_camera_platform_data.iomux(camera_powerdown) < 0) {
                 printk(KERN_ERR "rk_cam_io: %s..%s..powerdown pin(%d) iomux init failed\n",__FUNCTION__,plat_data->gpio_res[i].dev_name,camera_powerdown);
                 goto sensor_io_init_erro;
-            }
+            }*/
             
 			plat_data->gpio_res[i].gpio_init |= RK29_CAM_POWERDNACTIVE_MASK;
             gpio_set_value(camera_powerdown, ((camera_ioflag&RK29_CAM_POWERDNACTIVE_MASK)>>RK29_CAM_POWERDNACTIVE_BITPOS));
