@@ -59,6 +59,7 @@
 #define RK29_CAM_SENSOR_GC0308  gc0308
 #define RK29_CAM_SENSOR_GC0309  gc0309
 #define RK29_CAM_SENSOR_GC2015  gc2015
+#define RK29_CAM_SENSOR_GC2035  gc2035
 #define RK29_CAM_SENSOR_SIV120B  siv120b
 #define RK29_CAM_SENSOR_SID130B  sid130B
 #define RK29_CAM_SENSOR_HI253  hi253
@@ -86,6 +87,7 @@
 #define RK29_CAM_SENSOR_NAME_GC0308  "gc0308"
 #define RK29_CAM_SENSOR_NAME_GC0309  "gc0309"
 #define RK29_CAM_SENSOR_NAME_GC2015  "gc2015"
+#define RK29_CAM_SENSOR_NAME_GC2035  "gc2035"
 #define RK29_CAM_SENSOR_NAME_SIV120B "siv120b"
 #define RK29_CAM_SENSOR_NAME_SID130B "sid130B"
 #define RK29_CAM_SENSOR_NAME_HI253  "hi253"
@@ -112,6 +114,7 @@
 #define gc0308_FULL_RESOLUTION     0x30000            // 0.3 megapixel
 #define gc0309_FULL_RESOLUTION     0x30000            // 0.3 megapixel
 #define gc2015_FULL_RESOLUTION     0x200000           // 2 megapixel
+#define gc2035_FULL_RESOLUTION     0x200000           // 2 megapixel
 #define siv120b_FULL_RESOLUTION     0x30000            // 0.3 megapixel
 #define sid130B_FULL_RESOLUTION     0x200000           // 2 megapixel    
 #define hi253_FULL_RESOLUTION       0x200000           // 2 megapixel
