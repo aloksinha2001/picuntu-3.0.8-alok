@@ -1,0 +1,1 @@
+cmd_drivers/power/built-in.o :=  /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/power/built-in.o drivers/power/power_supply.o drivers/power/test_power.o 

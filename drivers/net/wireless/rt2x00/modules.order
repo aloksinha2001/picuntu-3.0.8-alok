@@ -1,0 +1,6 @@
+kernel/drivers/net/wireless/rt2x00/rt2x00lib.ko
+kernel/drivers/net/wireless/rt2x00/rt2x00usb.ko
+kernel/drivers/net/wireless/rt2x00/rt2800lib.ko
+kernel/drivers/net/wireless/rt2x00/rt2500usb.ko
+kernel/drivers/net/wireless/rt2x00/rt73usb.ko
+kernel/drivers/net/wireless/rt2x00/rt2800usb.ko

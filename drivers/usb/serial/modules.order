@@ -1,0 +1,7 @@
+kernel/drivers/usb/serial/ftdi_sio.ko
+kernel/drivers/usb/serial/garmin_gps.ko
+kernel/drivers/usb/serial/navman.ko
+kernel/drivers/usb/serial/option.ko
+kernel/drivers/usb/serial/pl2303.ko
+kernel/drivers/usb/serial/qcserial.ko
+kernel/drivers/usb/serial/usb_wwan.ko

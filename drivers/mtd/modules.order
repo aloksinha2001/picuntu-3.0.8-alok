@@ -1,0 +1,5 @@
+kernel/drivers/mtd/devices/block2mtd.ko
+kernel/drivers/mtd/nand/nand.ko
+kernel/drivers/mtd/nand/nand_ecc.ko
+kernel/drivers/mtd/afs.ko
+kernel/drivers/mtd/ubi/ubi.ko

@@ -1,0 +1,25 @@
+diff --git a/init.rk30board.rc b/init.rk30board.rc
+index 82da863..4c0ddb9 100755
+--- a/init.rk30board.rc
++++ b/init.rk30board.rc
+@@ -68,6 +68,10 @@ on boot
+      
+     chown system system /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed
+     chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed
++    
++    # for mt6622
++    mknod /dev/bthwctl
++    chmod 0666 /dev/bthwctl    
+ 
+ # create virtual SD card at /mnt/sdcard, based on the /data/media directory
+ # daemon will drop to user/group system/media_rw after initializing
+@@ -118,7 +122,8 @@ service hostapd_rtl /system/bin/hostapd_rtl /data/misc/wifi/hostapd.conf
+     disabled
+     oneshot
+ 
+-service hciattach /system/bin/brcm_patchram_plus --patchram bychip --baudrate 1500000 --enable_lpm --enable_hci /dev/ttyS0
++#service hciattach /system/bin/brcm_patchram_plus --patchram bychip --baudrate 1500000 --enable_lpm --enable_hci /dev/ttyS0
++service hciattach /system/bin/hciattach -n -t 10 -s 115200 /dev/ttyS0 mtk 1500000 noflow
+     console
+     user bluetooth
+     group bluetooth net_bt_admin

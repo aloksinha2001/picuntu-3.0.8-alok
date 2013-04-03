@@ -1,0 +1,1 @@
+cmd_drivers/input/mouse/psmouse.o := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/input/mouse/psmouse.o drivers/input/mouse/psmouse-base.o drivers/input/mouse/synaptics.o drivers/input/mouse/alps.o drivers/input/mouse/logips2pp.o drivers/input/mouse/trackpoint.o 

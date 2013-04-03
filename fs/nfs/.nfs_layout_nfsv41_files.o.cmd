@@ -1,0 +1,1 @@
+cmd_fs/nfs/nfs_layout_nfsv41_files.o := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o fs/nfs/nfs_layout_nfsv41_files.o fs/nfs/nfs4filelayout.o fs/nfs/nfs4filelayoutdev.o 

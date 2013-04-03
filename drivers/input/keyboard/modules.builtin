@@ -1,0 +1,2 @@
+kernel/drivers/input/keyboard/rk29_keys.ko
+kernel/drivers/input/keyboard/atkbd.ko

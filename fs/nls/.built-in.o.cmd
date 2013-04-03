@@ -1,0 +1,1 @@
+cmd_fs/nls/built-in.o :=  /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o fs/nls/built-in.o fs/nls/nls_base.o fs/nls/nls_cp437.o fs/nls/nls_cp936.o fs/nls/nls_ascii.o fs/nls/nls_iso8859-1.o fs/nls/nls_iso8859-15.o fs/nls/nls_utf8.o 

@@ -1,0 +1,8 @@
+kernel/fs/nfs_common/nfs_acl.ko
+kernel/fs/reiserfs/reiserfs.ko
+kernel/fs/isofs/isofs.ko
+kernel/fs/nfs/nfs.ko
+kernel/fs/nfs/nfs_layout_nfsv41_files.ko
+kernel/fs/lockd/lockd.ko
+kernel/fs/ntfs/ntfs.ko
+kernel/fs/udf/udf.ko

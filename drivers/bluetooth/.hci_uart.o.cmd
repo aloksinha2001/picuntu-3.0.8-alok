@@ -1,0 +1,1 @@
+cmd_drivers/bluetooth/hci_uart.o := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/bluetooth/hci_uart.o drivers/bluetooth/hci_ldisc.o drivers/bluetooth/hci_h4.o drivers/bluetooth/hci_bcsp.o drivers/bluetooth/hci_ll.o 

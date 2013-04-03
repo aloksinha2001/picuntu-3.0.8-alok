@@ -1,0 +1,5 @@
+kernel/sound/soc/snd-soc-core.ko
+kernel/sound/soc/codecs/snd-soc-rockchip-hdmi.ko
+kernel/sound/soc/rk29/snd-soc-rockchip.ko
+kernel/sound/soc/rk29/snd-soc-rockchip-i2s.ko
+kernel/sound/soc/rk29/snd-soc-hdmi.ko

@@ -1,0 +1,1 @@
+cmd_drivers/tty/vt/built-in.o :=  /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/tty/vt/built-in.o drivers/tty/vt/vt_ioctl.o drivers/tty/vt/vc_screen.o drivers/tty/vt/selection.o drivers/tty/vt/keyboard.o drivers/tty/vt/consolemap.o drivers/tty/vt/consolemap_deftbl.o drivers/tty/vt/vt.o drivers/tty/vt/defkeymap.o 

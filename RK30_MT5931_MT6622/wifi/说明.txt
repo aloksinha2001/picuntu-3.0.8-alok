@@ -1,0 +1,119 @@
+kernel修改：
+
+1. 修改wifi gpio power控制，
+   
+   1)修改文件kernel\arch\arm\mach-rk30\board-rk30-sdk-sdmmc.c
+   具体见board-rk30-sdk-sdmmc.c.old与board-rk30-sdk-sdmmc.c.new的比较
+   
+   2)默认的WiFi power与reset gpio控制脚为，这部分需要根据自己的平台进行修改
+   #define RK30SDK_WIFI_GPIO_POWER_N       RK30_PIN0_PD5          模块第2脚
+   #define RK30SDK_WIFI_GPIO_RESET_N       RK30_PIN0_PC7          模块第1脚
+   
+   3)make menuconfig
+    System Type
+      wifi control func type
+        选择为Enable WiFi control functiont abstraction
+   
+2. 增加mt5931配置
+
+  1)修改Kconfig
+	diff --git a/drivers/net/wireless/Kconfig b/drivers/net/wireless/Kconfig
+	index 15ca20f..6217669 100755
+	--- a/drivers/net/wireless/Kconfig
+	+++ b/drivers/net/wireless/Kconfig
+	@@ -69,6 +69,17 @@ choice
+	 	      (3) USI        WM-G-MR-09
+	 	      (4) Murata     SP-8HEP-P
+	 
+	+   config MT5931
+	+	  depends on WLAN_80211 && MMC
+	+	  select WIRELESS_EXT
+	+	  select WEXT_PRIV
+	+	  select IEEE80211
+	+	  select FW_LOADER
+	+	  bool "MTK MT5931 SDIO"
+	+	  ---help---
+	+		A library for MTK MT5931 SDIO WLAN devices.
+	+		So far, the following modules have been verified: MTK5931
+	+																	              
+	 source "drivers/net/wireless/rtl8192c/Kconfig"
+	 source "drivers/net/wireless/ar6003/Kconfig"
+	 source "drivers/net/wireless/rkwifi/Kconfig"
+ 
+　2)make menuconfig选择
+　Device Drivers 
+　-- Network device support 
+　　-- Wireless LAN 
+　　　-- WiFi device driver support 
+　　　　-- MTK MT5931 SDIO
+
+  3)去掉cfg80211配置
+  -- Networking support
+    -- Wireless
+      -- cfg80211 - wireless configuration API
+
+注意：RK3066的SDIO电平一般为1.8V，使用MT5931时可能造成SDIO初始化出错，需要将其提高到3.2V，可通过AP0_VCC来调整.
+
+Android修改：
+
+1.  使用已经生产好的mtk_wpa_supplicant替换掉原来的wpa_supplicant.
+
+1). 将mtk_wpa_supplicant_6拷贝到device/rockchip/rk30sdk目录中
+2). 打上以下PRODUCT_COPY_FILES补丁
+
+hwg@I7-CH:~/rk29_4.0.3/device/rockchip/rk30sdk$ git diff
+diff --git a/device.mk b/device.mk
+index 2b409ee..df3a199 100755
+--- a/device.mk
++++ b/device.mk
+@@ -196,6 +196,14 @@ PRODUCT_COPY_FILES += \
+ PRODUCT_COPY_FILES += \
+         $(foreach file, $(targetFile), $(LOCAL_PATH)/proprietary/libvpu/$(file):obj/lib/$(file))
+ 
++#########################################################
++#       mtk wpa_supplicant_6
++#########################################################        
++PRODUCT_COPY_FILES += \
++        device/rockchip/rk30sdk/mtk_wpa_supplicant_6/libwpa_client.so:system/lib/libwpa_client.so \
++        device/rockchip/rk30sdk/mtk_wpa_supplicant_6/wpa_supplicant:system/bin/wpa_supplicant \
++        device/rockchip/rk30sdk/mtk_wpa_supplicant_6/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf
++
+ # These are the hardware-specific features
+ PRODUCT_COPY_FILES += \
+         frameworks/base/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
+         
+3) wpa_supplicant服务修改
+hwg@I7-CH:~/android-4.1.1_r1/device/rockchip/rk30sdk$ git diff
+diff --git a/init.rk30board.rc b/init.rk30board.rc
+index 82da863..1f575f7 100755
+--- a/init.rk30board.rc
++++ b/init.rk30board.rc
+@@ -76,7 +76,7 @@ on boot
+ #    class late_start
+ 
+ service wpa_supplicant /system/bin/wpa_supplicant \
+-    -Dnl80211 -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
++    -Dwext -iwlan0 -c/data/misc/wifi/wpa_supplicant.conf
+     #-Dnl80211 -iwlan0 -puse_p2p_group_interface=1 -e/data/misc/wifi/entropy.bin
+     #   we will start as root and wpa_supplicant will switch to user wifi
+     #   after setting up the capabilities required for WEXT
+
+2. wlan.ko
+替换device/rockchip/rk30sdk/wlan.ko
+并且直接替换out/target/product/rk30sdk/system/lib/modules/wlan.ko生效
+
+3. WIFI_RAM_CODE
+放到external/wlan_loader/firmware/目录时
+并且直接放到out/target/product/rk30sdk/system/etc/firmware/里生效
+
+4. HAL层 wifi.c修改
+用补丁包中的wifi.c替换工程中的hardware/libhardware_legacy/wifi/wifi.c
+mmm hardware/libhardware_legacy/生效
+
+5. 不能获取到正确的SSID的问题.patch
+  打上此补丁可以解决status bar中ap名字显示为00:00:00:00:00:00的问题.
+  
+6. 开机第一次WiFi打开失败补丁
+   修改hardware/libhardware_legacy/wifi/wifi.c，具体见
+   wifi.c.new与wifi.c.old的比较
+

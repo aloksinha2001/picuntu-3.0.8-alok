@@ -1,0 +1,234 @@
+diff --git a/tools/Android.mk b/tools/Android.mk
+index 47343e7..c5099e2 100755
+--- a/tools/Android.mk
++++ b/tools/Android.mk
+@@ -149,7 +149,7 @@ LOCAL_C_INCLUDES:=\
+ 	$(LOCAL_PATH)/../src \
+ 
+ LOCAL_SHARED_LIBRARIES := \
+-	libbluetoothd libbluetooth
++	libbluetoothd libbluetooth libdl
+ 
+ LOCAL_MODULE:=hciattach
+ 
+diff --git a/tools/hciattach.c b/tools/hciattach.c
+old mode 100644
+new mode 100755
+index f1d5e28..fff390c
+--- a/tools/hciattach.c
++++ b/tools/hciattach.c
+@@ -49,6 +49,8 @@
+ #include <bluetooth/hci.h>
+ #include <bluetooth/hci_lib.h>
+ 
++#include <dlfcn.h>
++
+ #include "hciattach.h"
+ 
+ #include "ppoll.h"
+@@ -67,10 +69,23 @@ struct uart_t {
+ 	int  (*post) (int fd, struct uart_t *u, struct termios *ti);
+ };
+ 
+-#define FLOW_CTL	0x0001
++/* update uart_t.flags */
++#define FLOW_CTL        0x0001
++#define FLOW_CTL_HW	    0x0001
++#define FLOW_CTL_SW	    0x0002
++#define FLOW_CTL_NONE   0x0000
++#define FLOW_CTL_MASK   0x0003
++
+ #define ENABLE_PM	1
+ #define DISABLE_PM	0
+ 
++#define LOAD_MTK_BT_LIBRARY  1
++
++typedef int (*INIT)(int fd, struct uart_t *u, struct termios *ti);
++typedef int (*UNINIT)(int fd);
++static INIT mtk = NULL;
++static UNINIT bt_restore = NULL;
++
+ static volatile sig_atomic_t __io_canceled = 0;
+ 
+ static void sig_hup(int sig)
+@@ -1035,6 +1050,10 @@ static int bcm2035(int fd, struct uart_t *u, struct termios *ti)
+ }
+ 
+ struct uart_t uart[] = {
++	/* MediaTek Bluetooth chip */
++	{ "mtk",        0x0000, 0x0000, HCI_UART_H4,   115200, 115200,
++				0, DISABLE_PM, NULL, NULL     },
++
+ 	{ "any",        0x0000, 0x0000, HCI_UART_H4,   115200, 115200,
+ 				FLOW_CTL, DISABLE_PM, NULL, NULL     },
+ 
+@@ -1180,25 +1199,26 @@ static int init_uart(char *dev, struct uart_t *u, int send_break, int raw)
+ 
+ 	if (tcgetattr(fd, &ti) < 0) {
+ 		perror("Can't get port settings");
++		close(fd);
+ 		return -1;
+ 	}
+ 
+ 	cfmakeraw(&ti);
+ 
+ 	ti.c_cflag |= CLOCAL;
+-	if (u->flags & FLOW_CTL)
+-		ti.c_cflag |= CRTSCTS;
+-	else
+-		ti.c_cflag &= ~CRTSCTS;
++	ti.c_cflag &= ~CRTSCTS;
++	ti.c_iflag &= ~(IXON | IXOFF | IXANY);
+ 
+ 	if (tcsetattr(fd, TCSANOW, &ti) < 0) {
+ 		perror("Can't set port settings");
++		close(fd);
+ 		return -1;
+ 	}
+ 
+ 	/* Set initial baudrate */
+ 	if (set_speed(fd, &ti, u->init_speed) < 0) {
+ 		perror("Can't set initial baud rate");
++		close(fd);
+ 		return -1;
+ 	}
+ 
+@@ -1209,38 +1229,45 @@ static int init_uart(char *dev, struct uart_t *u, int send_break, int raw)
+ 		usleep(500000);
+ 	}
+ 
+-	if (u->init && u->init(fd, u, &ti) < 0)
++	if (u->init && u->init(fd, u, &ti) < 0) {
++		close(fd);
+ 		return -1;
++	}
+ 
+ 	tcflush(fd, TCIOFLUSH);
+-
++#if 0
+ 	/* Set actual baudrate */
+ 	if (set_speed(fd, &ti, u->speed) < 0) {
+ 		perror("Can't set baud rate");
+ 		return -1;
+ 	}
+-
++#endif
+ 	/* Set TTY to N_HCI line discipline */
+ 	i = N_HCI;
+ 	if (ioctl(fd, TIOCSETD, &i) < 0) {
+ 		perror("Can't set line discipline");
++		close(fd);
+ 		return -1;
+ 	}
+ 
+ 	if (flags && ioctl(fd, HCIUARTSETFLAGS, flags) < 0) {
+ 		perror("Can't set UART flags");
++		close(fd);
+ 		return -1;
+ 	}
+ 
+ 	if (ioctl(fd, HCIUARTSETPROTO, u->proto) < 0) {
+ 		perror("Can't set device");
++		close(fd);
+ 		return -1;
+ 	}
+ 
+-	if (u->post && u->post(fd, u, &ti) < 0)
++	if (u->post && u->post(fd, u, &ti) < 0) {
++		close(fd);
+ 		return -1;
++	}
+ 
+-	return fd;
++	return fd;	
+ }
+ 
+ static void usage(void)
+@@ -1264,6 +1291,10 @@ int main(int argc, char *argv[])
+ 	sigset_t sigs;
+ 	char dev[PATH_MAX];
+ 
++#if LOAD_MTK_BT_LIBRARY
++	void *lib_handle; /* MTK BT init lib */
++#endif
++
+ 	detach = 1;
+ 	printpid = 0;
+ 	raw = 0;
+@@ -1348,9 +1379,11 @@ int main(int argc, char *argv[])
+ 
+ 		case 3:
+ 			if (!strcmp("flow", argv[optind]))
+-				u->flags |=  FLOW_CTL;
++				u->flags |= FLOW_CTL;
++			else if (!strcmp("swflow", argv[optind]))
++				u->flags |= FLOW_CTL_SW;
+ 			else
+-				u->flags &= ~FLOW_CTL;
++				u->flags |= FLOW_CTL_NONE;
+ 			break;
+ 
+ 		case 4:
+@@ -1376,6 +1409,28 @@ int main(int argc, char *argv[])
+ 	if (init_speed)
+ 		u->init_speed = init_speed;
+ 
++
++#if LOAD_MTK_BT_LIBRARY
++	lib_handle = dlopen("libbluetooth_mtk.so", RTLD_LAZY);
++	if (!lib_handle) {
++		fprintf(stderr, "%s\n", dlerror());
++		exit(1);
++	}
++
++	mtk = dlsym(lib_handle, "mtk");
++	bt_restore = dlsym(lib_handle, "bt_restore");
++
++	if ((!mtk) || (!bt_restore)) {
++		fprintf(stderr, "Can not find functions %s\n", dlerror());
++		dlclose(lib_handle);
++		exit(1);
++	}
++	
++	printf("Function address: 0x%08x 0x%08x\n", mtk, bt_restore);
++	
++	uart[0].init = mtk;
++#endif
++
+ 	memset(&sa, 0, sizeof(sa));
+ 	sa.sa_flags   = SA_NOCLDSTOP;
+ 	sa.sa_handler = sig_alarm;
+@@ -1388,6 +1443,9 @@ int main(int argc, char *argv[])
+ 	n = init_uart(dev, u, send_break, raw);
+ 	if (n < 0) {
+ 		perror("Can't initialize device");
++#if LOAD_MTK_BT_LIBRARY
++		dlclose(lib_handle);
++#endif	
+ 		exit(1);
+ 	}
+ 
+@@ -1443,8 +1501,23 @@ int main(int argc, char *argv[])
+ 	ld = N_TTY;
+ 	if (ioctl(n, TIOCSETD, &ld) < 0) {
+ 		perror("Can't restore line discipline");
++#if LOAD_MTK_BT_LIBRARY
++		bt_restore(n);
++		dlclose(lib_handle);
++#endif
+ 		exit(1);
+ 	}
+ 
++#if LOAD_MTK_BT_LIBRARY
++	if(bt_restore) {
++		printf("MTK BT chip deinit\n");
++		bt_restore(n);
++	}
++
++	if(lib_handle) {
++		dlclose(lib_handle);
++	}
++#endif
++
+ 	return 0;
+ }

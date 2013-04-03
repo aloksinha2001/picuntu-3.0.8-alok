@@ -1,0 +1,4 @@
+kernel/drivers/i2c/busses/i2c-dev-rk29.ko
+kernel/drivers/i2c/busses/i2c-rk30.ko
+kernel/drivers/i2c/busses/i2c-rk29-adapter.ko
+kernel/drivers/i2c/busses/i2c-rk30-adapter.ko

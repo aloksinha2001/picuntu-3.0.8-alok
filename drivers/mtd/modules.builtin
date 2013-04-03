@@ -1,0 +1,7 @@
+kernel/drivers/mtd/mtd.ko
+kernel/drivers/mtd/mtdchar.ko
+kernel/drivers/mtd/mtd_blkdevs.ko
+kernel/drivers/mtd/mtdblock.ko
+kernel/drivers/mtd/chips/chipreg.ko
+kernel/drivers/mtd/nand/nand_ids.ko
+kernel/drivers/mtd/rknand/rknand_base_ko.ko

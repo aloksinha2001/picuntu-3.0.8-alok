@@ -1,0 +1,14 @@
+kernel/drivers/video/fb.ko
+kernel/drivers/video/cfbfillrect.ko
+kernel/drivers/video/cfbcopyarea.ko
+kernel/drivers/video/cfbimgblt.ko
+kernel/drivers/video/backlight/backlight.ko
+kernel/drivers/video/console/fbcon.ko
+kernel/drivers/video/console/bitblit.ko
+kernel/drivers/video/console/font.ko
+kernel/drivers/video/console/softcursor.ko
+kernel/drivers/video/display/display.ko
+kernel/drivers/video/rockchip/rk_fb.ko
+kernel/drivers/video/rockchip/rkfb_sysfs.ko
+kernel/drivers/video/rockchip/chips/rk30_lcdc.ko
+kernel/drivers/video/rockchip/rga/rga.ko

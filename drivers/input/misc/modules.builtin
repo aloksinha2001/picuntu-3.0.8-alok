@@ -1,0 +1,2 @@
+kernel/drivers/input/misc/keychord.ko
+kernel/drivers/input/misc/uinput.ko

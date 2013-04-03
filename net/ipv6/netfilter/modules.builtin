@@ -1,0 +1,9 @@
+kernel/net/ipv6/netfilter/ip6_tables.ko
+kernel/net/ipv6/netfilter/ip6table_filter.ko
+kernel/net/ipv6/netfilter/ip6table_mangle.ko
+kernel/net/ipv6/netfilter/ip6table_raw.ko
+kernel/net/ipv6/netfilter/nf_conntrack_ipv6.ko
+kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko
+kernel/net/ipv6/netfilter/nf_defrag_ipv6.ko
+kernel/net/ipv6/netfilter/ip6t_LOG.ko
+kernel/net/ipv6/netfilter/ip6t_REJECT.ko

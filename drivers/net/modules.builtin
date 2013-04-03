@@ -1,0 +1,16 @@
+kernel/drivers/net/mii.ko
+kernel/drivers/net/ppp_generic.ko
+kernel/drivers/net/ppp_async.ko
+kernel/drivers/net/ppp_synctty.ko
+kernel/drivers/net/ppp_deflate.ko
+kernel/drivers/net/bsd_comp.ko
+kernel/drivers/net/ppp_mppe.ko
+kernel/drivers/net/pppox.ko
+kernel/drivers/net/pppolac.ko
+kernel/drivers/net/pppox.ko
+kernel/drivers/net/pppopns.ko
+kernel/drivers/net/slhc.ko
+kernel/drivers/net/phy/libphy.ko
+kernel/drivers/net/usb/usbnet.ko
+kernel/drivers/net/usb/qf9700.ko
+kernel/drivers/net/usb/sr9600.ko

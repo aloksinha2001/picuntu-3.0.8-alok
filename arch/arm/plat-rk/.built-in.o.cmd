@@ -1,0 +1,1 @@
+cmd_arch/arm/plat-rk/built-in.o :=  /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o arch/arm/plat-rk/built-in.o arch/arm/plat-rk/last_log.o arch/arm/plat-rk/dma-pl330.o arch/arm/plat-rk/early_printk.o arch/arm/plat-rk/../kernel/debug.o arch/arm/plat-rk/mem_reserve.o arch/arm/plat-rk/sram.o arch/arm/plat-rk/memtester.o 

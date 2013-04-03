@@ -1,0 +1,78 @@
+Android部分：
+
+1. 修改android\external\bluetooth\bluez\tools\hciattach.c，主要添加mtk bluetooth特定处理
+2. 拷贝库文件libbluetooth_mtk.so到out/target/product/rk30sdk/system/lib/，主要是mt6622芯片初始化工作
+3. 修改android\system\bluetooth\bluedroid，去掉rfkill，添加mt6622特定的power控制
+4. init.rk30board.rc增加mtk hciattach service
+5. external\wlan_loader\firmware中添加mt6622的firmware
+6. 用补丁包里frameworks\base\core目录下的文件替换掉原来的
+
+Kernel部分：
+1. 修改kernel\drivers\bluetooth hci部分
+
+2. 添加kernel\drivers\mtk_wcn_bt，用于mt6622 power控制
+   mt6622需要控制以下三个gpio:
+   GPIO_BT_PWR_EN_PIN    power脚                               模块第33脚
+   GPIO_BT_RESET_PIN     reset脚                               模块第6脚
+   GPIO_BT_EINT_PIN      wakeup host脚，用于mt6622来唤醒主控   模块第8脚
+   这三个gpio脚，需要根据实际的电路图来重新定义
+   
+2.1
+   模块第29脚32K clock不需要接，因为模块内部已经有了，不然会引起BT有时候扫描到不设备的异常
+   
+3. make menuconfig
+
+   选择：
+   Networking support
+     Bluetooth subsystem support
+       Bluetooth device drivers
+         HCI UART driver
+           UART (H4) protocol support
+           HCILL protocol support
+         
+   需要去掉：
+   Networking support
+     Bluetooth subsystem support
+       Bluetooth device drivers
+         Bluetooth auto sleep
+         
+   Networking support
+     RF switch subsystem support
+
+4. 串口驱动部分修改，见补丁里的
+   arch/arm/common/pl330.c
+	 arch/arm/include/asm/hardware/pl330.h
+	 arch/arm/mach-rk30/include/mach/board.h
+	 arch/arm/mach-rk30/include/mach/cru.h
+	 arch/arm/mach-rk30/clock_data.uu
+	 arch/arm/mach-rk30/pm.c
+	 arch/arm/plat-rk/include/plat/dma-pl330.h
+	 arch/arm/plat-rk/dma-pl330.c
+	 drivers/tty/serial/rk_serial.c
+   
+
+常见问题排除：
+
+1. 蓝牙打不开.
+   可用logcat -s [BT] blue* & 打印相应log.
+   
+   如果出现以下log，可能是蓝牙模块上电没有成功，导致命令无响应
+		D/[BT]    ( 1128): GORMcmd_HCC_Read_Local_Version: GORMcmd_HCC_Read_Local_Version
+		D/[BT]    ( 1128): BT_SendHciCommand: OpCode 0x1001 len 0
+		E/[BT]    ( 1128): bt_receive_data: Read comm port timeout = 5000ms!
+		E/[BT]    ( 1128): BT_ReadPacketHeader: Read packet header fails
+		E/[BT]    ( 1128): BT_ReadPacket: Get 01 for packet type
+		
+2. 蓝牙传输不稳定(传输过程中中断)
+   出现如下类似log:
+   Bluetooth: Frame Reassembly Failed
+   Bluetooth: bad checksum in packet
+   
+   这是串口部分不稳定造成的，请确认：
+   1) 移植说明中Kernel部分的第4点是否已经更新上去
+   2) 更新后确认cat proc/clocks中的以下两个clk要保持一样的频率，也就是cpu变频后:pclk_cpu与hclk_cpu需要保持一样
+       例如：
+       pclk_cpu    63 MHz usecount = 17 parent = aclk_cpu
+			 hclk_cpu    63 MHz usecount = 9 parent = aclk_cpu
+   (如果看不到proc/clocks节点，需要在menuconfig中的System Type中打开/proc/clocks support)
+

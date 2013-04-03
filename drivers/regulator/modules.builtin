@@ -1,0 +1,2 @@
+kernel/drivers/regulator/rk30-pwm-regulator.ko
+kernel/drivers/regulator/tps65910-regulator.ko

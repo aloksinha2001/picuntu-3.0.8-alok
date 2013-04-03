@@ -1,0 +1,1 @@
+cmd_drivers/mfd/built-in.o :=  /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/mfd/built-in.o drivers/mfd/tps65910.o drivers/mfd/tps65910-irq.o drivers/mfd/mfd-core.o 
