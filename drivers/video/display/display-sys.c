@@ -5,8 +5,9 @@
 #include <linux/kdev_t.h>
 #include <linux/display-sys.h>
 
-static struct list_head main_display_device_list;
-static struct list_head aux_display_device_list;
+//#define OMEGAMOON_CHANGED	1 //Galland: defining it breaks kernel boot
+
+static struct list_head display_device_list;
 
 static ssize_t display_show_name(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -53,6 +54,33 @@ static ssize_t display_store_enable(struct device *dev,
 		dsp->ops->setenable(dsp, enable);
 	return size;
 }
+
+#ifdef OMEGAMOON_CHANGED
+static ssize_t display_show_autoconfig(struct device *dev,
+				struct device_attribute *attr, char *buf)
+{
+	struct rk_display_device *dsp = dev_get_drvdata(dev);
+	int autoconfig;
+	if(dsp->ops && dsp->ops->getautoconfig)
+		autoconfig = dsp->ops->getautoconfig(dsp);
+	else
+		return 0;
+	return snprintf(buf, PAGE_SIZE, "%d\n", autoconfig);
+}
+
+static ssize_t display_store_autoconfig(struct device *dev, 
+						struct device_attribute *attr,
+			 			const char *buf, size_t size)
+{
+	struct rk_display_device *dsp = dev_get_drvdata(dev);
+	int autoconfig;
+	
+	sscanf(buf, "%d", &autoconfig);
+	if(dsp->ops && dsp->ops->setautoconfig)
+		dsp->ops->setautoconfig(dsp, autoconfig);
+	return size;
+}
+#endif
 
 static ssize_t display_show_connect(struct device *dev,
 				struct device_attribute *attr, char *buf)
@@ -206,6 +234,9 @@ static struct device_attribute display_attrs[] = {
 	__ATTR(modes, S_IRUGO, display_show_modes, NULL),
 	__ATTR(mode, 0664, display_show_mode, display_store_mode),
 	__ATTR(scale, 0664, display_show_scale, display_store_scale),
+#ifdef OMEGAMOON_CHANGED
+	__ATTR(autoconfig, 0664, display_show_autoconfig, display_store_autoconfig),
+#endif
 	__ATTR_NULL
 };
 
@@ -236,15 +267,10 @@ void rk_display_device_enable(struct rk_display_device *ddev)
 #ifndef CONFIG_DISPLAY_AUTO_SWITCH	
 	return;
 #else
-	struct list_head *pos, *head;
+	struct list_head *pos, *head = &display_device_list;
 	struct rk_display_device *dev = NULL, *dev_enabled = NULL, *dev_enable = NULL;
 	int enable = 0,connect, has_connect = 0;
 	
-	if(ddev->property == DISPLAY_MAIN)
-		head = &main_display_device_list;
-	else
-		head = &aux_display_device_list;
-		
 	list_for_each(pos, head) {
 		dev = list_entry(pos, struct rk_display_device, list);
 		enable = dev->ops->getenable(dev);
@@ -280,14 +306,9 @@ void rk_display_device_enable_other(struct rk_display_device *ddev)
 #ifndef CONFIG_DISPLAY_AUTO_SWITCH	
 	return;
 #else
-	struct list_head *pos, *head;
+	struct list_head *pos, *head = &display_device_list;
 	struct rk_display_device *dev;	
 	int connect = 0;
-	
-	if(ddev->property == DISPLAY_MAIN)
-		head = &main_display_device_list;
-	else
-		head = &aux_display_device_list;
 	
 	list_for_each_prev(pos, head) {
 		dev = list_entry(pos, struct rk_display_device, list);
@@ -310,14 +331,9 @@ void rk_display_device_disable_other(struct rk_display_device *ddev)
 #ifndef CONFIG_DISPLAY_AUTO_SWITCH
 	return;
 #else
-	struct list_head *pos, *head;
+	struct list_head *pos, *head = &display_device_list;
 	struct rk_display_device *dev;	
 	int enable = 0;
-	
-	if(ddev->property == DISPLAY_MAIN)
-		head = &main_display_device_list;
-	else
-		head = &aux_display_device_list;
 	
 	list_for_each(pos, head) {
 		dev = list_entry(pos, struct rk_display_device, list);
@@ -333,16 +349,11 @@ void rk_display_device_disable_other(struct rk_display_device *ddev)
 }
 EXPORT_SYMBOL(rk_display_device_disable_other);
 
-void rk_display_device_select(int property, int priority)
+void rk_display_device_select(int priority)
 {
-	struct list_head *pos, *head;
+	struct list_head *pos, *head = &display_device_list;
 	struct rk_display_device *dev;
 	int enable, found = 0;
-	
-	if(property == DISPLAY_MAIN)
-		head = &main_display_device_list;
-	else
-		head = &aux_display_device_list;
 	
 	list_for_each(pos, head) {
 		dev = list_entry(pos, struct rk_display_device, list);
@@ -398,7 +409,7 @@ struct rk_display_device *rk_display_device_register(struct rk_display_driver *d
 		if (!ret) {
 			new_dev->dev = device_create(display_class, parent,
 						     MKDEV(0, 0), new_dev,
-						     "display%d.%s", new_dev->property, new_dev->type);
+						     "%s", new_dev->type);
 			if (!IS_ERR(new_dev->dev)) {
 				new_dev->parent = parent;
 				new_dev->driver = driver;
@@ -407,14 +418,9 @@ struct rk_display_device *rk_display_device_register(struct rk_display_driver *d
 				mutex_init(&new_dev->lock);
 				// Add new device to display device list.
 				{
-					struct list_head *pos, *head;
+					struct list_head *pos, *head = &display_device_list;
 					struct rk_display_device *dev;
 					
-					if(new_dev->property == DISPLAY_MAIN)
-						head = &main_display_device_list;
-					else
-						head = &aux_display_device_list;
-						
 					list_for_each(pos, head) {
 						dev = list_entry(pos, struct rk_display_device, list);
 						if(dev->priority > new_dev->priority)
@@ -464,8 +470,7 @@ static int __init rk_display_class_init(void)
 	display_class->suspend = display_suspend;
 	display_class->resume = display_resume;
 	mutex_init(&allocated_dsp_lock);
-	INIT_LIST_HEAD(&main_display_device_list);
-	INIT_LIST_HEAD(&aux_display_device_list);
+	INIT_LIST_HEAD(&display_device_list);
 	return 0;
 }
 
