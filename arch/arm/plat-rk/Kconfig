@@ -101,6 +101,10 @@ config DVFS
 	depends on REGULATOR&&CPU_FREQ
 	default y
 
+config RK_CLOCK_PROC
+	bool "/proc/clocks support"
+	depends on PROC_FS
+
 if !ARCH_RK29
 menu "Support for RK power manage"
 
@@ -113,10 +117,24 @@ config RK30_I2C_INSRAM
 
 endmenu
 endif
+
+
+choice WIFI_CONTROL
+       prompt "wifi control func Type."
+       default WIFI_CONTROL_FUNC
+ 
 config WIFI_CONTROL_FUNC
         bool "Enable WiFi control function abstraction"
         help
           Enables Power/Reset/Carddetect function abstraction
+
+config WIFI_COMBO_MODULE_CONTROL_FUNC
+        bool "Enable WiFi_combo_module control function abstraction"
+        help
+          Enables Power/Reset/Carddetect function abstraction
+
+endchoice
+
 
 config RK29_VPU
 	tristate "VPU (Video Processing Unit) service driver in kernel"
@@ -145,8 +163,21 @@ config RK_DEBUG_UART
 	help
 	  Select a UART for debugging. -1 disable.
 
+config RK_CONSOLE_THREAD
+	bool "Console write by thread"
+	depends on FIQ_DEBUGGER_CONSOLE
+	default y
+	help
+	  Normal kernel printk will write out to UART by "kconsole" kthread
+
 config RK_SRAM_DMA
 	bool "Sound DMA buffer in internal SRAM"
 	depends on ARCH_RK30
+
+config RK_PL330_DMA
+	bool
+	select PL330
+	help
+	  DMA API Driver for PL330 DMAC
 
 endif

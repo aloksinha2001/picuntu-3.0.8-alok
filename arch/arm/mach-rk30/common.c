@@ -30,7 +30,7 @@ static void __init rk30_cpu_axi_init(void)
 #endif
 	writel_relaxed(0x0, RK30_CPU_AXI_BUS_BASE + 0x5008);	// gpu
 	writel_relaxed(0x0, RK30_CPU_AXI_BUS_BASE + 0x6008);	// vpu
-	writel_relaxed(0xa, RK30_CPU_AXI_BUS_BASE + 0x7008);	// lcdc0
+	//writel_relaxed(0xa, RK30_CPU_AXI_BUS_BASE + 0x7008);	// lcdc0
 	writel_relaxed(0x0, RK30_CPU_AXI_BUS_BASE + 0x7088);	// cif0
 	writel_relaxed(0x0, RK30_CPU_AXI_BUS_BASE + 0x7108);	// ipp
 	writel_relaxed(0xa, RK30_CPU_AXI_BUS_BASE + 0x7188);	// lcdc1
@@ -119,7 +119,7 @@ void __init rk30_init_irq(void)
 {
 	gic_init(0, IRQ_LOCALTIMER, RK30_GICD_BASE, RK30_GICC_BASE);
 #ifdef CONFIG_FIQ
-	rk30_fiq_init();
+	rk_fiq_init();
 #endif
 	rk30_gpio_init();
 }

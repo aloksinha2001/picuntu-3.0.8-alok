@@ -4,6 +4,7 @@
 #include <linux/fb.h>
 #include <linux/list.h>
 
+//#define OMEGAMOON_CHANGED	1 //Galland: defining it breaks kernel boot
 struct rk_display_device;
 
 enum rk_display_priority {
@@ -46,6 +47,10 @@ struct rk_display_ops {
 	int (*getmode)(struct rk_display_device *, struct fb_videomode *mode);
 	int (*setscale)(struct rk_display_device *, int, int);
 	int (*getscale)(struct rk_display_device *, int);
+#ifdef OMEGAMOON_CHANGED
+	int (*setautoconfig)(struct rk_display_device *, int enable);
+	int (*getautoconfig)(struct rk_display_device *);
+#endif
 };
 
 struct rk_display_device {
@@ -76,8 +81,6 @@ struct rkdisplay_platform_data {
 	int io_reset_pin;		//reset control gpio
 	int io_switch_pin;		//cvbs/ypbpr output switch gpio
 };
-
-
 extern struct rk_display_device *rk_display_device_register(struct rk_display_driver *driver,
 					struct device *dev, void *devdata);
 extern void rk_display_device_unregister(struct rk_display_device *dev);
@@ -88,7 +91,7 @@ extern void rk_display_device_enable_other(struct rk_display_device *ddev);
 extern void rk_display_device_disable_other(struct rk_display_device *ddev);
 
 
-extern void rk_display_device_select(int property, int priority);
+extern void rk_display_device_select(int priority);
 
 #define to_rk_display_device(obj) container_of(obj, struct rk_display_device, class_dev)
 

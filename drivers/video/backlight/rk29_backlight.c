@@ -50,24 +50,72 @@ static struct clk *pwm_clk;
 static struct backlight_device *rk29_bl;
 static int suspend_flag = 0;
 
+int convertint(char s[])  
+{  
+    int i;  
+    int n = 0;  
+    for (i = 0; s[i] >= '0' && s[i] <= '9'; ++i)  
+    {  
+        n = 10 * n + (s[i] - '0');  
+    }  
+    return n;  
+} 
+
+static ssize_t backlight_write(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+   
+	struct rk29_bl_info *rk29_bl_info = bl_get_data(rk29_bl);
+	int number;
+
+	number = convertint(buf);
+	
+	rk29_bl_info->min_brightness=number;
+	return 0;
+}
+
+
+static ssize_t backlight_read(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	struct rk29_bl_info *rk29_bl_info = bl_get_data(rk29_bl);
+
+	DBG("rk29_bl_info->min_brightness=%d\n",rk29_bl_info->min_brightness);
+}
+static DEVICE_ATTR(rk29backlight, 0660, backlight_read, backlight_write);
+
+#ifdef CONFIG_BATTERY_RK30_ADC
+extern int bl_check_battery_capacity(void);
+#endif
+
 static int rk29_bl_update_status(struct backlight_device *bl)
 {
 	u32 divh,div_total;
 	struct rk29_bl_info *rk29_bl_info = bl_get_data(bl);
 	u32 id = rk29_bl_info->pwm_id;
 	u32 ref = rk29_bl_info->bl_ref;
+	int cur_brightness = bl->props.brightness;
 
 	if (suspend_flag)
 		return 0;
 
-	if (bl->props.brightness < rk29_bl_info->min_brightness)	/*avoid can't view screen when close backlight*/
-		bl->props.brightness = rk29_bl_info->min_brightness;
+	if (bl->props.brightness < 0)//rk29_bl_info->min_brightness)	/*avoid can't view screen when close backlight*/
+		cur_brightness = bl->props.brightness = 0;//rk29_bl_info->min_brightness;
+#ifdef CONFIG_BATTERY_RK30_ADC
+	else if ((bl_check_battery_capacity() == 1) && (bl->props.brightness > 60))
+	    cur_brightness = 60;
+#endif
+
+    if (cur_brightness > 230)
+        cur_brightness = 230;
 
 	div_total = read_pwm_reg(id, PWM_REG_LRC);
 	if (ref) {
-		divh = div_total*(bl->props.brightness)/BL_STEP;
+		//divh = div_total*(bl->props.brightness)/BL_STEP;
+		divh = div_total*((BL_STEP-rk29_bl_info->min_brightness)*cur_brightness/BL_STEP+rk29_bl_info->min_brightness)/BL_STEP;
 	} else {
-		divh = div_total*(BL_STEP-bl->props.brightness)/BL_STEP;
+		//divh = div_total*(BL_STEP-bl->props.brightness)/BL_STEP;
+		divh = div_total*(BL_STEP-((BL_STEP-rk29_bl_info->min_brightness)*cur_brightness/BL_STEP+rk29_bl_info->min_brightness))/BL_STEP;
 	}
 	write_pwm_reg(id, PWM_REG_HRC, divh);
 
@@ -102,8 +150,13 @@ static struct backlight_ops rk29_bl_ops = {
 
 static void rk29_backlight_work_func(struct work_struct *work)
 {
+	struct rk29_bl_info *rk29_bl_info = bl_get_data(rk29_bl);
+
 	suspend_flag = 0;
 	rk29_bl_update_status(rk29_bl);
+
+	if (rk29_bl_info->pwm_resume)
+		rk29_bl_info->pwm_resume();
 }
 static DECLARE_DELAYED_WORK(rk29_backlight_work, rk29_backlight_work_func);
 
@@ -122,9 +175,9 @@ static void rk29_bl_suspend(struct early_suspend *h)
 	}
 
 	if (!suspend_flag) {
-		clk_disable(pwm_clk);
 		if (rk29_bl_info->pwm_suspend)
 			rk29_bl_info->pwm_suspend();
+		clk_disable(pwm_clk);
 	}
 
 	suspend_flag = 1;
@@ -135,11 +188,12 @@ static void rk29_bl_resume(struct early_suspend *h)
 	struct rk29_bl_info *rk29_bl_info = bl_get_data(rk29_bl);
 	DBG("%s : %s\n", __FILE__, __FUNCTION__);
 
-	if (rk29_bl_info->pwm_resume)
-		rk29_bl_info->pwm_resume();
+	//if (rk29_bl_info->pwm_resume)
+	//	rk29_bl_info->pwm_resume();
 
 	clk_enable(pwm_clk);
 
+	suspend_flag = 0;
 	schedule_delayed_work(&rk29_backlight_work, msecs_to_jiffies(rk29_bl_info->delay_ms));
 }
 
@@ -160,6 +214,13 @@ void rk29_backlight_set(bool on)
 }
 EXPORT_SYMBOL(rk29_backlight_set);
 #endif
+
+void bl_check_low_battery(void)
+{
+    printk("%s\n", __func__);
+	rk29_bl_update_status(rk29_bl);
+}
+EXPORT_SYMBOL(bl_check_low_battery);
 
 static int rk29_backlight_probe(struct platform_device *pdev)
 {		
@@ -232,6 +293,11 @@ static int rk29_backlight_probe(struct platform_device *pdev)
 	rk29_bl->props.brightness = BL_STEP / 2;
 
 	schedule_delayed_work(&rk29_backlight_work, msecs_to_jiffies(rk29_bl_info->delay_ms));
+	ret = device_create_file(&pdev->dev,&dev_attr_rk29backlight);
+	if(ret)
+	{
+		dev_err(&pdev->dev, "failed to create sysfs file\n");
+	}
 
 	register_early_suspend(&bl_early_suspend);
 

@@ -11,24 +11,15 @@
 #include <plat/board.h>
 #include <mach/sram.h>
 #include <linux/i2c-gpio.h>
-enum {
-        I2C_IDLE = 0,
-        I2C_SDA_LOW,
-        I2C_SCL_LOW,
-        BOTH_LOW,
-};
-struct rk30_i2c_platform_data {
-	char *name;
-	int bus_num;
-#define I2C_RK29_ADAP   0
-#define I2C_RK30_ADAP   1
-	int adap_type;
-	int is_div_from_arm;
-	u32 flags;
+
+#ifdef CONFIG_MFD_RK610
+struct hdmi_platform_data {
+	u32 hdmi_on_pin;
+	u32 hdmi_on_level;
 	int (*io_init)(void);
 	int (*io_deinit)(void);
-        int (*check_idle)(void);
 };
+#endif
 
 /* adc battery */
 struct rk30_adc_battery_platform_data {
@@ -80,6 +71,67 @@ struct ft5x0x_platform_data{
 };
 #endif
 
+#if defined(CONFIG_TOUCHSCREEN_BYD693X)
+struct byd_platform_data {
+	u16     model;
+	int     pwr_pin;
+	int	  int_pin;
+	int     rst_pin;
+	int		pwr_on_value;
+	int (*get_probe_state)(void);
+	void   (*set_probe_state)(int );
+	int 	*tp_flag;
+
+	uint16_t screen_max_x;
+	uint16_t screen_max_y;
+	u8 swap_xy :1;
+	u8 xpol :1;
+	u8 ypol :1;	
+};
+#endif
+
+#if defined (CONFIG_TOUCHSCREEN_BF6931A)
+struct bf6931a_platform_data{
+	  u16     model;
+    int     (*get_pendown_state)(void);
+    int     (*init_platform_hw)(void);
+    int     (*bf6931a_platform_sleep)(void);
+    int     (*bf6931a_platform_wakeup)(void);
+    void    (*exit_platform_hw)(void);
+};
+#endif
+
+struct codec_io_info{
+	char	iomux_name[50];
+	int		iomux_mode;	
+};
+
+struct rt3261_platform_data{
+	unsigned int codec_en_gpio;
+	struct codec_io_info codec_en_gpio_info;
+	int (*io_init)(int, char *, int);
+};
+
+#if defined (CONFIG_TOUCHSCREEN_NOVATEK)
+struct novatek_i2c_platform_data {
+	uint32_t version;		/* Use this entry for panels with */
+
+	int (*ts_init_platform_hw)(void);
+	int (*ts_exit_platform_hw)(void);
+	int (*get_probe_state)(void);
+	void (*set_probe_state)(int);	
+	int gpio_rst;
+	int gpio_irq;
+	bool irq_edge; 		/* 0:rising edge, 1:falling edge */
+	uint16_t touch_max_x;
+	uint16_t touch_max_y;
+	uint16_t screen_max_x;
+	uint16_t screen_max_y;
+	u8 swap_xy :1;
+	u8 xpol :1;
+	u8 ypol :1;
+};
+#endif
 extern struct rk29_sdmmc_platform_data default_sdmmc0_data;
 extern struct rk29_sdmmc_platform_data default_sdmmc1_data;
 

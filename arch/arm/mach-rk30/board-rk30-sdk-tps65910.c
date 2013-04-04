@@ -29,6 +29,7 @@
 #define PMU_POWER_SLEEP RK30_PIN6_PB1	
 extern int platform_device_register(struct platform_device *pdev);
 
+/* Galland: missing in JB kernel
 #if defined(CONFIG_RTL8192CU)||defined(CONFIG_RTL8188EUS)
 void rk_usb_wifi_power(int on)
 {
@@ -55,6 +56,7 @@ void rk_usb_wifi_power(int on)
 	}
 }
 #endif
+*/
 int tps65910_pre_init(struct tps65910 *tps65910){
 
 	int val = 0;
@@ -336,12 +338,13 @@ int tps65910_post_init(struct tps65910 *tps65910)
 	udelay(100);
 
 	ldo = regulator_get(NULL, "vmmc");  //vcc28_cif
-	regulator_set_voltage(ldo,3300000,3300000);
+	regulator_set_voltage(ldo,2800000,2800000);
 	regulator_enable(ldo); 
 	printk("%s set vmmc vcc28_cif=%dmV end\n", __func__, regulator_get_voltage(ldo));
 	regulator_put(ldo);
 	udelay(100);
 
+	#if 0   //Galland: in JB kernel this init code segment is at drivers/regulator/rk30-pwm-regulator.c
 	#ifdef CONFIG_RK30_PWM_REGULATOR
 	dcdc = regulator_get(NULL, "vdd_core"); // vdd_log
 	regulator_set_voltage(dcdc, 1100000, 1100000);
@@ -349,6 +352,7 @@ int tps65910_post_init(struct tps65910 *tps65910)
 	printk("%s set vdd_core=%dmV end\n", __func__, regulator_get_voltage(dcdc));
 	regulator_put(dcdc);
 	udelay(100);
+	#endif
 	#endif
 	
 	printk("%s,line=%d END\n", __func__,__LINE__);

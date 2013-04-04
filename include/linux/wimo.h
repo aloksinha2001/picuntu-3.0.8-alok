@@ -16,12 +16,15 @@
 
 #ifndef __ARCH_ARM_MACH_RK29_WIMO_H
 #define __ARCH_ARM_MACH_RK29_WIMO_H
-#if	1//def CONFIG_FB_WIMO
+#ifdef CONFIG_FB_WIMO
+#define FB_WIMO_FLAG  
+#endif
 
 
 
 
 
+#if	1//def	CONFIG_FB_WIMO
 #define WIMO_IOCTL_MAGIC 0x60
 #define WIMO_START						_IOW(WIMO_IOCTL_MAGIC, 0x1, unsigned int)
 #define WIMO_STOP						_IOW(WIMO_IOCTL_MAGIC, 0x2, unsigned int)

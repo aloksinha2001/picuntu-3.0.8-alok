@@ -279,6 +279,22 @@ int wm831x_reg_write(struct wm831x *wm831x, unsigned short reg,
 }
 EXPORT_SYMBOL_GPL(wm831x_reg_write);
 
+//Galland: the following function was not on JB kernel, I leave it here though (or else remove it also from .h)
+int wm831x_reg_muti_write(struct wm831x *wm831x, unsigned short reg,
+		     unsigned short *val, int len)
+{
+	int ret;
+
+	mutex_lock(&wm831x->io_lock);
+
+	ret = wm831x_write(wm831x, reg, len*2, val);
+
+	mutex_unlock(&wm831x->io_lock);
+
+	return ret;
+}
+EXPORT_SYMBOL_GPL(wm831x_reg_muti_write);
+
 /**
  * wm831x_set_bits: Set the value of a bitfield in a WM831x register
  *

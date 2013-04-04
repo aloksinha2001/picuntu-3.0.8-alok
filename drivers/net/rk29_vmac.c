@@ -169,7 +169,6 @@ static void vmac_handle_link_change(struct net_device *dev)
 	if (pdata && pdata->rmii_speed_switch)
 		pdata->rmii_speed_switch(phydev->speed);
 //$_rbox_$_modify_$_end
-
 	if (phydev->link != ap->link) {
 		ap->link = phydev->link;
 		report_change = 1;
@@ -1141,7 +1140,6 @@ int vmac_open(struct net_device *dev)
 						dev->dev_addr[4],dev->dev_addr[5] );
 	}
 //add end	
-
 	/* mac address changed? */
 	write_mac_reg(dev, dev->dev_addr);
 
@@ -1502,10 +1500,10 @@ static void vmac_set_multicast_list(struct net_device *dev)
 	spin_lock_irqsave(&ap->lock, flags);
 
 	promisc = !!(dev->flags & IFF_PROMISC);
-	reg = vmac_readl(ap, CONTROL);
+	reg = vmac_readl(ap, ENABLE);
 	if (promisc != !!(reg & PROM_MASK)) {
 		reg ^= PROM_MASK;
-		vmac_writel(ap, reg, CONTROL);
+		vmac_writel(ap, reg, ENABLE);
 	}
 
 	if (dev->flags & IFF_ALLMULTI)

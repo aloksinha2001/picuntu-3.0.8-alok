@@ -70,7 +70,11 @@ struct rk_pwm_dcdc {
 #endif
 
 const static int pwm_voltage_map[] = {
+#ifdef  CONFIG_KP_AXP20
+	1000000, 1050000, 1075000, 1100000, 1125000, 1150000, 1175000, 1200000, 1225000, 1250000, 1275000, 1300000, 1325000, 1350000, 1375000, 1400000, 1425000
+#else
 	1000000, 1025000, 1050000, 1075000, 1100000, 1125000, 1150000, 1175000, 1200000, 1225000, 1250000, 1275000, 1300000, 1325000, 1350000, 1375000, 1400000
+#endif
 };
 
 static struct clk *pwm_clk[2];
@@ -266,7 +270,11 @@ static int __devinit pwm_regulator_probe(struct platform_device *pdev)
 		pdata->pwm_voltage_map = pwm_voltage_map;
 
 	if(!pdata->max_uV)
+#ifdef  CONFIG_KP_AXP20
+		pdata->max_uV = 1425000;
+#else
 		pdata->max_uV = 1400000;
+#endif
 
 	if(!pdata->min_uV)
 		pdata->min_uV = 1000000;
@@ -325,8 +333,21 @@ static int __devinit pwm_regulator_probe(struct platform_device *pdev)
 	
 	g_dcdc	= dcdc;
 	platform_set_drvdata(pdev, dcdc);	
+#ifdef CONFIG_KP_AXP20
 	printk(KERN_INFO "pwm_regulator.%d: driver initialized\n",id);
-
+#else
+	printk("pwm_regulator.%d: driver initialized\n",id);
+	printk("rk30 pwm regulator is ok with pmu tps65910\n");
+    #ifdef CONFIG_RK30_PWM_REGULATOR                              
+    dcdc = regulator_get(NULL, "vdd_core"); // vdd_log            
+    regulator_set_voltage(dcdc, 1100000, 1100000);
+    regulator_enable(dcdc);
+    printk("%s set vdd_core=%dmV end\n", __func__, regulator_get_voltage(dcdc));
+    regulator_put(dcdc);
+    udelay(100);                                                  
+    #endif	
+#endif
+	
 	return 0;
 
 
@@ -439,10 +460,23 @@ static struct platform_driver pwm_regulator_driver = {
 	.remove = __devexit_p(pwm_regulator_remove),
 };
 
-
+extern int __sramdata g_pmic_type;
 static int __init pwm_regulator_module_init(void)
 {
+#ifdef CONFIG_KP_AXP20
 	return platform_driver_probe(&pwm_regulator_driver, pwm_regulator_probe);
+#else
+	if (g_pmic_type == 2)
+	{	
+		printk("boot with tps65910 need  pwm_regultor\n");
+		return platform_driver_probe(&pwm_regulator_driver, pwm_regulator_probe);
+	}
+	else
+	{
+		printk("boot with wm831x dont need pwm_regultor\n");	
+		return 0;
+	}
+#endif
 }
 
 static void __exit pwm_regulator_module_exit(void)
@@ -450,8 +484,11 @@ static void __exit pwm_regulator_module_exit(void)
 	platform_driver_unregister(&pwm_regulator_driver);
 }
 
-
+#ifdef CONFIG_KP_AXP20
 subsys_initcall(pwm_regulator_module_init);
+#else
+fs_initcall(pwm_regulator_module_init);
+#endif
 
 module_exit(pwm_regulator_module_exit);
 

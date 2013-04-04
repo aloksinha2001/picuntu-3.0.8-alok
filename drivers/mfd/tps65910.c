@@ -349,6 +349,7 @@ static const struct i2c_device_id tps65910_i2c_id[] = {
 };
 MODULE_DEVICE_TABLE(i2c, tps65910_i2c_id);
 
+//Galland: the following function was not on JB kernel, I leave it here though
 static void tps65910_reboot(struct i2c_client *i2c)
 {
         struct tps65910 *tps65910 = i2c_get_clientdata(i2c);
@@ -360,11 +361,7 @@ static void tps65910_reboot(struct i2c_client *i2c)
 		printk(KERN_ERR "Unable to read TPS65910 Reg at offset 0x%x= \
 				\n", TPS65910_REG_VDIG1);
 		return err;
-	}        
-        
-        
-        
-        
+	}
 }
 
 static struct i2c_driver tps65910_i2c_driver = {

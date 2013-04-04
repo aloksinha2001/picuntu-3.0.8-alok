@@ -119,6 +119,202 @@
 #endif
 #endif
 
+#ifdef CONFIG_SENSOR_IIC_ADDR_03
+#if (CONFIG_SENSOR_IIC_ADDR_03 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_03  CONS(CONFIG_SENSOR_03,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_03
+    #define SENSOR_CIF_BUSID_03             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_03)
+    #else
+    #define SENSOR_CIF_BUSID_03             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_03)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_03
+    #define PMEM_SENSOR_FULL_RESOLUTION_03  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_03 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_03)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_03
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_03)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_03
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_04
+#if (CONFIG_SENSOR_IIC_ADDR_04 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_04  CONS(CONFIG_SENSOR_04,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_04
+    #define SENSOR_CIF_BUSID_04             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_04)
+    #else
+    #define SENSOR_CIF_BUSID_04             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_04)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_04
+    #define PMEM_SENSOR_FULL_RESOLUTION_04  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_04 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_04)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_04
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_04)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_04
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_05
+#if (CONFIG_SENSOR_IIC_ADDR_05 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_05  CONS(CONFIG_SENSOR_05,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_05
+    #define SENSOR_CIF_BUSID_05             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_05)
+    #else
+    #define SENSOR_CIF_BUSID_05             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_05)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_05
+    #define PMEM_SENSOR_FULL_RESOLUTION_05  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_05 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_05)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_05
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_05)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_05
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_06
+#if (CONFIG_SENSOR_IIC_ADDR_06 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_06  CONS(CONFIG_SENSOR_06,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_06
+    #define SENSOR_CIF_BUSID_06             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_06)
+    #else
+    #define SENSOR_CIF_BUSID_06             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_06)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_06
+    #define PMEM_SENSOR_FULL_RESOLUTION_06  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_06 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_06)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_06
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_06)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_06
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_07
+#if (CONFIG_SENSOR_IIC_ADDR_07 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_07  CONS(CONFIG_SENSOR_07,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_07
+    #define SENSOR_CIF_BUSID_07             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_07)
+    #else
+    #define SENSOR_CIF_BUSID_07             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_07)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_07
+    #define PMEM_SENSOR_FULL_RESOLUTION_07  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_07 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_07)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_07
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_07)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_07
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_08
+#if (CONFIG_SENSOR_IIC_ADDR_08 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_08  CONS(CONFIG_SENSOR_08,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_08
+    #define SENSOR_CIF_BUSID_08             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_08)
+    #else
+    #define SENSOR_CIF_BUSID_08             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_08)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_08
+    #define PMEM_SENSOR_FULL_RESOLUTION_08  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_08 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_08)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_08
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_08)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_08
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_09
+#if (CONFIG_SENSOR_IIC_ADDR_09 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_09  CONS(CONFIG_SENSOR_09,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_09
+    #define SENSOR_CIF_BUSID_09             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_09)
+    #else
+    #define SENSOR_CIF_BUSID_09             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_09)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_09
+    #define PMEM_SENSOR_FULL_RESOLUTION_09  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_09 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_09)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_09
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_09)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_09
+	   #endif
+    #endif
+#endif
+#endif
+
 #ifdef CONFIG_SENSOR_IIC_ADDR_11
 #if (CONFIG_SENSOR_IIC_ADDR_11 != 0x00)
 #define PMEM_SENSOR_FULL_RESOLUTION_11  CONS(CONFIG_SENSOR_11,_FULL_RESOLUTION)
@@ -133,7 +329,7 @@
     #undef PMEM_SENSOR_FULL_RESOLUTION_11
     #define PMEM_SENSOR_FULL_RESOLUTION_11  RK_CAM_SUPPORT_RESOLUTION
     #endif
-    #if (SENSOR_CIF_BUSID_12 == RK_CAM_PLATFORM_DEV_ID_0)
+    #if (SENSOR_CIF_BUSID_11 == RK_CAM_PLATFORM_DEV_ID_0)
 	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_11)
 	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
 	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_11
@@ -171,6 +367,202 @@
 	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_12)
 	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
 	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_12
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_13
+#if (CONFIG_SENSOR_IIC_ADDR_13 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_13  CONS(CONFIG_SENSOR_13,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_13
+    #define SENSOR_CIF_BUSID_13             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_13)
+    #else
+    #define SENSOR_CIF_BUSID_13             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_13)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_13
+    #define PMEM_SENSOR_FULL_RESOLUTION_13  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_13 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_13)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_13
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_13)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_13
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_14
+#if (CONFIG_SENSOR_IIC_ADDR_14 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_14  CONS(CONFIG_SENSOR_14,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_14
+    #define SENSOR_CIF_BUSID_14             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_14)
+    #else
+    #define SENSOR_CIF_BUSID_14             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_14)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_14
+    #define PMEM_SENSOR_FULL_RESOLUTION_14  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_14 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_14)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_14
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_14)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_14
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_15
+#if (CONFIG_SENSOR_IIC_ADDR_15 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_15  CONS(CONFIG_SENSOR_15,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_15
+    #define SENSOR_CIF_BUSID_15             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_15)
+    #else
+    #define SENSOR_CIF_BUSID_15             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_15)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_15
+    #define PMEM_SENSOR_FULL_RESOLUTION_15  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_15 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_15)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_15
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_15)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_15
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_16
+#if (CONFIG_SENSOR_IIC_ADDR_16 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_16  CONS(CONFIG_SENSOR_16,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_16
+    #define SENSOR_CIF_BUSID_16             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_16)
+    #else
+    #define SENSOR_CIF_BUSID_16             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_16)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_16
+    #define PMEM_SENSOR_FULL_RESOLUTION_16  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_16 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_16)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_16
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_16)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_16
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_17
+#if (CONFIG_SENSOR_IIC_ADDR_17 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_17  CONS(CONFIG_SENSOR_17,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_17
+    #define SENSOR_CIF_BUSID_17             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_17)
+    #else
+    #define SENSOR_CIF_BUSID_17             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_17)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_17
+    #define PMEM_SENSOR_FULL_RESOLUTION_17  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_17 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_17)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_17
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_17)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_17
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_18
+#if (CONFIG_SENSOR_IIC_ADDR_18 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_18  CONS(CONFIG_SENSOR_18,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_18
+    #define SENSOR_CIF_BUSID_18             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_18)
+    #else
+    #define SENSOR_CIF_BUSID_18             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_18)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_18
+    #define PMEM_SENSOR_FULL_RESOLUTION_18  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_18 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_18)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_18
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_18)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_18
+	   #endif
+    #endif
+#endif
+#endif
+
+#ifdef CONFIG_SENSOR_IIC_ADDR_19
+#if (CONFIG_SENSOR_IIC_ADDR_19 != 0x00)
+#define PMEM_SENSOR_FULL_RESOLUTION_19  CONS(CONFIG_SENSOR_19,_FULL_RESOLUTION)
+
+    #ifdef CONFIG_SENSOR_CIF_INDEX_19
+    #define SENSOR_CIF_BUSID_19             CONS(RK_CAM_PLATFORM_DEV_ID_,CONFIG_SENSOR_CIF_INDEX_19)
+    #else
+    #define SENSOR_CIF_BUSID_19             RK29_CAM_PLATFORM_DEV_ID
+    #endif
+    
+    #if !(PMEM_SENSOR_FULL_RESOLUTION_19)
+    #undef PMEM_SENSOR_FULL_RESOLUTION_19
+    #define PMEM_SENSOR_FULL_RESOLUTION_19  RK_CAM_SUPPORT_RESOLUTION
+    #endif
+    #if (SENSOR_CIF_BUSID_19 == RK_CAM_PLATFORM_DEV_ID_0)
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_0 < PMEM_SENSOR_FULL_RESOLUTION_19)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_0
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_0 PMEM_SENSOR_FULL_RESOLUTION_19
+	   #endif
+    #else
+	   #if (PMEM_SENSOR_FULL_RESOLUTION_CIF_1 < PMEM_SENSOR_FULL_RESOLUTION_19)
+	   #undef PMEM_SENSOR_FULL_RESOLUTION_CIF_1
+	   #define PMEM_SENSOR_FULL_RESOLUTION_CIF_1 PMEM_SENSOR_FULL_RESOLUTION_19
 	   #endif
     #endif
 #endif
@@ -284,6 +676,34 @@ module_param(camera_debug, int, S_IRUGO|S_IWUSR);
 #define SENSOR_NAME_02 STR(CONFIG_SENSOR_02)			/* back camera sensor 2 */
 #define SENSOR_DEVICE_NAME_02  STR(CONS(CONFIG_SENSOR_02, _back_2))
 #endif
+#ifdef CONFIG_SENSOR_03
+#define SENSOR_NAME_03 STR(CONFIG_SENSOR_03)			/* back camera sensor 3 */
+#define SENSOR_DEVICE_NAME_03  STR(CONS(CONFIG_SENSOR_03, _back_3))
+#endif
+#ifdef CONFIG_SENSOR_04
+#define SENSOR_NAME_04 STR(CONFIG_SENSOR_04)			/* back camera sensor 4 */
+#define SENSOR_DEVICE_NAME_04  STR(CONS(CONFIG_SENSOR_04, _back_4))
+#endif
+#ifdef CONFIG_SENSOR_05
+#define SENSOR_NAME_05 STR(CONFIG_SENSOR_05)			/* back camera sensor 5 */
+#define SENSOR_DEVICE_NAME_05  STR(CONS(CONFIG_SENSOR_05, _back_5))
+#endif
+#ifdef CONFIG_SENSOR_06
+#define SENSOR_NAME_06 STR(CONFIG_SENSOR_06)			/* back camera sensor 6 */
+#define SENSOR_DEVICE_NAME_06  STR(CONS(CONFIG_SENSOR_06, _back_6))
+#endif
+#ifdef CONFIG_SENSOR_07
+#define SENSOR_NAME_07 STR(CONFIG_SENSOR_07)			/* back camera sensor 7 */
+#define SENSOR_DEVICE_NAME_07  STR(CONS(CONFIG_SENSOR_07, _back_7))
+#endif
+#ifdef CONFIG_SENSOR_08
+#define SENSOR_NAME_08 STR(CONFIG_SENSOR_08)			/* back camera sensor 8 */
+#define SENSOR_DEVICE_NAME_08  STR(CONS(CONFIG_SENSOR_08, _back_8))
+#endif
+#ifdef CONFIG_SENSOR_09
+#define SENSOR_NAME_09 STR(CONFIG_SENSOR_09)			/* back camera sensor 9 */
+#define SENSOR_DEVICE_NAME_09  STR(CONS(CONFIG_SENSOR_09, _back_9))
+#endif
 #ifdef CONFIG_SENSOR_11
 #define SENSOR_NAME_11 STR(CONFIG_SENSOR_11)			/* front camera sensor 1 */
 #define SENSOR_DEVICE_NAME_11  STR(CONS(CONFIG_SENSOR_11, _front_1))
@@ -291,6 +711,34 @@ module_param(camera_debug, int, S_IRUGO|S_IWUSR);
 #ifdef CONFIG_SENSOR_12
 #define SENSOR_NAME_12 STR(CONFIG_SENSOR_12)			/* front camera sensor 2 */
 #define SENSOR_DEVICE_NAME_12  STR(CONS(CONFIG_SENSOR_12, _front_2))
+#endif
+#ifdef CONFIG_SENSOR_13
+#define SENSOR_NAME_13 STR(CONFIG_SENSOR_13)			/* front camera sensor 3 */
+#define SENSOR_DEVICE_NAME_13  STR(CONS(CONFIG_SENSOR_13, _front_3))
+#endif
+#ifdef CONFIG_SENSOR_14
+#define SENSOR_NAME_14 STR(CONFIG_SENSOR_14)			/* front camera sensor 4 */
+#define SENSOR_DEVICE_NAME_14  STR(CONS(CONFIG_SENSOR_14, _front_4))
+#endif
+#ifdef CONFIG_SENSOR_15
+#define SENSOR_NAME_15 STR(CONFIG_SENSOR_15)			/* front camera sensor 5 */
+#define SENSOR_DEVICE_NAME_15  STR(CONS(CONFIG_SENSOR_15, _front_5))
+#endif
+#ifdef CONFIG_SENSOR_16
+#define SENSOR_NAME_16 STR(CONFIG_SENSOR_16)			/* front camera sensor 6 */
+#define SENSOR_DEVICE_NAME_16  STR(CONS(CONFIG_SENSOR_16, _front_6))
+#endif
+#ifdef CONFIG_SENSOR_17
+#define SENSOR_NAME_17 STR(CONFIG_SENSOR_17)			/* front camera sensor 7 */
+#define SENSOR_DEVICE_NAME_17  STR(CONS(CONFIG_SENSOR_17, _front_7))
+#endif
+#ifdef CONFIG_SENSOR_18
+#define SENSOR_NAME_18 STR(CONFIG_SENSOR_18)			/* front camera sensor 8 */
+#define SENSOR_DEVICE_NAME_18  STR(CONS(CONFIG_SENSOR_18, _front_8))
+#endif
+#ifdef CONFIG_SENSOR_19
+#define SENSOR_NAME_19 STR(CONFIG_SENSOR_19)			/* front camera sensor 9 */
+#define SENSOR_DEVICE_NAME_19  STR(CONS(CONFIG_SENSOR_19, _front_9))
 #endif
 
 static int rk_sensor_io_init(void);
@@ -366,6 +814,153 @@ static struct rk29camera_platform_data rk_camera_platform_data = {
         #endif        
         },
         #endif
+        #ifdef CONFIG_SENSOR_03
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_03
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_03,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_03,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_03,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_03,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_03|CONFIG_SENSOR_RESETACTIVE_LEVEL_03|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_03|CONFIG_SENSOR_FLASHACTIVE_LEVEL_03),
+            .gpio_init = 0,            
+            .dev_name = SENSOR_DEVICE_NAME_03, 
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif        
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_04
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_04
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_04,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_04,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_04,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_04,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_04|CONFIG_SENSOR_RESETACTIVE_LEVEL_04|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_04|CONFIG_SENSOR_FLASHACTIVE_LEVEL_04),
+            .gpio_init = 0,            
+            .dev_name = SENSOR_DEVICE_NAME_04, 
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif        
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_05
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_05
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_05,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_05,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_05,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_05,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_05|CONFIG_SENSOR_RESETACTIVE_LEVEL_05|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_05|CONFIG_SENSOR_FLASHACTIVE_LEVEL_05),
+            .gpio_init = 0,            
+            .dev_name = SENSOR_DEVICE_NAME_05, 
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif        
+        },
+        #endif
+         #ifdef CONFIG_SENSOR_06
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_06
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_06,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_06,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_06,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_06,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_06|CONFIG_SENSOR_RESETACTIVE_LEVEL_06|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_06|CONFIG_SENSOR_FLASHACTIVE_LEVEL_06),
+            .gpio_init = 0,            
+            .dev_name = SENSOR_DEVICE_NAME_06, 
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif        
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_07
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_07
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_07,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_07,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_07,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_07,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_07|CONFIG_SENSOR_RESETACTIVE_LEVEL_07|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_07|CONFIG_SENSOR_FLASHACTIVE_LEVEL_07),
+            .gpio_init = 0,            
+            .dev_name = SENSOR_DEVICE_NAME_07, 
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif        
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_08
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_08
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_08,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_08,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_08,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_08,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_08|CONFIG_SENSOR_RESETACTIVE_LEVEL_08|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_08|CONFIG_SENSOR_FLASHACTIVE_LEVEL_08),
+            .gpio_init = 0,            
+            .dev_name = SENSOR_DEVICE_NAME_08, 
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif        
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_09
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_09
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_09,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_09,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_09,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_09,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_09|CONFIG_SENSOR_RESETACTIVE_LEVEL_09|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_09|CONFIG_SENSOR_FLASHACTIVE_LEVEL_09),
+            .gpio_init = 0,            
+            .dev_name = SENSOR_DEVICE_NAME_09, 
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif        
+        },
+        #endif
         #ifdef CONFIG_SENSOR_11
         {
         #if CONFIG_SENSOR_IIC_ADDR_11
@@ -406,7 +1001,154 @@ static struct rk29camera_platform_data rk_camera_platform_data = {
             .gpio_init = 0,            
             .dev_name = NULL,
         #endif
-        }
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_13
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_13
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_13,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_13,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_13,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_13,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_13|CONFIG_SENSOR_RESETACTIVE_LEVEL_13|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_13|CONFIG_SENSOR_FLASHACTIVE_LEVEL_13),
+            .gpio_init = 0,
+            .dev_name = SENSOR_DEVICE_NAME_13,
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_14
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_14
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_14,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_14,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_14,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_14,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_14|CONFIG_SENSOR_RESETACTIVE_LEVEL_14|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_14|CONFIG_SENSOR_FLASHACTIVE_LEVEL_14),
+            .gpio_init = 0,
+            .dev_name = SENSOR_DEVICE_NAME_14,
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_15
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_15
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_15,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_15,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_15,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_15,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_15|CONFIG_SENSOR_RESETACTIVE_LEVEL_15|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_15|CONFIG_SENSOR_FLASHACTIVE_LEVEL_15),
+            .gpio_init = 0,
+            .dev_name = SENSOR_DEVICE_NAME_15,
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_16
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_16
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_16,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_16,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_16,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_16,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_16|CONFIG_SENSOR_RESETACTIVE_LEVEL_16|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_16|CONFIG_SENSOR_FLASHACTIVE_LEVEL_16),
+            .gpio_init = 0,
+            .dev_name = SENSOR_DEVICE_NAME_16,
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_17
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_17
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_17,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_17,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_17,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_17,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_17|CONFIG_SENSOR_RESETACTIVE_LEVEL_17|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_17|CONFIG_SENSOR_FLASHACTIVE_LEVEL_17),
+            .gpio_init = 0,
+            .dev_name = SENSOR_DEVICE_NAME_17,
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_18
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_18
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_18,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_18,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_18,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_18,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_18|CONFIG_SENSOR_RESETACTIVE_LEVEL_18|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_18|CONFIG_SENSOR_FLASHACTIVE_LEVEL_18),
+            .gpio_init = 0,
+            .dev_name = SENSOR_DEVICE_NAME_18,
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif
+        },
+        #endif
+        #ifdef CONFIG_SENSOR_19
+        {
+        #if CONFIG_SENSOR_IIC_ADDR_19
+            .gpio_reset = CONFIG_SENSOR_RESET_PIN_19,
+            .gpio_power = CONFIG_SENSOR_POWER_PIN_19,
+            .gpio_powerdown = CONFIG_SENSOR_POWERDN_PIN_19,
+            .gpio_flash = CONFIG_SENSOR_FALSH_PIN_19,
+            .gpio_flag = (CONFIG_SENSOR_POWERACTIVE_LEVEL_19|CONFIG_SENSOR_RESETACTIVE_LEVEL_19|CONFIG_SENSOR_POWERDNACTIVE_LEVEL_19|CONFIG_SENSOR_FLASHACTIVE_LEVEL_19),
+            .gpio_init = 0,
+            .dev_name = SENSOR_DEVICE_NAME_19,
+        #else
+            .gpio_reset = INVALID_GPIO,
+            .gpio_power = INVALID_GPIO,
+            .gpio_powerdown = INVALID_GPIO,
+            .gpio_flash = INVALID_GPIO,
+            .gpio_flag = 0,
+            .gpio_init = 0,            
+            .dev_name = NULL,
+        #endif
+        },
         #endif
     },
     
@@ -445,6 +1187,69 @@ static struct rk29camera_platform_data rk_camera_platform_data = {
 	        .dev_name = NULL,
             .orientation = 0x00, 
         #endif
+        #ifdef CONFIG_SENSOR_03
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_03,
+            .orientation = CONFIG_SENSOR_ORIENTATION_03, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_04
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_04,
+            .orientation = CONFIG_SENSOR_ORIENTATION_04, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_05
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_05,
+            .orientation = CONFIG_SENSOR_ORIENTATION_05, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_06
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_06,
+            .orientation = CONFIG_SENSOR_ORIENTATION_06, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_07
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_07,
+            .orientation = CONFIG_SENSOR_ORIENTATION_07, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_08
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_08,
+            .orientation = CONFIG_SENSOR_ORIENTATION_08, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_09
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_09,
+            .orientation = CONFIG_SENSOR_ORIENTATION_09, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
         
         #ifdef CONFIG_SENSOR_11 
         },{
@@ -459,6 +1264,69 @@ static struct rk29camera_platform_data rk_camera_platform_data = {
 	    },{
 	        .dev_name = SENSOR_DEVICE_NAME_12,
             .orientation = CONFIG_SENSOR_ORIENTATION_12, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_13
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_13,
+            .orientation = CONFIG_SENSOR_ORIENTATION_13, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_14
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_14,
+            .orientation = CONFIG_SENSOR_ORIENTATION_14, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_15
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_15,
+            .orientation = CONFIG_SENSOR_ORIENTATION_15, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_16
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_16,
+            .orientation = CONFIG_SENSOR_ORIENTATION_16, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_17
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_17,
+            .orientation = CONFIG_SENSOR_ORIENTATION_17, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_18
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_18,
+            .orientation = CONFIG_SENSOR_ORIENTATION_18, 
+        #else
+        },{
+	        .dev_name = NULL,
+            .orientation = 0x00, 
+        #endif
+        #ifdef CONFIG_SENSOR_19
+	    },{
+	        .dev_name = SENSOR_DEVICE_NAME_19,
+            .orientation = CONFIG_SENSOR_ORIENTATION_19, 
         #else
         },{
 	        .dev_name = NULL,
@@ -600,6 +1468,237 @@ static struct rk29camera_platform_data rk_camera_platform_data = {
         #endif
 	    },
         #endif
+        #ifdef CONFIG_SENSOR_03 
+        {
+	    #if (CONFIG_SENSOR_IIC_ADDR_03 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_03, CONFIG_SENSOR_IIC_ADDR_03>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_03
+            	.bus_id= SENSOR_CIF_BUSID_03,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_03,
+            	.module_name	= SENSOR_NAME_03,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_03,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_04 
+        {
+	    #if (CONFIG_SENSOR_IIC_ADDR_04 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_04, CONFIG_SENSOR_IIC_ADDR_04>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_04
+            	.bus_id= SENSOR_CIF_BUSID_04,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_04,
+            	.module_name	= SENSOR_NAME_04,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_04,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_05 
+        {
+	    #if (CONFIG_SENSOR_IIC_ADDR_05 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_05, CONFIG_SENSOR_IIC_ADDR_05>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_05
+            	.bus_id= SENSOR_CIF_BUSID_05,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_05,
+            	.module_name	= SENSOR_NAME_05,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_05,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_06 
+        {
+	    #if (CONFIG_SENSOR_IIC_ADDR_06 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_06, CONFIG_SENSOR_IIC_ADDR_06>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_06
+            	.bus_id= SENSOR_CIF_BUSID_06,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_06,
+            	.module_name	= SENSOR_NAME_06,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_06,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_07 
+        {
+	    #if (CONFIG_SENSOR_IIC_ADDR_07 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_07, CONFIG_SENSOR_IIC_ADDR_07>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_07
+            	.bus_id= SENSOR_CIF_BUSID_07,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_07,
+            	.module_name	= SENSOR_NAME_07,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_07,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_08 
+        {
+	    #if (CONFIG_SENSOR_IIC_ADDR_08 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_08, CONFIG_SENSOR_IIC_ADDR_08>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_08
+            	.bus_id= SENSOR_CIF_BUSID_08,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_08,
+            	.module_name	= SENSOR_NAME_08,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_08,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_09 
+        {
+	    #if (CONFIG_SENSOR_IIC_ADDR_09 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_09, CONFIG_SENSOR_IIC_ADDR_09>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_09
+            	.bus_id= SENSOR_CIF_BUSID_09,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_09,
+            	.module_name	= SENSOR_NAME_09,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_09,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif
+	    },
+        #endif
         #ifdef CONFIG_SENSOR_11
         {	    
         #if (CONFIG_SENSOR_IIC_ADDR_11 != 0x00)
@@ -660,6 +1759,237 @@ static struct rk29camera_platform_data rk_camera_platform_data = {
             	//.id = 1,
             	.dev	= {
             		.init_name = SENSOR_DEVICE_NAME_12,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif        
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_13
+        {	    
+	    #if (CONFIG_SENSOR_IIC_ADDR_13 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_13, CONFIG_SENSOR_IIC_ADDR_13>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_13
+            	.bus_id= SENSOR_CIF_BUSID_13,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_13,
+            	.module_name	= SENSOR_NAME_13,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_13,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif        
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_14
+        {	    
+	    #if (CONFIG_SENSOR_IIC_ADDR_14 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_14, CONFIG_SENSOR_IIC_ADDR_14>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_14
+            	.bus_id= SENSOR_CIF_BUSID_14,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_14,
+            	.module_name	= SENSOR_NAME_14,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_14,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif        
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_15
+        {	    
+	    #if (CONFIG_SENSOR_IIC_ADDR_15 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_15, CONFIG_SENSOR_IIC_ADDR_15>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_15
+            	.bus_id= SENSOR_CIF_BUSID_15,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_15,
+            	.module_name	= SENSOR_NAME_15,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_15,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif        
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_16
+        {	    
+	    #if (CONFIG_SENSOR_IIC_ADDR_16 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_16, CONFIG_SENSOR_IIC_ADDR_16>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_16
+            	.bus_id= SENSOR_CIF_BUSID_16,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_16,
+            	.module_name	= SENSOR_NAME_16,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_16,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif        
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_17
+        {	    
+	    #if (CONFIG_SENSOR_IIC_ADDR_17 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_17, CONFIG_SENSOR_IIC_ADDR_17>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_17
+            	.bus_id= SENSOR_CIF_BUSID_17,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_17,
+            	.module_name	= SENSOR_NAME_17,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_17,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif        
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_18
+        {	    
+	    #if (CONFIG_SENSOR_IIC_ADDR_18 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_18, CONFIG_SENSOR_IIC_ADDR_18>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_18
+            	.bus_id= SENSOR_CIF_BUSID_18,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_18,
+            	.module_name	= SENSOR_NAME_18,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_18,
+            		//.platform_data = &rk_iclink_0,
+            	}
+            }
+        #endif        
+	    },
+        #endif
+        #ifdef CONFIG_SENSOR_19
+        {	    
+	    #if (CONFIG_SENSOR_IIC_ADDR_19 != 0x00)
+            .i2c_cam_info = {
+                I2C_BOARD_INFO(SENSOR_NAME_19, CONFIG_SENSOR_IIC_ADDR_19>>1)
+            },
+            .link_info = {
+            	#ifdef SENSOR_CIF_BUSID_19
+            	.bus_id= SENSOR_CIF_BUSID_19,
+            	#else
+                .bus_id= RK29_CAM_PLATFORM_DEV_ID,
+                #endif
+            	.power		= rk_sensor_power,
+                #if (CONFIG_SENSOR_RESET_PIN_1 != INVALID_GPIO)
+            	.reset		= rk_sensor_reset,
+                #endif	  
+            	.powerdown	= rk_sensor_powerdown,
+            	//.board_info = &rk_i2c_cam_info_0[0],
+            	
+            	.i2c_adapter_id = CONFIG_SENSOR_IIC_ADAPTER_ID_19,
+            	.module_name	= SENSOR_NAME_19,
+            },
+            .device_info = {
+            	.name	= "soc-camera-pdrv",
+            	//.id = 1,
+            	.dev	= {
+            		.init_name = SENSOR_DEVICE_NAME_19,
             		//.platform_data = &rk_iclink_0,
             	}
             }
@@ -892,9 +2222,170 @@ static void rk29_sensor_fps_get(int idx, unsigned int *val, int w, int h)
             break;
         }
         #endif
+        #ifdef CONFIG_SENSOR_03
+        case 4:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_03;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_03
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_03;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_03;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_03;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_03;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_03;
+            } else if ((w==1280) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_03;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_04
+        case 5:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_04;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_04
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_04;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_04;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_04;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_04;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_04;
+            } else if ((w==1280) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_04;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_05
+        case 6:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_05;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_05
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_05;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_05;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_05;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_05;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_05;
+            } else if ((w==1280) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_05;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_06
+        case 7:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_06;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_06
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_06;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_06;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_06;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_06;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_06;
+            } else if ((w==1280) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_06;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_07
+        case 8:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_07;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_07
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_07;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_07;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_07;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_07;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_07;
+            } else if ((w==1280) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_07;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_08
+        case 9:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_08;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_08
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_08;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_08;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_08;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_08;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_08;
+            } else if ((w==1280) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_08;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_09
+        case 10:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_09;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_09
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_09;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_09;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_09;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_09;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_09;
+            } else if ((w==1280) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_09;
+            }
+            break;
+        }
+        #endif
         
         #ifdef CONFIG_SENSOR_11
-        case 4:
+        case 11:
         {
             if ((w==176) && (h==144)) {
                 *val = CONFIG_SENSOR_QCIF_FPS_FIXED_11;
@@ -917,7 +2408,7 @@ static void rk29_sensor_fps_get(int idx, unsigned int *val, int w, int h)
         }
         #endif
         #ifdef CONFIG_SENSOR_12
-        case 5:
+        case 12:
         {
             if ((w==176) && (h==144)) {
                 *val = CONFIG_SENSOR_QCIF_FPS_FIXED_12;
@@ -935,6 +2426,167 @@ static void rk29_sensor_fps_get(int idx, unsigned int *val, int w, int h)
                 *val = CONFIG_SENSOR_480P_FPS_FIXED_12;
             } else if ((w==1280) && (h==720)) {
                 *val = CONFIG_SENSOR_720P_FPS_FIXED_12;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_13
+        case 13:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_13;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_13
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_13;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_13;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_13;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_13;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_13;
+            } else if ((w==1380) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_13;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_14
+        case 14:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_14;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_14
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_14;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_14;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_14;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_14;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_14;
+            } else if ((w==1480) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_14;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_15
+        case 15:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_15;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_15
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_15;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_15;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_15;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_15;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_15;
+            } else if ((w==1580) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_15;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_16
+        case 16:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_16;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_16
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_16;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_16;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_16;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_16;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_16;
+            } else if ((w==1580) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_16;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_17
+        case 17:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_17;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_17
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_17;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_17;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_17;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_17;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_17;
+            } else if ((w==1580) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_17;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_18
+        case 18:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_18;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_18
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_18;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_18;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_18;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_18;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_18;
+            } else if ((w==1580) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_18;
+            }
+            break;
+        }
+        #endif
+        #ifdef CONFIG_SENSOR_19
+        case 19:
+        {
+            if ((w==176) && (h==144)) {
+                *val = CONFIG_SENSOR_QCIF_FPS_FIXED_19;
+            #ifdef CONFIG_SENSOR_240X160_FPS_FIXED_19
+            } else if ((w==240) && (h==160)) {
+                *val = CONFIG_SENSOR_240X160_FPS_FIXED_19;
+            #endif
+            } else if ((w==320) && (h==240)) {
+                *val = CONFIG_SENSOR_QVGA_FPS_FIXED_19;
+            } else if ((w==352) && (h==288)) {
+                *val = CONFIG_SENSOR_CIF_FPS_FIXED_19;
+            } else if ((w==640) && (h==480)) {
+                *val = CONFIG_SENSOR_VGA_FPS_FIXED_19;
+            } else if ((w==720) && (h==480)) {
+                *val = CONFIG_SENSOR_480P_FPS_FIXED_19;
+            } else if ((w==1580) && (h==720)) {
+                *val = CONFIG_SENSOR_720P_FPS_FIXED_19;
             }
             break;
         }
