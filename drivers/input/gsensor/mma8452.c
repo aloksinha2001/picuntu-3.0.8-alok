@@ -420,10 +420,15 @@ static int mma8452_get_data(struct i2c_client *client)
             return ret;
     } while (0);
 
+#if defined(CONFIG_MALATA_C1006)
+	z = mma8452_convert_to_int(buffer[0],buffer[1]);
+	x = mma8452_convert_to_int(buffer[2],buffer[3]);
+	y = -mma8452_convert_to_int(buffer[4],buffer[5]);
+#elif defined(CONFIG_MALATA_C7011)
 	x = mma8452_convert_to_int(buffer[0],buffer[1]);
 	y = mma8452_convert_to_int(buffer[2],buffer[3]);
 	z = mma8452_convert_to_int(buffer[4],buffer[5]);
-
+#endif
 	if (pdata->swap_xyz) {
 		axis.x = (pdata->orientation[0])*x + (pdata->orientation[1])*y + (pdata->orientation[2])*z;
 		axis.y = (pdata->orientation[3])*x + (pdata->orientation[4])*y + (pdata->orientation[5])*z;	

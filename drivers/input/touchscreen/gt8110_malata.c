@@ -34,7 +34,7 @@
 #include <linux/reboot.h>
 #include <linux/proc_fs.h>
 #include <linux/async.h>
-#include "rk29_i2c_goodix.h"
+#include <linux/gt8110.h>
 
 #include <linux/vmalloc.h>
 #include <linux/fs.h>
@@ -45,7 +45,152 @@
 
 #define PEN_DOWN 1
 #define PEN_RELEASE 0
-#define PEN_DOWN_UP 2 //fjp
+#define PEN_DOWN_UP 2
+
+
+#define GOODIX_I2C_NAME "Goodix-TS"
+
+#define POLL_TIME		10	//actual query spacing interval:POLL_TIME+6
+
+#define MAX_FINGER_NUM	 10
+
+struct rk_touch_info
+{
+	u32 press;
+	u32 x ;
+	u32 y ;
+	int status ; // 0 1
+} ;
+
+struct rk_ts_data{
+	struct i2c_client *client;
+	struct input_dev *input_dev;
+	int irq;
+	int irq_pin;
+	int pwr_pin;
+	int rst_pin;
+	int read_mode;
+	struct hrtimer timer;
+	struct workqueue_struct *ts_wq;
+	struct delayed_work  ts_work;
+	char phys[32];
+	struct early_suspend early_suspend;
+	int (*power)(struct rk_ts_data * ts, int on);
+	int (*ts_init)(struct rk_ts_data*ts);
+	int (*input_parms_init)(struct rk_ts_data *ts);
+	void (*get_touch_info)(struct rk_ts_data *ts,char *point_num,struct rk_touch_info *info_buf);  //get touch data info
+	uint16_t abs_x_max;
+	uint16_t abs_y_max;
+	uint8_t max_touch_num;
+	bool		pendown;
+};
+
+struct goodix_ts_data {
+	uint16_t addr;
+	uint8_t bad_data;
+	struct i2c_client *client;
+	struct input_dev *input_dev;
+	int use_reset;
+	int use_irq;
+	int read_mode;
+	struct hrtimer timer;
+	struct delayed_work  work;
+	char phys[32];
+	int retry;
+	struct early_suspend early_suspend;
+	int (*power)(struct goodix_ts_data * ts, int on);
+	uint16_t abs_x_max;
+	uint16_t abs_y_max;
+	uint8_t max_touch_num;
+	uint8_t int_trigger_type;
+	bool		pendown;
+};
+
+static const char *rk_ts_name = "Goodix Capacitive TouchScreen";
+static struct workqueue_struct *goodix_wq;
+static struct i2c_client * i2c_connect_client = NULL;
+static struct proc_dir_entry *goodix_proc_entry;
+
+
+#define READ_COOR_ADDR 0x01
+
+
+
+//*************************Firmware Update part*******************************
+#define CONFIG_TOUCHSCREEN_GOODIX_IAP
+#ifdef CONFIG_TOUCHSCREEN_GOODIX_IAP
+#define UPDATE_NEW_PROTOCOL
+
+static unsigned int oldcrc32 = 0xFFFFFFFF;
+static unsigned int crc32_table[256];
+static unsigned int ulPolynomial = 0x04c11db7;
+static unsigned char rd_cfg_addr;
+static unsigned char rd_cfg_len;
+static unsigned char g_enter_isp = 0;
+
+static int goodix_update_write(struct file *filp, const char __user *buff, unsigned long len, void *data);
+static int goodix_update_read( char *page, char **start, off_t off, int count, int *eof, void *data );
+
+#define PACK_SIZE 					64					//update file package size
+#define MAX_TIMEOUT					60000				//update time out conut
+#define MAX_I2C_RETRIES				20					//i2c retry times
+
+//I2C buf address
+#define ADDR_CMD					80
+#define ADDR_STA					81
+#ifdef UPDATE_NEW_PROTOCOL
+	#define ADDR_DAT				0
+#else
+	#define ADDR_DAT				82
+#endif
+
+//moudle state
+#define NEW_UPDATE_START			0x01
+#define UPDATE_START				0x02
+#define SLAVE_READY					0x08
+#define UNKNOWN_ERROR				0x00
+#define FRAME_ERROR					0x10
+#define CHECKSUM_ERROR				0x20
+#define TRANSLATE_ERROR				0x40
+#define FLASH_ERROR					0X80
+
+//error no
+#define ERROR_NO_FILE				2	//ENOENT
+#define ERROR_FILE_READ				23	//ENFILE
+#define ERROR_FILE_TYPE				21	//EISDIR
+#define ERROR_GPIO_REQUEST			4	//EINTR
+#define ERROR_I2C_TRANSFER			5	//EIO
+#define ERROR_NO_RESPONSE			16	//EBUSY
+#define ERROR_TIMEOUT				110	//ETIMEDOUT
+
+//update steps
+#define STEP_SET_PATH              1
+#define STEP_CHECK_FILE            2
+#define STEP_WRITE_SYN             3
+#define STEP_WAIT_SYN              4
+#define STEP_WRITE_LENGTH          5
+#define STEP_WAIT_READY            6
+#define STEP_WRITE_DATA            7
+#define STEP_READ_STATUS           8
+#define FUN_CLR_VAL                9
+#define FUN_CMD                    10
+#define FUN_WRITE_CONFIG           11
+
+//fun cmd
+#define CMD_DISABLE_TP             0
+#define CMD_ENABLE_TP              1
+#define CMD_READ_VER               2
+#define CMD_READ_RAW               3
+#define CMD_READ_DIF               4
+#define CMD_READ_CFG               5
+#define CMD_SYS_REBOOT             101
+
+//read mode
+#define MODE_RD_VER                1
+#define MODE_RD_RAW                2
+#define MODE_RD_DIF                3
+#define MODE_RD_CFG                4
+#endif
 
 static struct rk_touch_info *info_buf;
 
@@ -86,16 +231,14 @@ static int goodix_i2c_read_bytes(struct i2c_client *client, uint8_t *buf, int le
 	msgs[1].len=len-1;
 	msgs[1].buf=&buf[1];
 	msgs[1].udelay = client->udelay;
-	msgs[1].scl_rate=200 * 1000;
+	msgs[0].scl_rate=200 * 1000;
 
-	//disable_irq(client->irq);
 	while(retries<5)
 	{
 		ret=i2c_transfer(client->adapter,msgs, 2);
 		if(ret == 2)break;
 		retries++;
 	}
-	//enable_irq(client->irq);
 	return ret;
 }
 
@@ -125,14 +268,12 @@ static int goodix_i2c_write_bytes(struct i2c_client *client,uint8_t *data,int le
 	msg.udelay = client->udelay;
 	msg.scl_rate=200 * 1000;
 	
-	//disable_irq(client->irq);
 	while(retries<5)
 	{
 		ret=i2c_transfer(client->adapter,&msg, 1);
 		if(ret == 1)break;
 		retries++;
 	}
-	//enable_irq(client->irq);
 	return ret;
 }
 
@@ -144,16 +285,10 @@ static int goodix_config_ok(struct rk_ts_data *ts)
         
 	ret = goodix_i2c_read_bytes(ts->client, rd_cfg_buf, 7);
 
-	w = (rd_cfg_buf[1]<<8) + rd_cfg_buf[2];
-	h = (rd_cfg_buf[3]<<8) + rd_cfg_buf[4];
+	w = (rd_cfg_buf[2]<<8) + rd_cfg_buf[1];
+	h = (rd_cfg_buf[4]<<8) + rd_cfg_buf[3];
         n = rd_cfg_buf[5];
 
-#ifdef CONFIG_ARCH_RK29
-        if((ret < 0) || (w != TS_MAX_X) || (h != TS_MAX_Y) || (n != 10))
-#else
-        if((ret < 0) || (w != TS_MAX_X) || (h != TS_MAX_Y) || (n != 170))
-#endif
-                return -1;
 
 	ts->abs_x_max = w;
 	ts->abs_y_max = h;
@@ -177,72 +312,34 @@ static int goodix_init_panel(struct rk_ts_data *ts)
 {
 	int ret=-1, retry = 10;
 	uint8_t rd_cfg_buf[7] = {0x66,};
+	char test_data = 0;
 
-#if (TS_MAX_X == 1024)&&(TS_MAX_Y == 768)			//for malata 10.1
 	uint8_t config_info[] = {
-		0x65,0x02,0x04,0x00,0x03,0x00,0x0A,0x22,0x1E,0xE7,0x32,0x05,0x08,0x10,0x4C,
-		0x41,0x41,0x20,0x09,0x00,0xA0,0xA0,0x3C,0x64,0x0E,0x0D,0x0C,0x0B,0x0A,0x09,
-		0x08,0x07,0x06,0x05,0x04,0x03,0x02,0x01,0x00,0x1D,0x1C,0x1B,0x1A,0x19,0x18,
-		0x17,0x16,0x15,0x14,0x13,0x12,0x11,0x10,0x0F,0x00,0x00,0x00,0x00,0x00,0x00,
-		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x2B,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-	};
-             
-#elif (TS_MAX_X == 1280)&&(TS_MAX_Y == 800)	
-#ifdef CONFIG_ARCH_RK29
-	uint8_t config_info[] = {
-		0x65,0x02,0x05,0x00,0x03,0x20,0x0A,0x22,0x1E,0xE7,0x32,0x05,0x08,0x10,0x4C,
-		0x41,0x41,0x20,0x07,0x00,0xA0,0xA0,0x46,0x64,0x0E,0x0D,0x0C,0x0B,0x0A,0x09,
-		0x08,0x07,0x06,0x05,0x04,0x03,0x02,0x01,0x00,0x1D,0x1C,0x1B,0x1A,0x19,0x18,
-		0x17,0x16,0x15,0x14,0x13,0x12,0x11,0x10,0x0F,0x00,0x00,0x00,0x00,0x00,0x00,
-		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x0B,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
-	};
-#else
-	uint8_t config_info[] = {
-                0x65,0xA2,0x05,0x00,0x03,0x20,0xAA,0x22,0x1E,0xE7,0x32,0x05,0x08,0x10,0x4C,
-                0x42,0x42,0x20,0x00,0x09,0x80,0x80,0x32,0x46,0x0E,0x0D,0x0C,0x0B,0x0A,0x09,
-                0x08,0x07,0x06,0x05,0x04,0x03,0x02,0x01,0x00,0x1D,0x1C,0x1B,0x1A,0x19,0x18,
-                0x17,0x16,0x15,0x14,0x13,0x12,0x11,0x10,0x0F,0x00,0x00,0x00,0x00,0x00,0x00,
-                0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-                0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+	0x65,0x02,0x00,0x10,0x00,0x10,0x0A,0x62,0x4A,0x00,
+	0x0F,0x28,0x02,0x10,0x10,0x00,0x00,0x20,0x00,0x00,
+	0x10,0x10,0x10,0x00,0x37,0x00,0x00,0x00,0x01,0x02,
+	0x03,0x04,0x05,0x06,0x07,0x08,0x09,0x0A,0x0B,0x0C,
+	0x0D,0xFF,0xFF,0x00,0x01,0x02,0x03,0x04,0x05,0x06,
+	0x07,0x08,0x09,0x0A,0x0B,0x0C,0xFF,0xFF,0xFF,0x00,
+	0x00,0x3C,0x64,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+	0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+	0x00,0x00,0x00,0x00,0x00
         };
-#endif
-#else
-	uint8_t config_info[] = {
-		0x65,0x02,0x05,0x00,0x03,0x20,0x0A,0x22,0x1E,0xE7,0x32,0x05,0x08,0x10,0x4C,
-		0x42,0x42,0x20,0x00,0x00,0x89,0x89,0x3C,0x64,0x0E,0x0D,0x0C,0x0B,
-		0x0A,0x09,0x08,0x07,0x06,0x05,0x04,0x03,0x02,0x01,0x00,0x1D,0x1C,
-		0x1B,0x1A,0x19,0x18,0x17,0x16,0x15,0x14,0x13,0x12,0x11,0x10,0x0F,
-		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-		0x2B,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-		0x00,0x00,0x00,0x00
-	};
-#endif
 
-        while(--retry && (goodix_config_ok(ts) < 0)){
-	        ret=goodix_i2c_write_bytes(ts->client,config_info, (sizeof(config_info)/sizeof(config_info[0])));
-	        if (ret < 0) {
-		        printk("goodix write cfg info err, retry %d\n", retry);
-			msleep(100);
-	        }
-                msleep(100);
-        }
-
-        if(retry <= 0){
-                printk("goodix write cfg info err\n");
-                return -1;
-        }
-
-	
-	rd_cfg_buf[0] = 0x6e;
-	rd_cfg_buf[1] = 0x00;
-	goodix_i2c_read_bytes(ts->client, rd_cfg_buf, 2);
-	if((rd_cfg_buf[1]&0x0f)==0x0f)
-	{
-		dev_info(&ts->client->dev, "Need int wake up from green mode!\n");
+        ret=goodix_i2c_write_bytes(ts->client,config_info,95);
+        if( ret == 1)
+        {
+        	printk("GT8110 send config para successfully!\n");
 	}
-
+	else
+	{
+		printk("GT8110 send config para failed!\n");
+	}	
+	ts->abs_x_max = 4096;
+	ts->abs_y_max = 4096;
+        ts->max_touch_num = 10;
+        
 	return 0;
 
 }
@@ -290,7 +387,7 @@ static int  goodix_read_version(struct rk_ts_data *ts, char **version)
 	if(!version_data)
 		return -ENOMEM;
 	p = version_data;
-	memset(version_data, 0, sizeof(version_data));
+	memset(version_data, 0, 18);
 	version_data[0]=240;	
 	ret=goodix_i2c_read_bytes(ts->client,version_data, 17);
 	if (ret < 0) 
@@ -326,7 +423,7 @@ static void goodix_get_touch_info(struct rk_ts_data *ts,char *point_num,struct r
 	uint8_t track_id[MAX_FINGER_NUM] = {0};
 	u8 index;
 	u8 temp =0;
-	point_data[0] = READ_COOR_ADDR;		//read coor address
+	point_data[0] =  0;//READ_COOR_ADDR;//0x65;//READ_COOR_ADDR;		//read coor address
 	
 	if(!ts||!info_buf)
 	{
@@ -339,11 +436,16 @@ static void goodix_get_touch_info(struct rk_ts_data *ts,char *point_num,struct r
 	{
 	    printk("goodix read error\n");
 	}	
-	finger_current =  (point_data[3 - READ_COOR_ADDR]<<8) + point_data[2 - READ_COOR_ADDR];
+	finger_current =  (point_data[2]<<8) + point_data[1];
 	
 	DBG("finger_current:%d ==== max_touch_num:%d\n", finger_current,ts->max_touch_num);//add by fjp 2010-9-28
 	
-
+	/*printk(" GT8110 read point data info\n");
+	for(index = 0 ; index < 20 ; index++)
+	{
+		printk("  %x ",point_data[index]);
+	}*/
+	
 	if(finger_current)
 	{	
 		point_count = 0;
@@ -364,7 +466,8 @@ static void goodix_get_touch_info(struct rk_ts_data *ts,char *point_num,struct r
 		for(point_count *= 5; point_count > 0; point_count--)
 			check_sum += point_data[count++];
 		check_sum += point_data[count];
-		if(check_sum  != 0)			//checksum verify error
+		//if(check_sum  != 0)			//checksum verify error
+		if(0)
 		{
 			printk("coor checksum error!\n");
 		}
@@ -385,14 +488,16 @@ static void goodix_get_touch_info(struct rk_ts_data *ts,char *point_num,struct r
 		 touch_num = last_touch_num;
 	}
 	last_touch_num = touch_num;
+	//printk(" X and Y point value is\n");	
 	for(index = 0; index < touch_num; index++)
 	{
 	     if(goodix_get_status(&track_id[index],&info_buf[index].status))
 	     	{
-		position = 4 - READ_COOR_ADDR + 5*(temp++);
-		info_buf[index].x = (unsigned int) (point_data[position]<<8) + (unsigned int)( point_data[position+1]);
-		info_buf[index].y  = (unsigned int)(point_data[position+2]<<8) + (unsigned int) (point_data[position+3]);
-		info_buf[index].press = (unsigned int) (point_data[position+4]);	
+		position = 3 + 4*(temp++);
+		info_buf[index].x = (unsigned int) (point_data[position+1]<<8) + (unsigned int)( point_data[position]);
+		info_buf[index].y  = (unsigned int)(point_data[position+3]<<8) + (unsigned int) (point_data[position+2]);
+		info_buf[index].press = (unsigned int) (point_data[position+4]);
+		//printk(" x = %d , y = %d , p =  %d ", 	info_buf[index].x,info_buf[index].y, info_buf[index].press);
 	     	}
 	}
 	
@@ -459,6 +564,7 @@ static void  rk_ts_work_func(struct work_struct *pwork)
 	input_sync(ts->input_dev);
 	
     if(gpio_get_value(ts->irq_pin) == GPIO_LOW)
+    //if(point_num)
     {
        
         DBG("touch down .............\n");//add by fjp 2010-9-28
@@ -613,7 +719,7 @@ return:
 static int goodix_ts_power(struct rk_ts_data * ts, int on)
 {
 	int ret = -1;
-	unsigned char i2c_control_buf[2] = {80,  1};		//suspend cmd
+	unsigned char i2c_control_buf[2] = {0x38,  0x56};		//suspend cmd
 	int retry = 0;
 	if(on != 0 && on !=1)
 	{
@@ -624,6 +730,10 @@ static int goodix_ts_power(struct rk_ts_data * ts, int on)
 	
 	if(on == 0)		//suspend
 	{ 
+		gpio_set_value(ts->rst_pin,GPIO_LOW);
+		msleep(20);
+	    	gpio_set_value(ts->rst_pin,GPIO_HIGH);
+	    	msleep(200);
         while(retry<5)
 		{
 			ret = goodix_i2c_write_bytes(ts->client, i2c_control_buf, 2);
@@ -666,8 +776,8 @@ static int goodix_input_params_init(struct rk_ts_data *ts)
 
 	input_mt_init_slots(ts->input_dev, ts->max_touch_num);
 	input_set_abs_params(ts->input_dev, ABS_MT_TOUCH_MAJOR, 0, 255, 0, 0);
-	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_X, 0, ts->abs_x_max, 0, 0);
-	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_Y, 0, ts->abs_y_max, 0, 0);
+	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_X, 0, /*ts->abs_x_max*/4096, 0, 0);
+	input_set_abs_params(ts->input_dev, ABS_MT_POSITION_Y, 0, /*ts->abs_y_max*/4096, 0, 0);
 	sprintf(ts->phys, "input/rkts");
 	ts->input_dev->name = rk_ts_name;
 	ts->input_dev->phys = ts->phys;
@@ -688,9 +798,9 @@ static int goodix_input_params_init(struct rk_ts_data *ts)
 	
 static int goodix_ts_init(struct rk_ts_data *ts)
 {
-	char ret ;
+	int ret ;
 	char *version_info = NULL;
-#if 0
+#if 1
 	char test_data = 1;
 	char retry;
 	for(retry=0;retry < 30; retry++)    //test goodix
@@ -706,11 +816,6 @@ static int goodix_ts_init(struct rk_ts_data *ts)
 	}	
 #endif	
 	
-	ret=goodix_init_panel(ts);
-	if(ret != 0) {
-		printk("goodix panel init fail\n");
-		return -1;
-	}
 	ret = goodix_read_version(ts, &version_info);
 	if(ret <= 0)
 	{
@@ -720,6 +825,13 @@ static int goodix_ts_init(struct rk_ts_data *ts)
 	{
 		printk("goodix_ts_init: version %s\n", (version_info+1));
 	}
+	
+	ret=goodix_init_panel(ts);
+	if(ret != 0) {
+		printk("goodix panel init fail\n");
+		return -1;
+	}
+
 	vfree(version_info);
 	#ifdef CONFIG_TOUCHSCREEN_GOODIX_IAP
 	goodix_proc_entry = create_proc_entry("goodix-update", 0666, NULL);
@@ -734,7 +846,7 @@ static int goodix_ts_init(struct rk_ts_data *ts)
 		printk("goodix_ts_init: create proc entry success!\n");
 		goodix_proc_entry->write_proc = goodix_update_write;
 		goodix_proc_entry->read_proc = goodix_update_read;
-		//goodix_proc_entry->owner = THIS_MODULE;
+
 	}
 #endif
 
@@ -755,7 +867,7 @@ static int rk_ts_probe(struct i2c_client *client, const struct i2c_device_id *id
 {
 	int ret = 0;
 	struct rk_ts_data *ts;
-	struct goodix_platform_data *pdata ;
+	struct goodix_8110_platform_data *pdata ;
 	
 	printk(KERN_INFO "Install touch driver.\n");
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) 
@@ -774,7 +886,7 @@ static int rk_ts_probe(struct i2c_client *client, const struct i2c_device_id *id
 
 	pdata = client->dev.platform_data;
 	ts->irq_pin = pdata->irq_pin;
-	ts->rst_pin = pdata->rest_pin;
+	ts->rst_pin = pdata->reset;
 	ts->pendown =PEN_RELEASE;
 	ts->client = client;
 	ts->ts_init = goodix_ts_init;	
@@ -782,13 +894,10 @@ static int rk_ts_probe(struct i2c_client *client, const struct i2c_device_id *id
 	ts->get_touch_info = goodix_get_touch_info;
 	ts->input_parms_init = goodix_input_params_init;
 	i2c_set_clientdata(client, ts);
+
+	gpio_set_value(pdata->reset, 1);
+	msleep(200);
 	
-
-	if (pdata->init_platform_hw)
-	{
-		pdata->init_platform_hw();
-	}
-
 	if(ts->ts_init)
 	{
 		ret = ts->ts_init(ts);
@@ -844,7 +953,7 @@ static int rk_ts_probe(struct i2c_client *client, const struct i2c_device_id *id
 			gpio_direction_input(pdata->irq_pin);
 		}
 
-		ret  = request_irq(ts->irq, rk_ts_irq_handler ,IRQ_TYPE_LEVEL_LOW,client->name, ts);
+		ret  = request_irq(ts->irq, rk_ts_irq_handler ,IRQ_TYPE_LEVEL_LOW/*IRQF_TRIGGER_FALLING*/,client->name, ts);
 		if (ret != 0) {
 			printk(KERN_ALERT "Cannot allocate ts INT!ERRNO:%d\n", ret);
 			gpio_free(ts->irq_pin);
