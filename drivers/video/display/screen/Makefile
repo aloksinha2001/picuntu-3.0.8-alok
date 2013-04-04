@@ -1,5 +1,11 @@
 obj-$(CONFIG_LCD_NULL) += lcd_null.o
 
+obj-$(CONFIG_LCD_HDMI_800x480) += lcd_hdmi_800x480.o
+obj-$(CONFIG_LCD_HDMI_800x600) += lcd_hdmi_800x600.o
+obj-$(CONFIG_LCD_HDMI_1024x600) += lcd_hdmi_1024x600.o
+obj-$(CONFIG_LCD_HDMI_1024x768) += lcd_hdmi_1024x768.o
+obj-$(CONFIG_LCD_HDMI_1024x768_IPS) += lcd_hdmi_1024x768_ips.o
+obj-$(CONFIG_LCD_HDMI_1280x800) += lcd_hdmi_1280x800.o
 
 obj-$(CONFIG_LCD_TD043MGEA1) += lcd_td043mgea1.o
 obj-$(CONFIG_LCD_HSD070IDW1) += lcd_hsd800x480.o
@@ -26,6 +32,7 @@ obj-$(CONFIG_LCD_HDMI_1280x800) += lcd_hdmi_1280x800.o
 obj-$(CONFIG_LCD_HDMI_1024x768) += lcd_hdmi_1024x768.o
 obj-$(CONFIG_LCD_HDMI_800x480) += lcd_hdmi_800x480.o
 obj-$(CONFIG_LCD_HSD07PFW1) += lcd_hsd07pfw1.o
+obj-$(CONFIG_HSD101PWW1_A00) += lcd_hsd1280x800.o
 obj-$(CONFIG_LCD_B101AW06) += lcd_B101AW06.o
 obj-$(CONFIG_LCD_NT35510) += lcd_nt35510.o
 obj-$(CONFIG_LCD_ILI9803_CPT4_3) += lcd_ili9803_cpt4_3.o
@@ -43,3 +50,6 @@ obj-$(CONFIG_BOX_FB_1080P) += lcd_1080p.o
 obj-$(CONFIG_LCD_B101EW05)    += lcd_b101ew05.o
 obj-$(CONFIG_LCD_HJ050NA_06A)    += lcd_hj050na_06a.o
 obj-$(CONFIG_LCD_HSD100PXN_FOR_TDW851) += lcd_hsd100pxn_for_tdw851.o
+obj-$(CONFIG_LCD_TQ7025) += lcd_tq7025.o
+obj-$(CONFIG_LCD_HV070WSA100)    += lcd_hv070wsa.o
+obj-$(CONFIG_LCD_COMMON)    += lcd_common.o

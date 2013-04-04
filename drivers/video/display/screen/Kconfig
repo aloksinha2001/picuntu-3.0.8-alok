@@ -3,6 +3,41 @@ choice
 	prompt  "LCD Panel Select"
 config LCD_NULL
 	bool "NULL"
+config LCD_HDMI_800x480
+	depends on RK610_LVDS
+	bool "RGB Hannstar LCD_HDMI_800x480"
+	---help---
+	if support RK610, this setting can support dual screen output
+
+config LCD_HDMI_800x600
+	depends on RK610_LVDS
+	bool "RGB Hannstar LCD_HDMI_800x600"
+	---help---
+	if support RK610, this setting can support dual screen output
+
+config LCD_HDMI_1024x768
+	depends on RK610_LVDS
+	bool "RK610 LCD_HDMI_1024X768"
+	---help---
+	if support RK610, this setting can support dual screen output
+
+config LCD_HDMI_1024x768_IPS
+	depends on RK610_LVDS
+	bool "RK610 LCD_HDMI_1024X768_IPS"
+	---help---
+	if support RK610, this setting can support dual screen output
+	
+config LCD_HDMI_1024x600
+	depends on RK610_LVDS
+	bool "RK610 LCD_HDMI_1024X600"
+	---help---
+	if support RK610, this setting can support dual screen output
+	
+config LCD_HDMI_1280x800
+	depends on RK610_LVDS
+	bool "RK610 LCD_HDMI_1280X800"
+	---help---
+	if support RK610, this setting can support dual screen output
 config LCD_LG_LP097X02
 	bool "RGB LCD_LG_LP097X02 1024X768"
 config LCD_TD043MGEA1
@@ -21,8 +56,12 @@ config LCD_HSD100PXN
 	  bool "RGB Hannstar HSD100PXN(1024X768)"
 config LCD_HSD07PFW1
 	  bool "RGB Hannstar HSD07PFW1(1024X600)"
+config HSD101PWW1_A00
+	  bool "RGB Hannstar HSD101PWW1_A00(1280X800)"
 config LCD_BYD8688FTGF
 	bool "RGB BYD 1024X600 8688FTGF"
+config LCD_TQ7025
+	bool "RGB TONGQU 1024X600 IPS"
 config LCD_B101AW06
 	  bool "RGB Hannstar B101AW06(1024X600)"
 config LCD_RGB_TFT480800_25_E
@@ -100,6 +139,10 @@ config BOX_FB_1080P
 	bool "ITV framebuffer size and timing is 1080P"
 	---help---
 	For itv box, default framebuffer size and timing as 1920x1080p-60 if you say yes."
+config LCD_HV070WSA100
+	bool "HV070WSA-100 1024X600"
+config LCD_COMMON
+	bool "LCD COMMON"
 endchoice
 
 

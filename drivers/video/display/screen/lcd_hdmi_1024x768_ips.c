@@ -14,26 +14,27 @@
 
 /* Base */
 #define OUT_TYPE	    	SCREEN_LVDS
-#define OUT_FORMAT      	LVDS_8BIT_1
+#define OUT_FORMAT      	LVDS_8BIT_2
 
  
 #define OUT_FACE		OUT_D888_P666  //OUT_P888 
-#define OUT_CLK			65000000
+#define OUT_CLK			100000000
 #define LCDC_ACLK        300000000//312000000           //29 lcdc axi DMA ÆµÂÊ
 
+
 /* Timing */
-#define H_PW			10
-#define H_BP			131
+#define H_PW			320
+#define H_BP			480
 #define H_VD			1024
-#define H_FP			210
+#define H_FP			260
 
 #define V_PW			10
-#define V_BP			10
+#define V_BP			6
 #define V_VD			768
-#define V_FP			12
+#define V_FP			16
 
-#define LCD_WIDTH       202
-#define LCD_HEIGHT      152
+#define LCD_WIDTH		196
+#define LCD_HEIGHT		147
 /* Other */
 #define DCLK_POL		1
 #define SWAP_RB			0   
@@ -77,94 +78,96 @@ int dsp_lut[256] ={
 
 /* scaler Timing    */
 //1920*1080*60
-#define S_OUT_CLK		SCALE_RATE(148500000,66000000) //m=16 n=9 no=4
-#define S_H_PW			10
-#define S_H_BP			131
-#define S_H_VD			1024
-#define S_H_FP			210
 
-#define S_V_PW			10
-#define S_V_BP			10
+#define S_OUT_CLK		SCALE_RATE(148500000,102093750) //m=22 n=8 no=4
+#define S_H_PW			213
+#define S_H_BP			400
+#define S_H_VD			1024
+#define S_H_FP			500
+
+#define S_V_PW			5
+#define S_V_BP			15
 #define S_V_VD			768
 #define S_V_FP			12
 
 #define S_H_ST			0
-#define S_V_ST			12
+#define S_V_ST			10
 
 //1920*1080*50
-#define S1_OUT_CLK		SCALE_RATE(148500000,54000000)  //m=16 n=11 no=4 
-#define S1_H_PW			100
-#define S1_H_BP			100
+#define S1_OUT_CLK		SCALE_RATE(148500000,99000000)  //m=16 n=6 no=4 
+#define S1_H_PW			400
+#define S1_H_BP			500
 #define S1_H_VD			1024
-#define S1_H_FP			126
+#define S1_H_FP			551
 
 #define S1_V_PW			5
 #define S1_V_BP			15
 #define S1_V_VD			768
 #define S1_V_FP			12
 
-#define S1_H_ST			1757
-#define S1_V_ST			14
+#define S1_H_ST			0
+#define S1_V_ST			13
 
 //1280*720*60
-#define S2_OUT_CLK		SCALE_RATE(74250000,66000000)  //m=32 n=9 no=4
-#define S2_H_PW			10
-#define S2_H_BP			131
+#define S2_OUT_CLK		SCALE_RATE(74250000,108000000)  //m=32 n=11 no=2
+#define S2_H_PW			400
+#define S2_H_BP			500
 #define S2_H_VD			1024
-#define S2_H_FP			210
+#define S2_H_FP			326
 
-#define S2_V_PW			10
-#define S2_V_BP			10
+#define S2_V_PW			5
+#define S2_V_BP			15
 #define S2_V_VD			768
 #define S2_V_FP			12
 
 #define S2_H_ST			0
-#define S2_V_ST			6
+#define S2_V_ST			4
+
 //1280*720*50
-
-#define S3_OUT_CLK		SCALE_RATE(74250000,54000000)   // m=32 n=11 no=4 
-#define S3_H_PW			10
-#define S3_H_BP			106
+#define S3_OUT_CLK		SCALE_RATE(74250000,99000000)   // m=16 n=3 no=4 
+#define S3_H_PW			400
+#define S3_H_BP			500
 #define S3_H_VD			1024
-#define S3_H_FP			210
+#define S3_H_FP			551
 
-#define S3_V_PW			10
-#define S3_V_BP			10
+#define S3_V_PW			5
+#define S3_V_BP			15
 #define S3_V_VD			768
 #define S3_V_FP			12
 
 #define S3_H_ST			0
-#define S3_V_ST			6
+#define S3_V_ST			4
 
 //720*576*50
-#define S4_OUT_CLK		SCALE_RATE(27000000,54375000)  //m=145 n=9 no=8 
-#define S4_H_PW			100
-#define S4_H_BP			100
+#define S4_OUT_CLK		SCALE_RATE(27000000,95250000)  //m=127 n=9 no=4 
+#define S4_H_PW			400
+#define S4_H_BP			500
 #define S4_H_VD			1024
-#define S4_H_FP			81
+#define S4_H_FP			362
 
 #define S4_V_PW			5
 #define S4_V_BP			15
 #define S4_V_VD			768
-#define S4_V_FP			45
+#define S4_V_FP			42
 
 
-#define S4_H_ST			0
+#define S4_H_ST			762
 #define S4_V_ST			31
-//720*480*60
-#define S5_OUT_CLK		SCALE_RATE(27000000,63281250)  //m=32 n=9 no=4 
-#define S5_H_PW			100
-#define S5_H_BP			100
-#define S5_H_VD			1024
-#define S5_H_FP			30
 
-#define S5_V_PW			15
+//720*480*60
+#define S5_OUT_CLK		SCALE_RATE(27000000,108000000)  //m=16 n=2 no=2 
+#define S5_H_PW			400
+#define S5_H_BP			400
+#define S5_H_VD			1024
+#define S5_H_FP			421
+
+#define S5_V_PW			5
 #define S5_V_BP			15
 #define S5_V_VD			768
-#define S5_V_FP			12
+#define S5_V_FP			51
 
-#define S5_H_ST			0
-#define S5_V_ST			22
+#define S5_H_ST			1287
+#define S5_V_ST			4
 
 #define S_DCLK_POL       1
 
@@ -317,7 +320,3 @@ void set_lcd_info(struct rk29fb_screen *screen, struct rk29lcd_info *lcd_info )
     screen->sscreen_set = rk610_lcd_scaler_set_param;
 #endif
 }
-
-
-
-

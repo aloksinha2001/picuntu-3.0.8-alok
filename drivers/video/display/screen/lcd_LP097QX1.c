@@ -10,28 +10,31 @@
 /* Base */
 #define OUT_TYPE	    SCREEN_RGB
 
-#define OUT_FACE	    OUT_D888_P666
+#define OUT_FACE	    OUT_P666 
 
 
-#define OUT_CLK	          71000000
+#define OUT_CLK	          160000000//205000000
 #define LCDC_ACLK        300000000           //29 lcdc axi DMA ÆµÂÊ
 
 /* Timing */
-#define H_PW			10
-#define H_BP			100
-#define H_VD			1280
-#define H_FP			18
+#define H_PW			5
+#define H_BP			5
+#define H_VD			2048
+#define H_FP			150
 
-#define V_PW			2
-#define V_BP			8
-#define V_VD			800
-#define V_FP			6
+#define V_PW			1
+#define V_BP			9
+#define V_VD			1536
+#define V_FP			3
 
 #define LCD_WIDTH          216
 #define LCD_HEIGHT         135
 /* Other */
-#define DCLK_POL		0
-#define SWAP_RB		0
+#define DCLK_POL		1
+#define SWAP_RB			0
+#define SWAP_DUMMY		0
+#define SWAP_GB			0
+#define SWAP_RG			0
 
 int dsp_lut[256] ={
 		0x00000000, 0x00010101, 0x00020202, 0x00030303, 0x00040404, 0x00050505, 0x00060606, 0x00070707, 
@@ -99,10 +102,10 @@ void set_lcd_info(struct rk29fb_screen *screen, struct rk29lcd_info *lcd_info )
 
 	/* Swap rule */
     screen->swap_rb = SWAP_RB;
-    screen->swap_rg = 0;
-    screen->swap_gb = 0;
+    screen->swap_rg = SWAP_RG;
+    screen->swap_gb = SWAP_GB;
     screen->swap_delta = 0;
-    screen->swap_dumy = 0;
+    screen->swap_dumy = SWAP_DUMMY;
 
     /* Operation function*/
     screen->init = NULL;
