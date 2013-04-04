@@ -1172,6 +1172,7 @@ config GC2035_USER_DEFINED_SERIES
 	depends on SOC_CAMERA_GC2035
 	bool "GC2035 user defined init series"
 	default n
+
 config SOC_CAMERA_HI253
 	tristate "HI253 support for rockchip"
 	depends on SOC_CAMERA && I2C
@@ -1204,7 +1205,13 @@ config SIV120B_USER_DEFINED_SERIES
 	depends on SOC_CAMERA_SIV120B
 	bool "SIV120B user defined init series"
 	default n
-
+	
+config SOC_CAMERA_SIV121D
+	tristate "siv121d support for rockchip"
+	depends on SOC_CAMERA && I2C
+	help
+	  This is a SIV121D camera driver for rockchip
+	  
 config SOC_CAMERA_SID130B
 	tristate "sid130b support for rockchip"
 	depends on SOC_CAMERA && I2C
@@ -1226,6 +1233,51 @@ config NT99250_USER_DEFINED_SERIES
 	depends on SOC_CAMERA_NT99250
 	bool "NT99250 user defined init series"
 	default n
+
+config SOC_CAMERA_GC0329
+	tristate "gc0329 camera support for rockchip"
+	depends on SOC_CAMERA && I2C
+	help
+	  This is a gc0329 camera driver for rockchip
+	  
+config GC0329_USER_DEFINED_SERIES
+	depends on SOC_CAMERA_GC0329
+	bool "GC0329 user defined init series"
+	default n
+
+config SOC_CAMERA_S5K5CA
+	tristate "s5k5ca camera support for rockchip"
+	depends on SOC_CAMERA && I2C
+	help
+	  This is a s5k5ca camera driver for rockchip
+	  
+config S5K5CA_USER_DEFINED_SERIES
+	depends on SOC_CAMERA_S5K5CA
+	bool "s5k5ca user defined init series"
+	default n
+	
+config SOC_CAMERA_SP0838
+	tristate "sp0838 camera support for rockchip"
+	depends on SOC_CAMERA && I2C
+	help
+	  This is a sp0838 camera driver for rockchip
+	  
+config S5K5CA_USER_DEFINED_SERIES
+	depends on SOC_CAMERA_SP0838
+	bool "sp0838 user defined init series"
+	default n
+
+config SOC_CAMERA_SP2518
+	tristate "SP2518 support for rockchip"
+	depends on SOC_CAMERA && I2C
+	help
+	  This is a SP2518 camera driver for rockchip
+	  
+config  SOC_CAMERA_SP0A19
+	tristate "SP0A19 support for rockchip"
+	depends on SOC_CAMERA && I2C
+	help
+	  This is a SP0A19 camera driver for rockchip
 
 config SOC_CAMERA_OV9640
 	tristate "ov9640 camera support"
