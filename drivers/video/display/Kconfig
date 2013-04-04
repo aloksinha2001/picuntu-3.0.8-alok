@@ -22,6 +22,7 @@ config DISPLAY_SUPPORT
 comment "Display hardware drivers"
 	depends on DISPLAY_SUPPORT
 source "drivers/video/display/screen/Kconfig"
+source "drivers/video/display/transmitter/Kconfig"
 
 #$_rbox_$_modify_$ zhy modified for box display system
 source "drivers/video/display/lcd/Kconfig"

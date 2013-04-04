@@ -1,8 +1,14 @@
 #include <linux/ctype.h>
 #include <linux/string.h>
+#include <linux/display-sys.h>
 #include "rk610_tv.h"
 
-#define USE_RGB2CCIR
+
+#ifdef CONFIG_DISPLAY_KEY_LED_CONTROL
+#define RK610_LED_CVBS_PIN	RK29_PIN4_PD3
+#else
+#define RK610_LED_CVBS_PIN	INVALID_GPIO
+#endif
 
 #ifdef USE_RGB2CCIR
 static const struct fb_videomode rk610_cvbs_mode [] = {
@@ -18,7 +24,7 @@ static const struct fb_videomode rk610_cvbs_mode [] = {
 };
 #endif
 
-static struct rk610_monspecs cvbs_monspecs;
+struct rk610_monspecs rk610_cvbs_monspecs;
 
 
 int rk610_tv_cvbs_init(void)
@@ -38,7 +44,7 @@ int rk610_tv_cvbs_init(void)
 	TVE_Regs[TVE_YCBADJCR]	=	0x10;
 	TVE_Regs[TVE_YCRADJCR]	=	0x10;
 	
-	switch(rk610.mode) {
+	switch(rk610_tv_output_status) {
 		case TVOUT_CVBS_NTSC:
 			TVE_Regs[TVE_VFCR] 		= TVE_VFCR_ENABLE_SUBCARRIER_RESET | TVE_VFCR_VIN_RANGE_16_235 | TVE_VFCR_BLACK_7_5_IRE | TVE_VFCR_NTSC;
 			#ifdef USE_RGB2CCIR
@@ -74,26 +80,30 @@ int rk610_tv_cvbs_init(void)
 		}
 	}
 //	printk(KERN_ERR "TVE_CON_Reg = 0x%02x\n", TVE_CON_Reg);
-	rk610_control_send_byte(TVE_CON, TVE_CON_Reg);
+	rk610_control_send_byte(RK610_CONTROL_REG_TVE_CON, TVE_CON_Reg);
 	#ifdef USE_RGB2CCIR
-	rk610_control_send_byte(CCIR_RESET, 0x01);
+	rk610_control_send_byte(RK610_CONTROL_REG_CCIR_RESET, 0x01);
 	#endif
 	return 0;
 }
 
 static int rk610_cvbs_set_enable(struct rk_display_device *device, int enable)
 {
-	if(cvbs_monspecs.enable != enable || cvbs_monspecs.mode_set != rk610.mode)
+	if(rk610_cvbs_monspecs.enable != enable || rk610_cvbs_monspecs.mode_set != rk610_tv_output_status)
 	{
-		if(enable == 0 && cvbs_monspecs.enable)
+		if(enable == 0)
 		{
 			rk610_tv_standby(RK610_TVOUT_CVBS);
-			cvbs_monspecs.enable = 0;
+			rk610_cvbs_monspecs.enable = 0;
+			if(RK610_LED_CVBS_PIN != INVALID_GPIO)
+				gpio_direction_output(RK610_LED_CVBS_PIN, GPIO_HIGH);
 		}
 		else if(enable == 1)
 		{
-			rk610_switch_fb(cvbs_monspecs.mode, cvbs_monspecs.mode_set);
-			cvbs_monspecs.enable = 1;
+			rk610_switch_fb(rk610_cvbs_monspecs.mode, rk610_cvbs_monspecs.mode_set);
+			rk610_cvbs_monspecs.enable = 1;
+			if(RK610_LED_CVBS_PIN != INVALID_GPIO)
+				gpio_direction_output(RK610_LED_CVBS_PIN, GPIO_LOW);
 		}
 	}
 	return 0;
@@ -101,12 +111,12 @@ static int rk610_cvbs_set_enable(struct rk_display_device *device, int enable)
 
 static int rk610_cvbs_get_enable(struct rk_display_device *device)
 {
-	return cvbs_monspecs.enable;
+	return rk610_cvbs_monspecs.enable;
 }
 
 static int rk610_cvbs_get_status(struct rk_display_device *device)
 {
-	if(rk610.mode < TVOUT_YPbPr_720x480p_60)
+	if(rk610_tv_output_status < TVOUT_YPbPr_720x480p_60)
 		return 1;
 	else
 		return 0;
@@ -114,7 +124,7 @@ static int rk610_cvbs_get_status(struct rk_display_device *device)
 
 static int rk610_cvbs_get_modelist(struct rk_display_device *device, struct list_head **modelist)
 {
-	*modelist = &(cvbs_monspecs.modelist);
+	*modelist = &(rk610_cvbs_monspecs.modelist);
 	return 0;
 }
 
@@ -126,10 +136,10 @@ static int rk610_cvbs_set_mode(struct rk_display_device *device, struct fb_video
 	{
 		if(fb_mode_is_equal(&rk610_cvbs_mode[i], mode))
 		{	
-			if( ((i + 1) != rk610.mode) )
+			if( ((i + 1) != rk610_tv_output_status) )
 			{
-				cvbs_monspecs.mode_set = i + 1;
-				cvbs_monspecs.mode = (struct fb_videomode *)&rk610_cvbs_mode[i];
+				rk610_cvbs_monspecs.mode_set = i + 1;
+				rk610_cvbs_monspecs.mode = (struct fb_videomode *)&rk610_cvbs_mode[i];
 			}
 			return 0;
 		}
@@ -140,7 +150,7 @@ static int rk610_cvbs_set_mode(struct rk_display_device *device, struct fb_video
 
 static int rk610_cvbs_get_mode(struct rk_display_device *device, struct fb_videomode *mode)
 {
-	*mode = *(cvbs_monspecs.mode);
+	*mode = *(rk610_cvbs_monspecs.mode);
 	return 0;
 }
 
@@ -157,9 +167,7 @@ static int rk610_display_cvbs_probe(struct rk_display_device *device, void *devd
 {
 	device->owner = THIS_MODULE;
 	strcpy(device->type, "TV");
-	device->name = "cvbs";
 	device->priority = DISPLAY_PRIORITY_TV;
-	device->property = rk610.property;
 	device->priv_data = devdata;
 	device->ops = &rk610_cvbs_display_ops;
 	return 1;
@@ -173,21 +181,29 @@ int rk610_register_display_cvbs(struct device *parent)
 {
 	int i;
 	
-	memset(&cvbs_monspecs, 0, sizeof(struct rk610_monspecs));
-	INIT_LIST_HEAD(&cvbs_monspecs.modelist);
+	memset(&rk610_cvbs_monspecs, 0, sizeof(struct rk610_monspecs));
+	INIT_LIST_HEAD(&rk610_cvbs_monspecs.modelist);
 	for(i = 0; i < ARRAY_SIZE(rk610_cvbs_mode); i++)
-		fb_add_videomode(&rk610_cvbs_mode[i], &cvbs_monspecs.modelist);
-	if(rk610.mode < TVOUT_YPbPr_720x480p_60) {
-		cvbs_monspecs.mode = (struct fb_videomode *)&(rk610_cvbs_mode[rk610.mode - 1]);
-		cvbs_monspecs.mode_set = rk610.mode;
+		fb_add_videomode(&rk610_cvbs_mode[i], &rk610_cvbs_monspecs.modelist);
+	if(rk610_tv_output_status < TVOUT_YPbPr_720x480p_60) {
+		rk610_cvbs_monspecs.mode = (struct fb_videomode *)&(rk610_cvbs_mode[rk610_tv_output_status - 1]);
+		rk610_cvbs_monspecs.mode_set = rk610_tv_output_status;
 	}
 	else {
-		cvbs_monspecs.mode = (struct fb_videomode *)&(rk610_cvbs_mode[0]);
-		cvbs_monspecs.mode_set = TVOUT_CVBS_NTSC;
+		rk610_cvbs_monspecs.mode = (struct fb_videomode *)&(rk610_cvbs_mode[0]);
+		rk610_cvbs_monspecs.mode_set = TVOUT_CVBS_NTSC;
 	}
-	cvbs_monspecs.ddev = rk_display_device_register(&display_rk610_cvbs, parent, NULL);
-	rk610.cvbs = &cvbs_monspecs;
-	if(rk610.mode < TVOUT_YPbPr_720x480p_60)
-		rk_display_device_enable(cvbs_monspecs.ddev);
+	rk610_cvbs_monspecs.ddev = rk_display_device_register(&display_rk610_cvbs, parent, NULL);
+	if(RK610_LED_CVBS_PIN != INVALID_GPIO)
+    {        
+        if(gpio_request(RK610_LED_CVBS_PIN, NULL) != 0)
+        {
+            gpio_free(RK610_LED_CVBS_PIN);
+            dev_err(rk610_cvbs_monspecs.ddev->dev, ">>>>>> RK610_LED_CVBS_PIN gpio_request err \n ");
+            return -1;
+        }
+		gpio_pull_updown(RK610_LED_CVBS_PIN,GPIOPullUp);
+		gpio_direction_output(RK610_LED_CVBS_PIN, GPIO_HIGH);
+    }
 	return 0;
 }

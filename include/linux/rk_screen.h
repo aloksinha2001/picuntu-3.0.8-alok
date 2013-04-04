@@ -1,6 +1,8 @@
 #ifndef _SCREEN_H
 #define _SCREEN_H
 
+#ifdef CONFIG_MFD_RK610
+#else
 #ifdef CONFIG_HDMI_DUAL_DISP
 /* Scaler PLL CONFIG */
 #define S_PLL_NO_1	0
@@ -47,6 +49,8 @@ enum{
     SCALE_PLL(27000000,     30000000,   80, 9,  8),
 };
 #endif
+#endif
+
 typedef enum _SCREEN_TYPE {
     SCREEN_NULL = 0,
     SCREEN_RGB,
@@ -103,6 +107,10 @@ typedef struct rk29fb_screen {
 	u16 type;
 	u16 hw_format;
 	u16 face;
+#ifdef CONFIG_MFD_RK610
+	u8 lcdc_id;    //which output interface the screeen connect to
+	u8 screen_id; //screen number
+#endif
 
 	/* Screen size */
 	u16 x_res;
@@ -120,7 +128,8 @@ typedef struct rk29fb_screen {
 	u16 lower_margin;
 	u16 vsync_len;
 	u8  ft;	//the time need to display one frame,in ms
-#ifdef CONFIG_HDMI_DUAL_DISP
+	int *dsp_lut; //display lut 
+#if defined(CONFIG_HDMI_DUAL_DISP) || defined(CONFIG_ONE_LCDC_DUAL_OUTPUT_INF)
     /* Scaler mode Timing */
 	u32 s_pixclock;
 	u16 s_left_margin;
@@ -155,6 +164,13 @@ typedef struct rk29fb_screen {
 	u8 swap_gb;
 	u8 swap_delta;
 	u8 swap_dumy;
+
+#ifdef CONFIG_MFD_RK610
+	int xpos;  //horizontal display start position on the sceen ,then can be changed by application
+	int ypos;
+	int xsize; //horizontal and vertical display size on he screen,they can be changed by application
+	int ysize;
+#endif
 
 	/* Operation function*/
 	int (*init)(void);
