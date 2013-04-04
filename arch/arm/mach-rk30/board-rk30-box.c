@@ -48,6 +48,7 @@
 #include <linux/mfd/tps65910.h>
 #include <linux/regulator/rk29-pwm-regulator.h>
 
+//#define OMEGAMOON_CHANGED	1
 
 #if defined(CONFIG_HDMI_RK30)
 	#include "../../../drivers/video/rockchip/hdmi/rk_hdmi.h"
@@ -144,8 +145,8 @@
 
 #define CONFIG_SENSOR_02 RK29_CAM_SENSOR_GC2035                      /* back camera sensor 2 */
 #define CONFIG_SENSOR_IIC_ADDR_02 	    0x78
-#define CONFIG_SENSOR_CIF_INDEX_02                    0
-#define CONFIG_SENSOR_IIC_ADAPTER_ID_02    3
+#define CONFIG_SENSOR_CIF_INDEX_02                    1
+#define CONFIG_SENSOR_IIC_ADAPTER_ID_02    4
 #define CONFIG_SENSOR_ORIENTATION_02       90
 #define CONFIG_SENSOR_POWER_PIN_02         INVALID_GPIO
 #define CONFIG_SENSOR_RESET_PIN_02         INVALID_GPIO
@@ -1341,9 +1342,14 @@ static struct platform_device rk30_device_remotectl = {
 };
 #endif
 
-#if CONFIG_RK30_PWM_REGULATOR
+#ifdef CONFIG_RK30_PWM_REGULATOR
 const static int pwm_voltage_map[] = {
-        1000000, 1025000, 1050000, 1075000, 1100000, 1125000, 1150000, 1175000, 1200000, 1225000, 1250000, 1275000, 1300000, 1325000, 1350000, 1375000, 1400000
+        1000000, 1025000, 1050000, 1075000, 1100000, 1125000, 
+		1150000, 1175000, 1200000, 1225000, 1250000, 1275000, 
+		1300000, 1325000, 1350000, 1375000, 1400000
+#ifdef OMEGAMOON_CHANGED
+, 1425000 // Omegamoon >> Set max voltage from 1400000 to 1425000
+#endif
 };
 
 static struct regulator_consumer_supply pwm_dcdc1_consumers[] = {
@@ -1377,7 +1383,12 @@ static struct pwm_platform_data pwm_regulator_info[1] = {
                 .pwm_voltage = 1100000,
                 .suspend_voltage = 1050000,
                 .min_uV = 1000000,
+#ifdef OMEGAMOON_CHANGED
+				// Omegamoon >> Set max voltage from 1400000 to 1425000
+                .max_uV = 1425000,
+#else
                 .max_uV = 1400000,
+#endif
                 .coefficient = 455,     //45.5%
                 .pwm_voltage_map = pwm_voltage_map,
                 .init_data      = &pwm_regulator_init_dcdc[0],
@@ -1917,16 +1928,21 @@ static void __init rk30_reserve(void)
  * comments	: min arm/logic voltage
  */
 static struct dvfs_arm_table dvfs_cpu_logic_table[] = {
-#ifdef CONFIG_MACH_RK30_BOX_HOTDOG
-	/*{.frequency = 252 * 1000,	.cpu_volt = 1050 * 1000,	.logic_volt = 1000 * 1000},//0.975V/1.000V
-	{.frequency = 504 * 1000,	.cpu_volt = 1050 * 1000,	.logic_volt = 1000 * 1000},//0.975V/1.000V
-	{.frequency = 816 * 1000,	.cpu_volt = 1050 * 1000,	.logic_volt = 1000 * 1000},//1.000V/1.025V
-	{.frequency = 1008 * 1000,	.cpu_volt = 1075 * 1000,	.logic_volt = 1050 * 1000},//1.025V/1.050V
-	{.frequency = 1200 * 1000,	.cpu_volt = 1150 * 1000,	.logic_volt = 1100 * 1000},//1.100V/1.050V
-	{.frequency = 1272 * 1000,	.cpu_volt = 1200 * 1000,	.logic_volt = 1150 * 1000},//1.150V/1.100V
-	{.frequency = 1416 * 1000,	.cpu_volt = 1275 * 1000,	.logic_volt = 1150 * 1000},//1.225V/1.100V
-	{.frequency = 1512 * 1000,	.cpu_volt = 1350 * 1000,	.logic_volt = 1200 * 1000},//1.300V/1.150V
-	{.frequency = 1608 * 1000,	.cpu_volt = 1375 * 1000,	.logic_volt = 1200 * 1000},//1.325V/1.175V*/
+#ifdef OMEGAMOON_CHANGED
+	{.frequency = 252 * 1000,	.cpu_volt = 1025 * 1000,	.logic_volt = 1050 * 1000},//0.975V/1.000V
+	{.frequency = 504 * 1000,	.cpu_volt = 1025 * 1000,	.logic_volt = 1100 * 1000},//0.975V/1.000V
+	{.frequency = 816 * 1000,	.cpu_volt = 1050 * 1000,	.logic_volt = 1150 * 1000},//1.000V/1.025V
+	{.frequency = 1008 * 1000,	.cpu_volt = 1100 * 1000,	.logic_volt = 1150 * 1000},//1.025V/1.050V
+/*	{.frequency = 1200 * 1000,	.cpu_volt = 1175 * 1000,	.logic_volt = 1200 * 1000},//1.100V/1.050V */
+	{.frequency = 1200 * 1000,	.cpu_volt = 1175 * 1000,	.logic_volt = 1150 * 1000},//1.100V/1.050V
+	{.frequency = 1272 * 1000,	.cpu_volt = 1225 * 1000,	.logic_volt = 1200 * 1000},//1.150V/1.100V
+	{.frequency = 1416 * 1000,	.cpu_volt = 1300 * 1000,	.logic_volt = 1200 * 1000},//1.225V/1.100V
+	{.frequency = 1512 * 1000,	.cpu_volt = 1350 * 1000,	.logic_volt = 1250 * 1000},//1.300V/1.150V
+	{.frequency = 1608 * 1000,	.cpu_volt = 1375 * 1000,	.logic_volt = 1275 * 1000},//1.325V/1.175V
+	{.frequency = 1704 * 1000,	.cpu_volt = 1400 * 1000,	.logic_volt = 1300 * 1000},//1.325V/1.175V
+	{.frequency = 1800 * 1000,	.cpu_volt = 1425 * 1000,	.logic_volt = 1325 * 1000},//1.325V/1.175V
+    // Omegamoon >>	Beware, 1425 volt seems to be the maximum!
+#else
 	{.frequency = 252 * 1000,	.cpu_volt = 1075 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
 	{.frequency = 504 * 1000,	.cpu_volt = 1100 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
 	{.frequency = 816 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1150 * 1000},//1.000V/1.025V
@@ -1936,17 +1952,6 @@ static struct dvfs_arm_table dvfs_cpu_logic_table[] = {
 	{.frequency = 1416 * 1000,	.cpu_volt = 1300 * 1000,	.logic_volt = 1200 * 1000},//1.225V/1.100V
 	{.frequency = 1512 * 1000,	.cpu_volt = 1350 * 1000,	.logic_volt = 1250 * 1000},//1.300V/1.150V
 	{.frequency = 1608 * 1000,	.cpu_volt = 1425 * 1000,	.logic_volt = 1300 * 1000},//1.325V/1.175V
-#else
-//	{.frequency = 252 * 1000,	.cpu_volt = 1075 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
-	{.frequency = 504 * 1000,	.cpu_volt = 1100 * 1000,	.logic_volt = 1125 * 1000},//0.975V/1.000V
-	{.frequency = 816 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1150 * 1000},//1.000V/1.025V
-	{.frequency = 1008 * 1000,	.cpu_volt = 1125 * 1000,	.logic_volt = 1150 * 1000},//1.025V/1.050V
-	{.frequency = 1200 * 1000,	.cpu_volt = 1175 * 1000,	.logic_volt = 1200 * 1000},//1.100V/1.050V
-	{.frequency = 1272 * 1000,	.cpu_volt = 1225 * 1000,	.logic_volt = 1200 * 1000},//1.150V/1.100V
-	{.frequency = 1416 * 1000,	.cpu_volt = 1300 * 1000,	.logic_volt = 1200 * 1000},//1.225V/1.100V
-	{.frequency = 1512 * 1000,	.cpu_volt = 1350 * 1000,	.logic_volt = 1250 * 1000},//1.300V/1.150V
-	{.frequency = 1608 * 1000,	.cpu_volt = 1425 * 1000,	.logic_volt = 1300 * 1000},//1.325V/1.175V
-//1.325V/1.175V
 #endif
 	{.frequency = CPUFREQ_TABLE_END},
 };
@@ -1971,13 +1976,27 @@ static struct cpufreq_frequency_table dep_cpu2core_table[DVFS_CPU_TABLE_SIZE];
 
 void __init board_clock_init(void)
 {
+#ifdef OMEGAMOON_CHANGED
+	printk("Omegamoon >> %s called\n", __func__);
+#endif
 	rk30_clock_data_init(periph_pll_default, codec_pll_default, RK30_CLOCKS_DEFAULT_FLAGS);
 	dvfs_set_arm_logic_volt(dvfs_cpu_logic_table, cpu_dvfs_table, dep_cpu2core_table);
 	dvfs_set_freq_volt_table(clk_get(NULL, "gpu"), dvfs_gpu_table);
 	dvfs_set_freq_volt_table(clk_get(NULL, "ddr"), dvfs_ddr_table);
 #ifdef CONFIG_MACH_RK30_BOX_HOTDOG
+#ifdef OMEGAMOON_CHANGED
+	// Omegamoon >> Changed gpu speed upper limit from 266 to 400
+	dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 400 * 1000000);
+	// Omegamoon >> Changed cpu speed upper limit from 1200 to 1800
+	dvfs_clk_enable_limit(clk_get(NULL, "cpu"), 252 * 1000000, 1800 * 1000000);
+#else
 	dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 266 * 1000000);
-	dvfs_clk_enable_limit(clk_get(NULL, "cpu"), 252 * 1000000, 1200 * 1000000);
+	dvfs_clk_enable_limit(clk_get(NULL, "cpu"), 252 * 1000000, 1608 * 1000000);
+#endif
+#endif
+
+#ifdef OMEGAMOON_CHANGED
+	dump_dvfs_map_on_console();
 #endif
 }
 

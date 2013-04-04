@@ -28,6 +28,7 @@
 #include <linux/io.h>
 #include <linux/hrtimer.h>
 
+//#define OMEGAMOON_CHANGED	1
 #if 1
 #define DVFS_DBG(fmt, args...) {while(0);}
 #else
@@ -1220,12 +1221,30 @@ out:
  * rate must be raising sequence
  */
 static struct cpufreq_frequency_table cpu_dvfs_table[] = {
+#ifdef OMEGAMOON_CHANGED
+	{.frequency	=   48 * DVFS_KHZ, .index =  920 * DVFS_MV},
+	{.frequency	=  126 * DVFS_KHZ, .index =  970 * DVFS_MV},
+	{.frequency	=  252 * DVFS_KHZ, .index = 1025 * DVFS_MV},
+	{.frequency	=  504 * DVFS_KHZ, .index = 1025 * DVFS_MV},
+	{.frequency	=  816 * DVFS_KHZ, .index = 1050 * DVFS_MV},
+	{.frequency	= 1008 * DVFS_KHZ, .index = 1100 * DVFS_MV},
+	// Omegamoon >> Added frequencies matching those in board-rk30-box.c
+	{.frequency	= 1200 * DVFS_KHZ, .index = 1175 * DVFS_MV},
+	{.frequency	= 1272 * DVFS_KHZ, .index = 1225 * DVFS_MV},
+	{.frequency	= 1416 * DVFS_KHZ, .index = 1300 * DVFS_MV},
+	{.frequency	= 1512 * DVFS_KHZ, .index = 1350 * DVFS_MV},
+	{.frequency	= 1608 * DVFS_KHZ, .index = 1375 * DVFS_MV},
+	{.frequency	= 1704 * DVFS_KHZ, .index = 1400 * DVFS_MV},
+	{.frequency	= 1800 * DVFS_KHZ, .index = 1425 * DVFS_MV},
+    // Omegamoon >>	Beware, 1425 volt seems to be the maximum!
+#else
 	// {.frequency	= 48 * DVFS_KHZ, .index = 920*DVFS_MV},
 	// {.frequency	= 126 * DVFS_KHZ, .index	= 970 * DVFS_MV},
 	// {.frequency	= 252 * DVFS_KHZ, .index	= 1040 * DVFS_MV},
 	// {.frequency	= 504 * DVFS_KHZ, .index	= 1050 * DVFS_MV},
 	{.frequency	= 816 * DVFS_KHZ, .index	= 1050 * DVFS_MV},
 	// {.frequency	= 1008 * DVFS_KHZ, .index	= 1100 * DVFS_MV},
+#endif
 	{.frequency	= CPUFREQ_TABLE_END},
 };
 
@@ -1257,6 +1276,23 @@ static struct cpufreq_frequency_table peri_aclk_dvfs_table[] = {
 };
 
 static struct cpufreq_frequency_table dep_cpu2core_table[] = {
+#ifdef OMEGAMOON_CHANGED
+	{.frequency	=   48 * DVFS_KHZ, .index =  920 * DVFS_MV},
+	{.frequency	=  126 * DVFS_KHZ, .index =  970 * DVFS_MV},
+	{.frequency	=  252 * DVFS_KHZ, .index = 1050 * DVFS_MV},
+	{.frequency	=  504 * DVFS_KHZ, .index = 1100 * DVFS_MV},
+	{.frequency	=  816 * DVFS_KHZ, .index = 1150 * DVFS_MV},
+	{.frequency	= 1008 * DVFS_KHZ, .index = 1150 * DVFS_MV},
+	// Omegamoon >> Added frequencies matching those in board-rk30-box.c
+	{.frequency	= 1200 * DVFS_KHZ, .index = 1200 * DVFS_MV},
+	{.frequency	= 1272 * DVFS_KHZ, .index = 1200 * DVFS_MV},
+	{.frequency	= 1416 * DVFS_KHZ, .index = 1200 * DVFS_MV},
+	{.frequency	= 1512 * DVFS_KHZ, .index = 1250 * DVFS_MV},
+	{.frequency	= 1608 * DVFS_KHZ, .index = 1300 * DVFS_MV},
+	{.frequency	= 1704 * DVFS_KHZ, .index = 1300 * DVFS_MV},
+	{.frequency	= 1800 * DVFS_KHZ, .index = 1300 * DVFS_MV},
+    // Omegamoon >>	Beware, 1300 volt (logic) seems to be the maximum!
+#else
 	// {.frequency = 252 * DVFS_KHZ, .index    = 1025 * DVFS_MV},
 	// {.frequency = 504 * DVFS_KHZ, .index    = 1025 * DVFS_MV},
 	{.frequency = 816 * DVFS_KHZ, .index    = 1050 * DVFS_MV},//logic 1.050V
@@ -1266,6 +1302,7 @@ static struct cpufreq_frequency_table dep_cpu2core_table[] = {
 	// {.frequency = 1416 * DVFS_KHZ,.index    = 1100 * DVFS_MV},//logic 1.100V
 	// {.frequency = 1512 * DVFS_KHZ,.index    = 1125 * DVFS_MV},//logic 1.125V
 	// {.frequency = 1608 * DVFS_KHZ,.index    = 1175 * DVFS_MV},//logic 1.175V
+#endif
 	{.frequency	= CPUFREQ_TABLE_END},
 };
 
@@ -1421,6 +1458,10 @@ int rk30_dvfs_init(void)
 		rk_regist_depends(&rk30_depends[i]);
 	}
 	dvfs_clk_cpu = dvfs_get_dvfs_clk_byname("cpu");
+#ifdef OMEGAMOON_CHANGED
+	printk("Omegamoon >> %s called\n", __func__);
+	dump_dvfs_map_on_console();
+#endif
 	return 0;
 }
 
@@ -1859,6 +1900,63 @@ static int __init dvfs_init(void)
 	return ret;
 }
 subsys_initcall(dvfs_init);
+
+void dump_dvfs_map_on_console(void)
+{
+	int i;
+	struct vd_node	*vd;
+	struct pd_node	*pd, *clkparent;
+	struct clk_list	*child;
+	struct clk_node	*dvfs_clk;
+	struct depend_list *depend;
+	
+	printk("-------------DVFS TREE-----------\n\n\n");
+	printk("RK30 DVFS TREE:\n");
+	list_for_each_entry(vd, &rk_dvfs_tree, node) {
+		printk("|\n|- voltage domain:%s\n", vd->name);
+		printk("|- current voltage:%d\n", vd->cur_volt);
+		printk("|- regulator:%s\n", vd->regulator_name);
+		list_for_each_entry(depend, &vd->req_volt_list, node2vd) {
+			printk("|- request voltage:%d, clk:%s\n", depend->req_volt, depend->dvfs_clk->name);
+		}
+
+		list_for_each_entry(pd, &vd->pd_list, node) {
+			printk("|  |\n|  |- power domain:%s, status = %s, current volt = %d\n",
+					pd->name, (pd->pd_status == PD_ON) ? "ON" : "OFF", pd->cur_volt);
+
+			list_for_each_entry(child, &pd->clk_list, node) {
+				dvfs_clk = child->dvfs_clk;
+				printk("|  |  |\n|  |  |- clock: %s current: rate %d, volt = %d, enable_dvfs = %s\n",
+						dvfs_clk->name, dvfs_clk->set_freq, dvfs_clk->set_volt, 
+						dvfs_clk->enable_dvfs == 0 ? "DISABLE" : "ENABLE");
+				for (i = 0; dvfs_clk->pds[i].pd != NULL; i++) {
+					clkparent = dvfs_clk->pds[i].pd;
+					printk("|  |  |  |- clock parents: %s, vd_parent = %s\n", 
+							clkparent->name, clkparent->vd->name);
+				}
+
+				for (i = 0; (dvfs_clk->dvfs_table[i].frequency != CPUFREQ_TABLE_END); i++) {
+					printk("|  |  |  |- freq = %d, volt = %d\n", 
+							dvfs_clk->dvfs_table[i].frequency, 
+							dvfs_clk->dvfs_table[i].index);
+
+				}
+
+				list_for_each_entry(depend, &dvfs_clk->depend_list, node2clk) {
+					printk("|  |  |  |  |- DEPEND VD: %s\n", depend->dep_vd->name); 
+					for (i = 0; (depend->dep_table[i].frequency != CPUFREQ_TABLE_END); i++) {
+						printk("|  |  |  |  |- freq = %d, req_volt = %d\n", 
+								depend->dep_table[i].frequency, 
+
+								depend->dep_table[i].index);
+					}
+				}
+			}
+		}
+	}
+	printk("-------------DVFS TREE END------------\n");
+}
+
 
 /**
  * dump_dbg_map() : Draw all informations of dvfs while debug
