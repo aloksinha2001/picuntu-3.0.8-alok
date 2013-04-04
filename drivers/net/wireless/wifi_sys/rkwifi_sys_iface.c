@@ -19,8 +19,13 @@ static ssize_t wifi_chip_read(struct class *cls, char *_buf)
 #endif
 
 #ifdef CONFIG_RTL8192CU
-    count = sprintf(_buf, "%s", "RTL8188");
-    printk("Current WiFi chip is RTL8188.\n");
+    count = sprintf(_buf, "%s", "RTL8188CU");
+    printk("Current WiFi chip is RTL8188CU.\n");
+#endif
+
+#ifdef CONFIG_RTL8188EU
+    count = sprintf(_buf, "%s", "RTL8188EU");
+    printk("Current WiFi chip is RTL8188EU.\n");
 #endif
 
 #ifdef CONFIG_RTL8188EUS
@@ -88,7 +93,7 @@ static ssize_t wifi_p2p_read(struct class *cls, char *_buf)
 #endif
 
 #ifdef CONFIG_RTL8192CU
-    count = sprintf(_buf, "%s", "true");
+    count = sprintf(_buf, "%s", "false");
 	printk("Current WiFi chip RTL8188 support direct.(%s)\n", _buf);
 #endif
 

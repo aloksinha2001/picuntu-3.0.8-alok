@@ -1,0 +1,27 @@
+config RKWIFI
+   tristate "RK901/RK903/BCM4330 wireless cards support"
+   default y
+   depends on MMC && WLAN_80211
+   select WIRELESS_EXT
+   select WEXT_PRIV
+   ---help---
+     This module adds support for wireless adapters based on
+     Broadcom 4329/30 chipset.
+
+     This driver uses the kernel's wireless extensions subsystem.
+
+     If you choose to build a module, it'll be called dhd. Say M if
+     unsure.
+
+config RK_CFG80211
+   bool "Enable NL80211 support"
+   default y
+   depends on RKWIFI
+   depends on CFG80211
+   depends on MAC80211
+   help
+     Enables CFG80211 support
+     
+     
+comment "CFG80211 and MAC80211 need to be enabled for RK_CFG80211"
+   depends on RKWIFI && (!CFG80211 || !MAC80211)
