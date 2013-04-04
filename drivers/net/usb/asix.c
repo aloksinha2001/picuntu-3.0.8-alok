@@ -22,6 +22,7 @@
 //#define	DEBUG			// debug messages, extra info
 
 #include <linux/version.h>
+//#include <linux/config.h>
 #ifdef	CONFIG_USB_DEBUG
 #   define DEBUG
 #endif
@@ -40,7 +41,7 @@
 #include "axusbnet.c"
 #include "asix.h"
 
-#define DRV_VERSION	"4.1.0"
+#define DRV_VERSION	"4.1.1"
 
 static char version[] =
 KERN_INFO "ASIX USB Ethernet Adapter:v" DRV_VERSION 
@@ -48,7 +49,7 @@ KERN_INFO "ASIX USB Ethernet Adapter:v" DRV_VERSION
 KERN_INFO "    http://www.asix.com.tw\n";
 
 /* configuration of maximum bulk in size */
-static int bsize = AX88772B_MAX_BULKIN_16K;
+static int bsize = AX88772B_MAX_BULKIN_2K;
 module_param (bsize, int, 0);
 MODULE_PARM_DESC (bsize, "Maximum transfer size per bulk");
 
@@ -62,6 +63,7 @@ static void ax88772a_link_reset (struct work_struct *work);
 static void ax88772_link_reset (struct work_struct *work);
 #endif
 static int ax88772a_phy_powerup (struct usbnet *dev);
+#define  TAG "AX88xx------>"
 
 /* ASIX AX8817X based USB 2.0 Ethernet Devices */
 
@@ -221,7 +223,7 @@ static void ax88772a_status(struct usbnet *dev, struct urb *urb)
 			netif_carrier_off(dev->net);
 			if (ax772a_data->Event == AX_NOP) {
 				ax772a_data->Event = CHK_CABLE_EXIST;
-				ax772a_data->TickToExpire = 14;
+				ax772a_data->TickToExpire = 31;//14;
 			}
 		} else {
 			netif_carrier_off(dev->net);
@@ -592,10 +594,10 @@ static int ax88772_suspend (struct usb_interface *intf,
 	medium = kmalloc (2, GFP_ATOMIC);
 	if (!medium)
 		return axusbnet_suspend (intf, message);
-
+/*
 	ax8817x_read_cmd (dev, AX_CMD_READ_MEDIUM_MODE, 0, 0, 2, medium);
 	ax8817x_write_cmd (dev, AX_CMD_WRITE_MEDIUM_MODE,
-			(*medium & ~AX88772_MEDIUM_RX_ENABLE), 0, 0, NULL);
+			(*medium & ~AX88772_MEDIUM_RX_ENABLE), 0, 0, NULL);*/
 
 	kfree (medium);
 	return axusbnet_suspend (intf, message);
@@ -617,7 +619,7 @@ static int ax88772b_suspend (struct usb_interface *intf,
 	if (!tmp16)
 		return axusbnet_suspend (intf, message);
 	opt = (u8 *)tmp16;
-
+       #if 0
 	ax8817x_read_cmd (dev, AX_CMD_READ_MEDIUM_MODE, 0, 0, 2, tmp16);
 	ax8817x_write_cmd (dev, AX_CMD_WRITE_MEDIUM_MODE,
 			(*tmp16 & ~AX88772_MEDIUM_RX_ENABLE), 0, 0, NULL);
@@ -645,7 +647,7 @@ static int ax88772b_suspend (struct usb_interface *intf,
 					*opt, 0, 0, NULL);
 		}
 	}
-
+#endif
 	kfree (tmp16);
 	return axusbnet_suspend (intf, message);
 }
@@ -663,6 +665,68 @@ static int ax88772b_resume (struct usb_interface *intf)
 {
 	struct usbnet *dev = usb_get_intfdata(intf);
 	struct ax88772b_data *ax772b_data = (struct ax88772b_data *)dev->priv;
+	int ret;
+	void *buf;
+
+	buf = kmalloc (6, GFP_KERNEL);
+
+	/* Initialize MII structure */
+	dev->mii.dev = dev->net;
+	dev->mii.mdio_read = ax8817x_mdio_read_le;
+	dev->mii.mdio_write = ax88772b_mdio_write_le;
+	dev->mii.phy_id_mask = 0xff;
+	dev->mii.reg_num_mask = 0xff;
+       #if 0
+	/* Get the PHY id */
+	if ((ret = ax8817x_read_cmd(dev, AX_CMD_READ_PHY_ID,
+			0, 0, 2, buf)) < 0) {
+		deverr(dev, "Error reading PHY ID: %02x", ret);
+		goto err_out;
+	} else if (ret < 2) {
+		/* this should always return 2 bytes */
+		deverr(dev, "Read PHYID returned less than 2 bytes: ret=%02x",
+		    ret);
+		ret = -EIO;
+		goto err_out;
+	}
+	dev->mii.phy_id = *((u8 *)buf + 1);
+
+	if(dev->mii.phy_id != 0x10) {
+		deverr(dev, "Got wrong PHY ID: %02x", dev->mii.phy_id);
+		ret = -EIO;
+		goto err_out;
+	}
+       #endif
+	/* select the embedded 10/100 Ethernet PHY */
+	if ((ret = ax8817x_write_cmd(dev, AX_CMD_SW_PHY_SELECT,
+			AX_PHYSEL_SSEN | AX_PHYSEL_PSEL | AX_PHYSEL_SSMII,
+			0, 0, NULL)) < 0) {
+		deverr(dev, "Select PHY #1 failed: %d", ret);
+		goto err_out;
+	}
+
+	if ((ret = ax88772a_phy_powerup (dev)) < 0)
+		goto err_out;
+      #if 0
+	/* stop MAC operation */
+	if ((ret = ax8817x_write_cmd(dev, AX_CMD_WRITE_RX_CTL,
+			AX_RX_CTL_STOP, 0, 0, NULL)) < 0) {
+		deverr(dev, "Reset RX_CTL failed: %d", ret);
+		goto err_out;
+	}
+
+	/* make sure the driver can enable sw mii operation */
+	if ((ret = ax8817x_write_cmd(dev, AX_CMD_SET_SW_MII,
+			0, 0, 0, NULL)) < 0) {
+		deverr(dev, "Enabling software MII failed: %d", ret);
+		goto err_out;
+	}
+	#endif
+	/* Get the PHY id */
+/*	ret = ax8817x_read_cmd(dev, AX_CMD_READ_PHY_ID,0, 0, 2, buf);
+	devwarn(dev, "reading PHY ID: %02x", ret);
+	devwarn(dev, "PHY ID: %02x", *((u8 *)buf + 1));
+
 
 	if (ax772b_data->psc & AX_SWRESET_WOLLP) {
 		ax8817x_write_cmd (dev, AX_CMD_SW_RESET,
@@ -673,9 +737,12 @@ static int ax88772b_resume (struct usb_interface *intf)
 	if (ax772b_data->psc & (AX_SWRESET_IPPSL_0 | AX_SWRESET_IPPSL_1)) {
 		ax88772a_phy_powerup (dev);
 	}
-
+*/
+	kfree (buf);
 	netif_carrier_off (dev->net);
+	return axusbnet_resume (intf);
 
+err_out:
 	return axusbnet_resume (intf);
 }
 
@@ -1585,6 +1652,7 @@ static int ax88772b_bind(struct usbnet *dev, struct usb_interface *intf)
 	/* End of get EEPROM data */
 
 	/* Get the MAC address from EEPROM */
+	#if 0
 	memset(buf, 0, ETH_ALEN);
 	for (i = 0; i < (ETH_ALEN >> 1); i++) {
 		if ((ret = ax8817x_read_cmd (dev, AX_CMD_READ_EEPROM,
@@ -1594,14 +1662,31 @@ static int ax88772b_bind(struct usbnet *dev, struct usb_interface *intf)
 		}
 	}
 	memcpy(dev->net->dev_addr, buf, ETH_ALEN);
+		for(i=0;i<ETH_ALEN;i++){
+           deverr(dev, "yyz________________read mac addr0: 0x%x", *((char *)buf+i));
+	}
+       #endif
+		/* Get the MAC address */
+	memset(buf, 0, ETH_ALEN);
+	if ((ret = ax8817x_read_cmd(dev, AX88772_CMD_READ_NODE_ID,
+				0, 0, ETH_ALEN, buf)) < 0) {
+		deverr(dev, "Failed to read MAC address: %d", ret);
+		goto err_out;
+	}
+	memcpy(dev->net->dev_addr, buf, ETH_ALEN);
 
+	//for(i=0;i<ETH_ALEN;i++){
+           //deverr(dev, "yyz________________read mac addr1: 0x%x", *((char *)buf+i));
+	//}
+	
+	#if 0
 	/* Set the MAC address */
 	if ((ret = ax8817x_write_cmd (dev, AX88772_CMD_WRITE_NODE_ID,
 			0, 0, ETH_ALEN, buf)) < 0) {
 		deverr(dev, "set MAC address failed: %d", ret);
 		goto err_out;
 	}
-
+	#endif
 	/* Initialize MII structure */
 	dev->mii.dev = dev->net;
 	dev->mii.mdio_read = ax8817x_mdio_read_le;
@@ -3432,7 +3517,7 @@ static struct usb_driver asix_driver = {
 	.id_table =	products,
 	.probe =	axusbnet_probe,
 	.suspend =	ax_suspend,
-	.resume =	ax_resume,
+       .resume =	ax_resume,
 	.disconnect =	axusbnet_disconnect,
 };
 
