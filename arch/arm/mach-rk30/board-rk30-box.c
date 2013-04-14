@@ -49,6 +49,7 @@
 #include <linux/regulator/rk29-pwm-regulator.h>
 
 //#define OMEGAMOON_CHANGED	1
+#define OLEGK0_CHANGED 1
 
 #if defined(CONFIG_HDMI_RK30)
 	#include "../../../drivers/video/rockchip/hdmi/rk_hdmi.h"
@@ -77,6 +78,14 @@
 	#else
 		#define RK30_FB0_MEM_SIZE 8*SZ_1M
 	#endif
+#endif
+
+#ifdef OLEGK0_CHANGED
+   #ifdef CONFIG_BOX_FB_1080P
+      #define RK30_IPP_MEM_SIZE 32*SZ_1M //IAM
+   #else
+      #define RK30_IPP_MEM_SIZE 16*SZ_1M
+   #endif
 #endif
 
 #ifdef CONFIG_VIDEO_RK29
@@ -942,6 +951,20 @@ static struct resource resource_fb[] = {
 		.end   = 0,//RK30_FB0_MEM_SIZE - 1,
 		.flags = IORESOURCE_MEM,
 	},
+#ifdef OLEGK0_CHANGED
+	[3] = {
+		.name  = "mali sdram",
+		.start = 0,
+		.end   = 0,//RK30_FB0_MEM_SIZE - 1,
+		.flags = IORESOURCE_MEM,
+	},
+	[4] = {
+		.name  = "mali fb",
+		.start = 0,
+		.end   = 0,//RK30_FB0_MEM_SIZE - 1,
+		.flags = IORESOURCE_MEM,
+	},
+#endif
 };
 
 static struct platform_device device_fb = {
@@ -1099,7 +1122,11 @@ static struct platform_device irda_device = {
 #endif
 
 #ifdef CONFIG_ION
+#ifdef OLEGK0_CHANGED
+#define ION_RESERVE_SIZE        (40 * SZ_1M) //IAM 80
+#else
 #define ION_RESERVE_SIZE        (80 * SZ_1M)
+#endif
 static struct ion_platform_data rk30_ion_pdata = {
 	.nr = 1,
 	.heaps = {
@@ -1699,6 +1726,11 @@ int __sramdata gpio0d7_iomux,gpio0d7_do,gpio0d7_dir,gpio0d7_en;
 void __sramfunc rk30_pwm_logic_suspend_voltage(void)
 {
 #ifdef CONFIG_RK30_PWM_REGULATOR
+#ifdef OLEGK0_CHANGED
+//IAM
+#define grf_readl(offset)	readl_relaxed(RK30_GRF_BASE + offset)
+#define grf_writel(v, offset)	do { writel_relaxed(v, RK30_GRF_BASE + offset); dsb(); } while (0)
+#endif
 
 //	int gpio0d7_iomux,gpio0d7_do,gpio0d7_dir,gpio0d7_en;
 	sram_udelay(10000);
@@ -1907,12 +1939,25 @@ static void __init rk30_reserve(void)
 #ifdef CONFIG_FB_ROCKCHIP
 	resource_fb[0].start = board_mem_reserve_add("fb0", RK30_FB0_MEM_SIZE);
 	resource_fb[0].end = resource_fb[0].start + RK30_FB0_MEM_SIZE - 1;
+#ifdef OLEGK0_CHANGED
+	resource_fb[1].start = board_mem_reserve_add("ipp buf", RK30_IPP_MEM_SIZE);
+	resource_fb[1].end = resource_fb[1].start + RK30_IPP_MEM_SIZE - 1;
+#else
 	resource_fb[1].start = board_mem_reserve_add("ipp buf", RK30_FB0_MEM_SIZE);
 	resource_fb[1].end = resource_fb[1].start + RK30_FB0_MEM_SIZE - 1;
 	#if !defined(CONFIG_DUAL_DISP_IN_KERNEL) || !defined(CONFIG_THREE_FB_BUFFER)
 	resource_fb[2].start = board_mem_reserve_add("fb2", RK30_FB0_MEM_SIZE);
 	resource_fb[2].end = resource_fb[2].start + RK30_FB0_MEM_SIZE - 1;
 	#endif
+#endif;
+#ifdef OLEGK0_CHANGED
+//IAM
+/*	resource_fb[3].start = board_mem_reserve_add("malisdr", RK30_FB0_MEM_SIZE*2);
+	resource_fb[3].end = resource_fb[3].start + RK30_FB0_MEM_SIZE*2 - 1;
+	resource_fb[4].start = board_mem_reserve_add("malifb", RK30_FB0_MEM_SIZE);
+	resource_fb[4].end = resource_fb[4].start + RK30_FB0_MEM_SIZE - 1;
+	*/
+#endif
 #endif
 #ifdef CONFIG_VIDEO_RK29
 	rk30_camera_request_reserve_mem();
