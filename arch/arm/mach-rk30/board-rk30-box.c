@@ -2032,12 +2032,12 @@ void __init board_clock_init(void)
 #ifdef CONFIG_MACH_RK30_BOX_HOTDOG
 #ifdef OMEGAMOON_CHANGED
    // Omegamoon >> Changed gpu speed upper limit from 266 to 400
- dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 400 * 1000000);
-//   dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 266 * 1000000); //Galland: revert due to temperature caused illegal instr. errors on glmark2-es2
+// dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 400 * 1000000);
+   dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 266 * 1000000); //Galland: revert due to temperature caused illegal instr. errors on glmark2-es2
    // Omegamoon >> Changed cpu speed upper limit from 1200 to 1800
    dvfs_clk_enable_limit(clk_get(NULL, "cpu"), 252 * 1000000, 1800 * 1000000);
 #else
-   dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 400 * 1000000);
+   dvfs_clk_enable_limit(clk_get(NULL, "gpu"), 133 * 1000000, 266 * 1000000);
    dvfs_clk_enable_limit(clk_get(NULL, "cpu"), 126 * 1000000, 1608 * 1000000);
 #endif
 #endif

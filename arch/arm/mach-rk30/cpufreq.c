@@ -171,7 +171,7 @@ static void rk30_cpufreq_temp_limit_work_func(struct work_struct *work)
          new = limits_table[i].frequency;
       }
    }
-   if (temp_limt_freq != new && new != -1) { //Galland: new>0 added to avoid, at low temp., forcing the highest frequency in temp_limits table! (or else, at idle, CPUs don't go to min. freq.)
+   if (temp_limt_freq != new) {
       temp_limt_freq = new;
       FREQ_PRINTK_DBG("temp_limit set rate %d kHz\n", temp_limt_freq);
       policy = cpufreq_cpu_get(0);
@@ -551,15 +551,17 @@ static unsigned int cpufreq_scale_limt(unsigned int target_freq, struct cpufreq_
    if (!is_ondemand)
       goto out;
 
+/*  Galland: don't limit startup speed!
    if (is_booting && target_freq >= 1600 * 1000) {
       s64 boottime_ms = ktime_to_ms(ktime_get_boottime());
       if (boottime_ms > 30 * MSEC_PER_SEC) {
          is_booting = false;
       } else {
-//Galland: don't limit startup speed!
-//         target_freq = 1416 * 1000;
+         target_freq = 1416 * 1000;
       }
    }
+*/
+
 #ifdef CONFIG_RK30_CPU_FREQ_LIMIT_BY_TEMP
    {
       static unsigned int ondemand_target = TEMP_LIMIT_FREQ;
