@@ -45,4 +45,5 @@ olegk0, with Mali HW 3D (https://github.com/olegk0/rk3066-kernel)
 and specially the more up to date Jelly Bean RK3066 kernel from https://github.com/kelvinchengxiwu/rk\_kernel (look for rknand\_base\_ko.c, picuntu version is 4.34 from Apr2012, whereas here it is 4.40 from Aug2012), mostly anywhere you look at in this kernel you can spot bugfixes and enhancements. Also added webcam used by Measy U2C, Kimdecent B12, and NX003II sticks.
 WARNING: The .config disables many wireless drivers, re-enable them as modules or in-kernel. Also, my memory is DDR3 1333 (667 MHz), change that in the .config.
 The board-rk30-box.c has been updated with max GPU speed 400 MHz (instead of 266), and max CPU frequency 1608 MHz (instead of 1200), both values allowed by Rockchip (and my Measy U2C stick).
+
 ==========
