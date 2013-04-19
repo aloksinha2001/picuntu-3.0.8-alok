@@ -259,9 +259,7 @@
 #define LINE_2_MIXER_GAIN      (0x5)    //left and right PA gain
 #define RK1000_CODEC_NUM_REG   0x20
 
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 37))
-extern struct snd_soc_dai rk1000_codec_dai;
-extern struct snd_soc_codec_device soc_codec_dev_rk1000_codec;
-#endif
+//extern struct snd_soc_dai rk1000_codec_dai;
+//extern struct snd_soc_codec_device soc_codec_dev_rk1000_codec;
 
 #endif

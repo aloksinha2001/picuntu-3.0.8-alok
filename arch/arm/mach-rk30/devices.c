@@ -30,6 +30,9 @@
 #include <mach/iomux.h>
 #include <plat/rk_fiq_debugger.h>
 
+
+#define OLEGK0_CHANGED 1
+
 #ifdef CONFIG_ADC_RK30
 static struct resource rk30_adc_resource[] = {
 	{
@@ -988,7 +991,7 @@ static struct platform_device device_hdmi = {
 };
 #endif
 
-#ifdef CONFIG_RGA_RK30
+#if defined(OLEGK0_CHANGED) || defined (CONFIG_RGA_RK30)
 static struct resource resource_rga[] = {
 	[0] = {
 		.start = RK30_RGA_PHYS,
@@ -1337,7 +1340,7 @@ static int __init rk30_init_devices(void)
 #ifdef CONFIG_USB20_HOST
 	platform_device_register(&device_usb20_host);
 #endif
-#ifdef CONFIG_RGA_RK30
+#if defined(OLEGK0_CHANGED) || defined (CONFIG_RGA_RK30)
 	platform_device_register(&device_rga);
 #endif
 	platform_device_register(&device_ipp);
@@ -1355,8 +1358,14 @@ static int __init rk30_init_devices(void)
 #endif
 	platform_device_register(&device_tsadc);
 	rk30_init_sdmmc();
-#if defined(CONFIG_FIQ_DEBUGGER) && defined(DEBUG_UART_PHYS)
-	rk_serial_debug_init(DEBUG_UART_BASE, IRQ_UART0 + CONFIG_RK_DEBUG_UART, IRQ_UART_SIGNAL, -1);
+#if defined(OLEGK0_CHANGED)
+   #if defined(CONFIG_FIQ_DEBUGGER) && defined(DEBUG_UART_PHYS)
+	   rk_serial_debug_init(DEBUG_UART_BASE, IRQ_UART0 + CONFIG_RK_DEBUG_UART, IRQ_UART_SIGNAL, -1);
+   #endif
+#else
+   #if defined(CONFIG_FIQ_DEBUGGER) && defined(DEBUG_UART_PHYS)
+	   rk_serial_debug_init(DEBUG_UART_BASE, IRQ_DEBUG_UART, IRQ_UART_SIGNAL, -1);
+   #endif
 #endif
 	rk30_init_i2s();
 

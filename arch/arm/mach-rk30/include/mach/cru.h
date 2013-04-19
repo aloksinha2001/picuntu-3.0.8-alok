@@ -129,12 +129,14 @@ enum rk_plls_id {
 //hclk div
 #define ACLK_HCLK_W_MSK		(3 << 24)
 #define ACLK_HCLK_MSK		(3 << 8)
+#define ACLK_HCLK_OFF		(8)
 #define ACLK_HCLK_11		(0 << 8)
 #define ACLK_HCLK_21		(1 << 8)
 #define ACLK_HCLK_41		(2 << 8)
 // pclk div
 #define ACLK_PCLK_W_MSK		(3 << 28)
 #define ACLK_PCLK_MSK		(3 << 12)
+#define ACLK_PCLK_OFF		(12)
 #define ACLK_PCLK_11		(0 << 12)
 #define ACLK_PCLK_21		(1 << 12)
 #define ACLK_PCLK_41		(2 << 12)
@@ -210,10 +212,10 @@ enum cru_clk_gate {
 	CLK_GATE_UART3,
 	CLK_GATE_FRAC_UART3,
 
-	CLK_GATE_PEIRPH_SRC = CLK_GATE_CLKID(2),
-	CLK_GATE_ACLK_PEIRPH,
-	CLK_GATE_HCLK_PEIRPH,
-	CLK_GATE_PCLK_PEIRPH,
+	CLK_GATE_PERIPH_SRC = CLK_GATE_CLKID(2),
+	CLK_GATE_ACLK_PERIPH,
+	CLK_GATE_HCLK_PERIPH,
+	CLK_GATE_PCLK_PERIPH,
 	CLK_GATE_SMC,
 	CLK_GATE_MAC,
 	CLK_GATE_HSADC,

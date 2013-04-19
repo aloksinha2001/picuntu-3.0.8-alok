@@ -32,7 +32,7 @@
 #define VPU_IOC_SET_REG                     _IOW(VPU_IOC_MAGIC, 3, unsigned long)
 #define VPU_IOC_GET_REG                     _IOW(VPU_IOC_MAGIC, 4, unsigned long)
 
-
+/* Galland: this is already defined in ../vpu_service.c
 // client type: decoder only£º60 registers, size 240B
 #define VPU_REG_NUM_DEC                     (60)
 // client type: post-process only£º41 registers, size 164B
@@ -46,6 +46,7 @@
 // client type: encoder only: 164 registers, size 384B for rk30
 #define VPU_REG_NUM_ENC                     (164)
 #endif
+*/
 
 typedef enum VPU_CLIENT_TYPE {
     VPU_ENC                 = 0x0,
@@ -90,9 +91,11 @@ typedef struct VPUHwEndConfig
     unsigned long   mpeg4Enabled;           /* HW supports MPEG-4 */
     unsigned long   vsEnabled;              /* HW supports video stabilization */
     unsigned long   rgbEnabled;             /* HW supports RGB input */
-    unsigned long   busType;                /* HW bus type in use */
-    unsigned long   busWidth;
-    unsigned long   synthesisLanguage;
+//    unsigned long   busType;                /* HW bus type in use */
+//    unsigned long   busWidth;
+//    unsigned long   synthesisLanguage;
+    unsigned long   reg_size;
+    unsigned long   reserv[2];              /* reverved */
 } VPUHwEncConfig_t;
 
 typedef struct VPUHwCfgReq

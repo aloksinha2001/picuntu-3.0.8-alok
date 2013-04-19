@@ -18,5 +18,8 @@ config LS_AL3006
 config LS_STK3171
   bool "light sensor stk3171"
 	default n	  
+config LS_LSL29023
+  bool "light sensor lsl29023"
+	default n
 endif
 

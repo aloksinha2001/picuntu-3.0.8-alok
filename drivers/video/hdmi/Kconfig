@@ -2,6 +2,7 @@
 # Display drivers configuration
 #
 menu "HDMI"
+depends on ARCH_RK29
 config HDMI
 	bool "HDMI support"
     select FB_WORK_IPP
@@ -14,13 +15,25 @@ config HDMI_SAVE_DATA
 	bool "enable hdmi save data"	
 	help 
 		Enable hdmi save data in rtc register
+		
+config HDMI_DUAL_DISP
+	bool "dual display support"
+	depends on RK610_HDMI
+	help
+		Support output lcd and hdmi at the same time.
 
-#config HDMI_DUAL_DISP
-#	bool "hdmi support dual display"
-#	help
-#	nothing
 #config HDMI_DEBUG
 #	bool "hdmi debug"
+choice
+	depends on RK610_HDMI
+	prompt "HDMI DEFAULT OUT"
+config HDMI_DEFAULT_OUT_HDMI
+	bool "default hdmi"
+config HDMI_DEFAULT_OUT_DVI
+	bool "default dvi"
+config HDMI_DEFAULT_OUT_DEPENDS_ON_EDID
+	bool "depends on edid"
+endchoice
 endif
 
 endmenu

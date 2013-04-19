@@ -68,9 +68,11 @@ static int dwc_otg_hcd_suspend(struct usb_hcd *hcd)
     	DWC_PRINT("%s, usb device mode\n", __func__);
     	return 0;
     }
+    if(!dwc_otg_hcd->host_enabled)
+        return 0;
     hprt0.d32 = dwc_read_reg32(core_if->host_if->hprt0);
 #ifdef CONFIG_USB_SUSPEND    
-    if((!dwc_otg_hcd->host_enabled)||(!hprt0.b.prtena))
+    if((!hprt0.b.prtena))
         return 0;
 #endif        
     DWC_PRINT("%s suspend, HPRT0:0x%x\n",hcd->self.bus_name,hprt0.d32);
@@ -130,10 +132,10 @@ static int dwc_otg_hcd_resume(struct usb_hcd *hcd)
     	DWC_PRINT("%s, usb device mode\n", __func__);
     	return 0;
     }
-#ifdef CONFIG_USB_SUSPEND    
+// #ifdef CONFIG_USB_SUSPEND    
     if(!dwc_otg_hcd->host_enabled)
         return 0;
-#endif
+// #endif
     #ifndef CONFIG_DWC_REMOTE_WAKEUP
     clk_enable(core_if->otg_dev->phyclk);
     clk_enable(core_if->otg_dev->ahbclk);

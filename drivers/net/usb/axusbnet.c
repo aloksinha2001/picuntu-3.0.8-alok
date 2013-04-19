@@ -48,6 +48,7 @@
 #include "axusbnet.h"
 
 #define DRIVER_VERSION		"22-Aug-2005"
+#define  TAG "AX88xx------>"
 
 static void axusbnet_unlink_rx_urbs(struct usbnet *);
 
@@ -373,7 +374,7 @@ static void rx_submit (struct usbnet *dev, struct urb *urb, gfp_t flags)
 		}
 	} else {
 		if (netif_msg_ifdown (dev))
-			devdbg (dev, "rx: stopped");
+			deverr (dev, "rx: stopped");
 		retval = -ENOLINK;
 	}
 	spin_unlock_irqrestore (&dev->rxq.lock, lockflags);
@@ -429,7 +430,7 @@ static void rx_complete (struct urb *urb)
 			dev->stats.rx_errors++;
 			dev->stats.rx_length_errors++;
 			if (netif_msg_rx_err (dev))
-				devdbg (dev, "rx length %d", skb->len);
+		       ;//	deverr (dev, "rx length %d", skb->len);
 		}
 		break;
 
@@ -447,7 +448,7 @@ static void rx_complete (struct urb *urb)
 	case -ECONNRESET:		/* async unlink */
 	case -ESHUTDOWN:		/* hardware gone */
 		if (netif_msg_ifdown (dev))
-			devdbg (dev, "rx shutdown, code %d", urb_status);
+		;//	deverr (dev, "rx shutdown, code %d", urb_status);
 		goto block;
 
 	/* we get controller i/o faults during khubd disconnect() delays.
@@ -461,7 +462,7 @@ static void rx_complete (struct urb *urb)
 		if (!timer_pending (&dev->delay)) {
 			mod_timer (&dev->delay, jiffies + THROTTLE_JIFFIES);
 			if (netif_msg_link (dev))
-				devdbg (dev, "rx throttle %d", urb_status);
+			;//	deverr (dev, "rx throttle %d", urb_status);
 		}
 block:
 		entry->state = rx_cleanup;
@@ -478,7 +479,7 @@ block:
 		entry->state = rx_cleanup;
 		dev->stats.rx_errors++;
 		if (netif_msg_rx_err (dev))
-			devdbg (dev, "rx status %d", urb_status);
+	;//		deverr (dev, "rx status %d", urb_status);
 		break;
 	}
 
@@ -493,9 +494,9 @@ block:
 		usb_free_urb (urb);
 	}
 	if (netif_msg_rx_err (dev))
-		devdbg (dev, "no read resubmitted");
+		deverr (dev, "no read resubmitted");
 }
-
+extern void dwc_otg_clear_halt(struct urb *_urb);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,19)
 static void intr_complete (struct urb *urb, struct pt_regs *regs)
 #else
@@ -516,13 +517,16 @@ static void intr_complete (struct urb *urb)
 	case -ESHUTDOWN:	/* hardware gone */
 		if (netif_msg_ifdown (dev))
 			devdbg (dev, "intr shutdown, code %d", status);
-		return;
+		break;
+	//	return;
 
 	/* NOTE:  not throttling like RX/TX, since this endpoint
 	 * already polls infrequently
 	 */
 	default:
 		devdbg (dev, "intr status %d", status);
+		if(status < 0)
+			dwc_otg_clear_halt(urb);
 		break;
 	}
 
@@ -556,9 +560,7 @@ static int unlink_urbs (struct usbnet *dev, struct sk_buff_head *q)
 
 		// during some PM-driven resume scenarios,
 		// these (async) unlinks complete immediately
-		spin_unlock_irqrestore (&q->lock, flags);
 		retval = usb_unlink_urb (urb);
-		spin_lock_irqsave (&q->lock, flags);
 		if (retval != -EINPROGRESS && retval != 0)
 			devdbg (dev, "unlink urb err, %d", retval);
 		else
@@ -974,6 +976,7 @@ void axusbnet_tx_timeout (struct net_device *net)
 {
 	struct usbnet		*dev = netdev_priv(net);
 
+	devdbg(dev,"---> %s %d\n",__FUNCTION__, __LINE__);
 	unlink_urbs (dev, &dev->txq);
 	tasklet_schedule (&dev->bh);
 
@@ -1219,7 +1222,7 @@ axusbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
 	dev->driver_info = info;
 	dev->driver_name = name;
 	dev->msg_enable = netif_msg_init (msg_level, NETIF_MSG_DRV
-				| NETIF_MSG_PROBE | NETIF_MSG_LINK);
+				| NETIF_MSG_PROBE | NETIF_MSG_LINK | NETIF_MSG_IFDOWN |NETIF_MSG_IFUP);
 	skb_queue_head_init (&dev->rxq);
 	skb_queue_head_init (&dev->txq);
 	skb_queue_head_init (&dev->done);
@@ -1261,13 +1264,16 @@ axusbnet_probe (struct usb_interface *udev, const struct usb_device_id *prod)
 	net->watchdog_timeo = TX_TIMEOUT_JIFFIES;
 	net->ethtool_ops = &axusbnet_ethtool_ops;
 
-       strcpy (net->name, "usbnet%d");
+	info->flags |= FLAG_AVOID_UNLINK_URBS;
+
 	// allow device-specific bind/init procedures
 	// NOTE net->name still not usable ...
 	status = info->bind (dev, udev);
 	if (status < 0) {
 		deverr(dev, "Binding device failed: %d", status);
 		goto out1;
+	} else 	{
+		printk("----> %s %d:bind %s\n",__FUNCTION__,__LINE__,info->description);
 	}
 
 	/* maybe the remote can't receive an Ethernet MTU */
@@ -1338,12 +1344,11 @@ u32 message)
 		netif_device_detach (dev->net);
 		(void) unlink_urbs (dev, &dev->rxq);
 		(void) unlink_urbs (dev, &dev->txq);
-		usb_kill_urb(dev->interrupt);
 		/*
 		 * reattach so runtime management can use and
 		 * wake the device
 		 */
-		//netif_device_attach (dev->net);
+		netif_device_attach (dev->net);
 	}
 	return 0;
 }
@@ -1352,8 +1357,6 @@ static int
 axusbnet_resume (struct usb_interface *intf)
 {
 	struct usbnet		*dev = usb_get_intfdata(intf);
-	
-	netif_device_attach (dev->net);
 
 	if (!--dev->suspend_count)
 		tasklet_schedule (&dev->bh);

@@ -23,9 +23,16 @@
 #include <mach/board.h>
 
 
+#define OLEGK0_CHANGED 1
+
+
 #define RK30_MAX_LCDC_SUPPORT	4
 #define RK30_MAX_LAYER_SUPPORT	4
+#ifdef CONFIG_MFD_RK610
+#define RK_MAX_FB_SUPPORT       8
+#else
 #define RK_MAX_FB_SUPPORT     4
+#endif
 
 
 
@@ -50,6 +57,12 @@
 #define FBIOSET_OVERLAY_STATE     	0x5018
 #define FBIOSET_ENABLE			0x5019	
 #define FBIOGET_ENABLE			0x5020
+
+#ifdef OLEGK0_CHANGED
+   #define FBIOPUT_SET_COLORKEY		0x5010 //IAM
+   #define GET_UMP_SECURE_ID_BUF1 _IOWR('m', 310, unsigned int)
+   #define GET_UMP_SECURE_ID_BUF2 _IOWR('m', 311, unsigned int) 
+#endif
 
 /********************************************************************
 **              display output interface supported by rk lcdc                       *
@@ -142,6 +155,17 @@ enum data_format{
 	YUV444,
 };
 
+#ifdef CONFIG_MFD_RK610
+enum fb_win_map_order{
+	FB_DEFAULT_ORDER	   = 0,
+	FB0_WIN2_FB1_WIN1_FB2_WIN0 = 012,
+	FB0_WIN1_FB1_WIN2_FB2_WIN0 = 021, 
+	FB0_WIN2_FB1_WIN0_FB2_WIN1 = 102,
+	FB0_WIN0_FB1_WIN2_FB2_WIN1 = 120,
+	FB0_WIN0_FB1_WIN1_FB2_WIN2 = 210,
+	FB0_WIN1_FB1_WIN0_FB2_WIN2 = 201,       
+};
+#endif
 struct rk_fb_rgb {
 	struct fb_bitfield	red;
 	struct fb_bitfield	green;
@@ -193,7 +217,17 @@ struct rk_lcdc_device_driver{
 	int num_layer;
 	int num_buf;				//the num_of buffer
 	int fb_index_base;                     //the first fb index of the lcdc device
+#ifdef CONFIG_MFD_RK610
+	rk_screen *screen0;		      //some platform have only one lcdc,but extend
+	rk_screen *screen1;		      //two display devices for dual display,such as rk2918,rk2928
+	rk_screen *cur_screen;		     //screen0 is primary screen ,like lcd panel,screen1 is  extend screen,like hdmi
+    char fb0_win_id;
+    char fb1_win_id;
+    char fb2_win_id;
+    struct mutex fb_win_id_mutex;
+#else
 	rk_screen *screen;
+#endif
 	u32 pixclock;
 
 	struct completion  frame_done;		  //sync for pan_display,whe we set a new frame address to lcdc register,we must make sure the frame begain to display
@@ -211,11 +245,19 @@ struct rk_lcdc_device_driver{
 	int (*blank)(struct rk_lcdc_device_driver *dev_drv,int layer_id,int blank_mode);
 	int (*set_par)(struct rk_lcdc_device_driver *dev_drv,int layer_id);
 	int (*pan_display)(struct rk_lcdc_device_driver *dev_drv,int layer_id);
+#ifdef CONFIG_MFD_RK610
+	ssize_t (*get_disp_info)(struct rk_lcdc_device_driver *dev_drv,char *buf,int layer_id);
+#else
 	int (*get_disp_info)(struct rk_lcdc_device_driver *dev_drv,int layer_id);
+#endif
 	int (*load_screen)(struct rk_lcdc_device_driver *dev_drv, bool initscreen);
 	int (*get_layer_state)(struct rk_lcdc_device_driver *dev_drv,int layer_id);
 	int (*ovl_mgr)(struct rk_lcdc_device_driver *dev_drv,int swap,bool set);  //overlay manager
 	int (*fps_mgr)(struct rk_lcdc_device_driver *dev_drv,int fps,bool set);
+#ifdef CONFIG_MFD_RK610
+	int (*fb_get_layer)(struct rk_lcdc_device_driver *dev_drv,const char *id);                                      //find layer for fb
+	int (*fb_layer_remap)(struct rk_lcdc_device_driver *dev_drv,enum fb_win_map_order order);
+#endif
 	int (*set_dsp_lut)(struct rk_lcdc_device_driver *dev_drv,int *lut);
 	int (*read_dsp_lut)(struct rk_lcdc_device_driver *dev_drv,int *lut);
 	//$_rbox_$_modify_end
@@ -232,7 +274,13 @@ struct rk_fb_inf {
 	int video_mode;  //when play video set it to 1
 	struct workqueue_struct *workqueue;
 	struct delayed_work delay_work;
+#ifdef CONFIG_MALI
+	void * ump_wrapped_buffer[RK_MAX_FB_SUPPORT][2]; //IAM
+#endif
 };
+#ifdef CONFIG_MALI
+extern int (*disp_get_ump_secure_id)(struct fb_info *info, struct rk_fb_inf *g_fbi, unsigned long arg, int buf);
+#endif
 extern int rk_fb_register(struct rk_lcdc_device_driver *dev_drv,
 	struct rk_lcdc_device_driver *def_drv,int id);
 extern int rk_fb_unregister(struct rk_lcdc_device_driver *dev_drv);

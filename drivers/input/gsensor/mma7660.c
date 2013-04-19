@@ -21,6 +21,7 @@
 #include <linux/miscdevice.h>
 #include <linux/gpio.h>
 #include <asm/uaccess.h>
+#include <asm/atomic.h>
 #include <linux/delay.h>
 #include <linux/input.h>
 #include <linux/workqueue.h>
@@ -28,8 +29,8 @@
 #include <linux/mma7660.h>
 #include <mach/gpio.h>
 #include <mach/board.h> 
-#ifdef CONFIG_ANDROID_POWER
-#include <linux/android_power.h>
+#ifdef CONFIG_HAS_EARLYSUSPEND
+#include <linux/earlysuspend.h>
 #endif
 
 //#define RK28_PRINT
@@ -39,12 +40,69 @@
 #else
 #define rk28printk(x...)
 #endif
+
+static int gsensor_info[9]={0,1,0,0,0,1,-1,0,0};
+static int gsensor_numb;
+module_param_array(gsensor_info,int,&gsensor_numb,0664);
+
+static struct class *mma7660_class = NULL;
+static ssize_t gsensor_setoratitention(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	int 	i=0;
+	char	gsensororatation[20];
+	char	*p		= strstr(buf,"gsensor");
+	int		start	= strcspn(p,"{");
+	int		end		= strcspn(p,"}");
+
+	strncpy(gsensororatation, p+start, end-start+1);
+	char *tmp=gsensororatation;
+
+	while(strncmp(tmp,"}",1)!=0)
+	{
+		if((strncmp(tmp,",",1)==0)||(strncmp(tmp,"{",1)==0))
+		{
+			tmp++;
+			continue;
+		}
+		else if(strncmp(tmp,"-",1)==0)
+		{
+			gsensor_info[i++]=-1;
+			tmp++;
+		}
+		else
+		{
+			gsensor_info[i++]=tmp[0]-48;
+		}
+		tmp++;
+	}
+
+	for(i=0;i<9;i++)
+		rk28printk("i=%d gsensor_info=%d\n",i,gsensor_info[i]);
+	return 0;
+
+}
+
+static CLASS_ATTR(oratiention, 0777, NULL, gsensor_setoratitention);
+
+static int mma7660_sys_init(void)
+{
+	int ret ;
+	mma7660_class = class_create(THIS_MODULE, "gsensor");
+
+	ret =  class_create_file(mma7660_class, &class_attr_oratiention);
+	if (ret)
+	{
+		printk("Fail to creat class oratiention.\n");
+	}
+	return 0;
+}
+
 static int  mma7660_probe(struct i2c_client *client, const struct i2c_device_id *id);
 
 #define MMA7660_SPEED		200 * 1000
 
 /* Addresses to scan -- protected by sense_data_mutex */
-//static char sense_data[RBUFF_SIZE + 1];
 static struct i2c_client *this_client;
 static struct miscdevice mma7660_device;
 
@@ -54,6 +112,7 @@ static DECLARE_WAIT_QUEUE_HEAD(data_ready_wq);
 static android_early_suspend_t mma7660_early_suspend;
 #endif
 static int revision = -1;
+static long int last_z =0, last_x = 0, last_y =0;
 /* AKM HW info */
 static ssize_t gsensor_vendor_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
@@ -121,22 +180,11 @@ static int mma7660_set_rate(struct i2c_client *client, char rate)
 	
 	if (rate > 128)
         return -EINVAL;
-	rk28printk("[ZWP]%s,rate = %d\n",__FUNCTION__,rate);
 	//因为增加了滤波功能,即每RawDataLength次才上报一次,所以提升gsensor两个档级
 	if(rate > 2)
 		rate -= 2;
 	rk28printk("[ZWP]%s,new rate = %d\n",__FUNCTION__,rate);
 
-/*	
-    for (i = 0; i < 7; i++) {
-        if (rate & (0x1 << i))
-            break;
-    }   
-    
-
-	buffer[0] = MMA7660_REG_SR;
-	buffer[1] = 0xf8 | (0x07 & (~i));
-*/
 	buffer[0] = MMA7660_REG_SR;
 	buffer[1] = 0xf8 | (0x07 & rate);
 
@@ -220,7 +268,7 @@ static inline int mma7660_convert_to_int(char value)
     if (value < MMA7660_BOUNDARY) {
        result = value * MMA7660_GRAVITY_STEP;
     } else {
-       result = ~(((~value & 0x3f) + 1)* MMA7660_GRAVITY_STEP) + 1;
+       result = ~(((~value & 0x1f) + 1)* MMA7660_GRAVITY_STEP) + 1;
     }
 
     return result;
@@ -239,15 +287,151 @@ static void mma7660_report_value(struct i2c_client *client, struct mma7660_axis 
     rk28printk("Gsensor x==%d  y==%d z==%d\n",axis->x,axis->y,axis->z);
 }
 
-#define RawDataLength 4
+#define NR_SAMPHISTLEN 4
+#define HEAD 0
+#define END  (NR_SAMPHISTLEN)
+#define SORT 0
+
+struct mma7660_axis mma_dejitter[NR_SAMPHISTLEN];
+struct mma7660_axis_w mma_sort[NR_SAMPHISTLEN];
+
+static const unsigned char weight [NR_SAMPHISTLEN ] =
+{
+	   6, 4, 3, 3 /* The last element is pow2(SUM(0..3)) */
+};
+
+static void mma7660_average (struct mma7660_axis *samp)
+{
+	int liTmp;
+	long int  x = 0, y = 0, z = 0, Xsum = 0,Ysum = 0, Zsum = 0,diff;
+
+	for (liTmp = NR_SAMPHISTLEN-1; liTmp > 0; liTmp--)
+	{
+		mma_dejitter[liTmp].x = mma_dejitter[liTmp-1].x;
+		mma_dejitter[liTmp].y = mma_dejitter[liTmp-1].y;
+		mma_dejitter[liTmp].z = mma_dejitter[liTmp-1].z;
+	}
+
+	mma_dejitter[0].x = samp->x;
+	mma_dejitter[0].y = samp->y;
+	mma_dejitter[0].z = samp->z;
+
+ #if SORT
+// sort num
+	for (liTmp = 0; liTmp < NR_SAMPHISTLEN; liTmp++)
+	{
+		mma_sort[liTmp].x = mma_dejitter[liTmp].x;
+		mma_sort[liTmp].y = mma_dejitter[liTmp].y;
+		mma_sort[liTmp].z = mma_dejitter[liTmp].z;
+		mma_sort[liTmp].xw =mma_sort[liTmp].yw = mma_sort[liTmp].zw= weight[liTmp];
+	}
+
+	for(i=0;i<NR_SAMPHISTLEN-1;i++)
+		for(j=0;j<NR_SAMPHISTLEN-i-1;j++)
+		{
+			if(mma_sort[j].x > mma_sort[j+1].x)
+			{
+				t.v =mma_sort[j].x;
+				t.w = mma_sort[j].xw;
+				mma_sort[j].x = mma_sort[j+1].x;
+				mma_sort[j].xw = mma_sort[j+1].xw;
+				mma_sort[j+1].x = t.v;
+				mma_sort[j+1].xw = t.w;
+			}
+
+			if(mma_sort[j].y > mma_sort[j+1].y)
+			{
+				t.v = mma_sort[j].y;
+				t.w = mma_sort[j].yw;
+				mma_sort[j].y = mma_sort[j+1].y;
+				mma_sort[j].yw = mma_sort[j+1].yw;
+				mma_sort[j+1].y = t.v;
+				mma_sort[j+1].yw = t.w;
+			}
+
+			if(mma_sort[j].z > mma_sort[j+1].z)
+			{
+				t.v=mma_sort[j].z;
+				t.w = mma_sort[j].zw;
+				mma_sort[j].z = mma_sort[j+1].z;
+				mma_sort[j].zw = mma_sort[j+1].zw;
+				mma_sort[j+1].z = t.v;
+				mma_sort[j+1].zw = t.w;
+			}
+		}
+
+	for (liTmp = HEAD; liTmp < END; liTmp++)
+	{
+		x += mma_sort[liTmp].x * mma_sort[liTmp].xw;
+		y += mma_sort[liTmp].y * mma_sort[liTmp].yw;
+		z += mma_sort[liTmp].z * mma_sort[liTmp].zw;
+		Xsum += mma_sort[liTmp].xw;
+		Ysum += mma_sort[liTmp].yw;
+		Zsum += mma_sort[liTmp].zw;
+	}
+ #else
+	for (liTmp = 0; liTmp < NR_SAMPHISTLEN; liTmp++)
+	{
+		mma_sort[liTmp].xw =mma_sort[liTmp].yw = mma_sort[liTmp].zw= weight[liTmp];
+	}
+
+	for (liTmp = HEAD; liTmp < END; liTmp++)
+	{
+		x += mma_dejitter[liTmp].x * mma_sort[liTmp].xw;
+		y += mma_dejitter[liTmp].y * mma_sort[liTmp].yw;
+		z += mma_dejitter[liTmp].z * mma_sort[liTmp].zw;
+		Xsum += mma_sort[liTmp].xw;
+		Ysum += mma_sort[liTmp].yw;
+		Zsum += mma_sort[liTmp].zw;
+	}
+ #endif
+
+	samp->x = x / Xsum;
+	samp->y = y /Ysum;
+	samp->z = z /Zsum;
+
+#if 1
+	diff = ((samp->x - last_x) > 0)?(samp->x - last_x):-(samp->x - last_x);
+	if(diff < 46876)
+	{
+		samp->x  = 	last_x;
+	}
+	else
+	{
+		last_x = samp->x;
+	}
+
+	diff = ((samp->y - last_y) > 0)?(samp->y - last_y):-(samp->y - last_y);
+	if(diff < 46876)
+	{
+		samp->y  = 	last_y;
+	}
+	else
+	{
+		last_y = samp->y;
+	}
+
+	diff = ((samp->z - last_z) > 0)?(samp->z - last_z):-(samp->z - last_z);
+	if(diff < 46876)
+	{
+		samp->z  = 	last_z;
+	}
+	else
+	{
+		last_z = samp->z;
+	}
+#endif
+}
+#define RawDataLength 6
 int RawDataNum;
-int Xaverage, Yaverage, Zaverage;
+long int Xaverage, Yaverage, Zaverage;
 
 static int mma7660_get_data(struct i2c_client *client)
 {
 	char buffer[3];
 	int ret;
     struct mma7660_axis axis;
+    struct mma7660_axis axisback;
     //struct rk2818_gs_platform_data *pdata = client->dev.platform_data;
     do {
         memset(buffer, 0, 3);
@@ -255,59 +439,21 @@ static int mma7660_get_data(struct i2c_client *client)
         ret = mma7660_rx_data(client, &buffer[0], 3);
         if (ret < 0)
             return ret;
-    } while ((buffer[0] & 0x40) || (buffer[1] & 0x40) || (buffer[2] & 0x40));
+    } //while ((buffer[0] & 0x40) || (buffer[1] & 0x40) || (buffer[2] & 0x40));
+	while (0);
 
-	axis.x = mma7660_convert_to_int(buffer[MMA7660_REG_X_OUT]);
-	axis.y = -mma7660_convert_to_int(buffer[MMA7660_REG_Y_OUT]);
-	axis.z = -mma7660_convert_to_int(buffer[MMA7660_REG_Z_OUT]);
-/*
-	if(pdata->swap_xy)
-	{
-		axis.y = -axis.y;
-		swap(axis.x,axis.y);		
-	}
-*/
-	//计算RawDataLength次值的平均值
-	Xaverage += axis.x;
-	Yaverage += axis.y;
-	Zaverage += axis.z;
-    rk28printk( "%s: ------------------mma7660_GetData axis = %d  %d  %d,average=%d %d %d--------------\n",
-           __func__, axis.x, axis.y, axis.z,Xaverage,Yaverage,Zaverage); 
-	
-	if((++RawDataNum)>=RawDataLength){
-		RawDataNum = 0;
-		axis.x = Xaverage/RawDataLength;
-		axis.y = Yaverage/RawDataLength;
-		axis.z = Zaverage/RawDataLength;
-	    mma7660_report_value(client, &axis);
-		Xaverage = Yaverage = Zaverage = 0;
-	}
-#if 0	
-  //  rk28printk( "%s: ------------------mma7660_GetData axis = %d  %d  %d--------------\n",
-  //         __func__, axis.x, axis.y, axis.z); 
-     
-    //memcpy(sense_data, &axis, sizeof(axis));
-    mma7660_report_value(client, &axis);
-	//atomic_set(&data_ready, 0);
-	//wake_up(&data_ready_wq);
-#endif
-	return 0;
-}
+	axisback.x =  mma7660_convert_to_int(buffer[MMA7660_REG_Y_OUT]);
+	axisback.y =  mma7660_convert_to_int(buffer[MMA7660_REG_X_OUT]);
+	axisback.z = -mma7660_convert_to_int(buffer[MMA7660_REG_Z_OUT]);
 
-/*
-static int mma7660_trans_buff(char *rbuf, int size)
-{
-	//wait_event_interruptible_timeout(data_ready_wq,
-	//				 atomic_read(&data_ready), 1000);
-	wait_event_interruptible(data_ready_wq,
-					 atomic_read(&data_ready));
-
-	atomic_set(&data_ready, 0);
-	memcpy(rbuf, &sense_data[0], size);
+	axis.x = gsensor_info[0]*axisback.x + gsensor_info[1]*axisback.y + gsensor_info[2]*axisback.z;
+	axis.y = gsensor_info[3]*axisback.x + gsensor_info[4]*axisback.y + gsensor_info[5]*axisback.z;
+	axis.z = gsensor_info[6]*axisback.x + gsensor_info[7]*axisback.y + gsensor_info[8]*axisback.z;
+	mma7660_average (&axis);
+	mma7660_report_value(client, &axis);
 
 	return 0;
 }
-*/
 
 static int mma7660_open(struct inode *inode, struct file *file)
 {
@@ -426,15 +572,15 @@ static int mma7660_remove(struct i2c_client *client)
 {
 	struct mma7660_data *mma7660 = i2c_get_clientdata(client);
 	
-    misc_deregister(&mma7660_device);
-    input_unregister_device(mma7660->input_dev);
-    input_free_device(mma7660->input_dev);
-    free_irq(client->irq, mma7660);
-    kfree(mma7660); 
+	misc_deregister(&mma7660_device);
+	input_unregister_device(mma7660->input_dev);
+	input_free_device(mma7660->input_dev);
+	free_irq(client->irq, mma7660);
+	kfree(mma7660);
 #ifdef CONFIG_ANDROID_POWER
-    android_unregister_early_suspend(&mma7660_early_suspend);
+	android_unregister_early_suspend(&mma7660_early_suspend);
 #endif      
-    this_client = NULL;
+	this_client = NULL;
 	return 0;
 }
 
@@ -449,7 +595,7 @@ static int mma7660_suspend(android_early_suspend_t *h)
 static int mma7660_resume(android_early_suspend_t *h)
 {
 	struct i2c_client *client = container_of(mma7660_device.parent, struct i2c_client, dev);
-    struct mma7660_data *mma7660 = (struct mma7660_data *)i2c_get_clientdata(client);
+	struct mma7660_data *mma7660 = (struct mma7660_data *)i2c_get_clientdata(client);
 	rk28printk("Gsensor mma7760 resume!!\n");
 	return mma7660_start_dev(mma7660->curr_tate);
 }
@@ -501,18 +647,18 @@ static int mma7660_init_client(struct i2c_client *client)
 		rk28printk( "failed to request mma7990_trig GPIO%d\n",gpio_to_irq(client->irq));
 		return ret;
 	}
-    ret = gpio_direction_input(client->irq);
-    if (ret) {
-        rk28printk("failed to set mma7990_trig GPIO gpio input\n");
+	ret = gpio_direction_input(client->irq);
+	if (ret) {
+		rk28printk("failed to set mma7990_trig GPIO gpio input\n");
 		return ret;
-    }
+	}
 	gpio_pull_updown(client->irq, GPIOPullUp);
 	client->irq = gpio_to_irq(client->irq);
 	ret = request_irq(client->irq, mma7660_interrupt, IRQF_TRIGGER_LOW, client->dev.driver->name, mma7660);
 	rk28printk("request irq is %d,ret is  0x%x\n",client->irq,ret);
 	if (ret ) {
 		rk28printk(KERN_ERR "mma7660_init_client: request irq failed,ret is %d\n",ret);
-        return ret;
+		return ret;
 	}
 	disable_irq(client->irq);
 	init_waitqueue_head(&data_ready_wq);
@@ -523,6 +669,7 @@ static int mma7660_init_client(struct i2c_client *client)
 static int  mma7660_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
 	struct mma7660_data *mma7660;
+	char  buffer[1] = {MMA7660_REG_X_OUT};
 	int err;
 	
 	Xaverage = Yaverage = Zaverage = RawDataNum = 0;
@@ -542,6 +689,15 @@ static int  mma7660_probe(struct i2c_client *client, const struct i2c_device_id 
 	i2c_set_clientdata(client, mma7660);
 
 	this_client = client;
+
+	if (mma7660_rx_data(this_client , &buffer[0] ,1) < 0 ) {
+		pr_info("mma7660: invalid devid\n");
+		goto exit_devid;
+	}
+	else
+	{
+		//nothing
+	}
 
 	err = mma7660_init_client(client);
 	if (err < 0) {
@@ -567,7 +723,7 @@ static int  mma7660_probe(struct i2c_client *client, const struct i2c_device_id 
 	/* z-axis acceleration */
 	input_set_abs_params(mma7660->input_dev, ABS_Z, -MMA7660_RANGE, MMA7660_RANGE, 0, 0);
 
-	mma7660->input_dev->name = "compass";
+	mma7660->input_dev->name = "gsensor";
 	mma7660->input_dev->dev.parent = &client->dev;
 
 	err = input_register_device(mma7660->input_dev);
@@ -578,7 +734,7 @@ static int  mma7660_probe(struct i2c_client *client, const struct i2c_device_id 
 		goto exit_input_register_device_failed;
 	}
 
-    mma7660_device.parent = &client->dev;
+	mma7660_device.parent = &client->dev;
 	err = misc_register(&mma7660_device);
 	if (err < 0) {
 		rk28printk(KERN_ERR
@@ -592,6 +748,7 @@ static int  mma7660_probe(struct i2c_client *client, const struct i2c_device_id 
             "mma7660_probe: gsensor sysfs init failed\n");
 		goto exit_gsensor_sysfs_init_failed;
 	}
+	mma7660_sys_init();
 	
 #ifdef CONFIG_ANDROID_POWER
     mma7660_early_suspend.suspend = mma7660_suspend;
@@ -615,6 +772,7 @@ exit_input_register_device_failed:
 exit_input_allocate_device_failed:
     free_irq(client->irq, mma7660);
 exit_request_gpio_irq_failed:
+exit_devid:
 	kfree(mma7660);	
 exit_alloc_data_failed:
     ;
@@ -624,6 +782,7 @@ exit_alloc_data_failed:
 
 static int __init mma7660_i2c_init(void)
 {
+	printk("mma7660 init\n");
 	return i2c_add_driver(&mma7660_driver);
 }
 

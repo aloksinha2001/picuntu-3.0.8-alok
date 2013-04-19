@@ -7,12 +7,9 @@
 #ifdef CONFIG_ARCH_RK29
 #include <mach/rk29_iomap.h>
 #endif
-#ifdef CONFIG_HAS_EARLYSUSPEND
-#include <linux/earlysuspend.h>
-#endif
-#include <linux/rk_screen.h>
-#include <linux/mfd/rk610_core.h>
+#include "../../screen/screen.h"
 #include "../../../rk29_fb.h"
+#include <linux/mfd/rk610_core.h>
 
 #define TVE_VFCR		0x00
 	#define TVE_VFCR_ENABLE_SUBCARRIER_RESET	0 << 6
@@ -87,22 +84,6 @@ struct rk610_monspecs {
 	unsigned int 				mode_set;
 };
 
-struct rk610 {
-	struct device		*dev;
-	struct i2c_client	*client;
-	#ifdef CONFIG_HAS_EARLYSUSPEND
-	struct early_suspend	early_suspend;
-	#endif
-	int		io_switch_pin;
-	int		video_source;
-	int		property;
-	int		mode;
-	struct rk610_monspecs *cvbs;
-	struct rk610_monspecs *ypbpr;
-};
-
-extern struct rk610 rk610;
-
 enum {
 	TVOUT_CVBS_NTSC = 1,
 	TVOUT_CVBS_PAL,
@@ -116,16 +97,18 @@ enum {
 	TVOUT_YPbPr_1920x1080p_60
 };
 
-#ifdef CONFIG_RK610_TVOUT_CVBS
 #define RK610_TVOUT_DEAULT TVOUT_CVBS_NTSC
-#else
-#define RK610_TVOUT_DEAULT TVOUT_YPbPr_1280x720p_60
-#endif
+
 enum {
 	RK610_TVOUT_CVBS = 0,
 	RK610_TVOUT_YC,
 	RK610_TVOUT_YPBPR,
 };
+
+extern volatile int rk610_tv_output_status;
+extern struct rk_display_ops rk610_display_ops;
+
+extern int FB_Switch_Screen( struct rk29fb_screen *screen, u32 enable );
 
 extern int rk610_tv_wirte_reg(u8 reg, u8 data);
 extern int rk610_tv_standby(int type);
@@ -135,11 +118,13 @@ extern int rk610_register_display(struct device *parent);
 #ifdef CONFIG_RK610_TVOUT_YPbPr
 extern int rk610_tv_ypbpr_init(void);
 extern int rk610_register_display_ypbpr(struct device *parent);
+extern struct rk610_monspecs rk610_ypbpr_monspecs;
 #endif
 
 #ifdef CONFIG_RK610_TVOUT_CVBS
 extern int rk610_tv_cvbs_init(void);
 extern int rk610_register_display_cvbs(struct device *parent);
+extern struct rk610_monspecs rk610_cvbs_monspecs;
 #endif
 
 #endif

@@ -32,9 +32,14 @@
 #include <plat/ipp.h>
 #include "hdmi/rk_hdmi.h"
 
+#ifdef CONFIG_MALI	//IAM
+#include "ump/ump_kernel_interface.h"
+#endif
 
 
 #ifdef	CONFIG_FB_MIRRORING
+
+#define OLEGK0_CHANGED 1
 
 
 int (*video_data_to_mirroring)(struct fb_info *info,u32 yuv_phy[2]) = NULL;
@@ -244,6 +249,11 @@ static int rk_pan_display(struct fb_var_screeninfo *var, struct fb_info *info)
  	#endif
 	return 0;
 }
+//IAM
+#ifdef CONFIG_MALI
+int (*disp_get_ump_secure_id)(struct fb_info *info, struct rk_fb_inf *g_fbi, unsigned long arg, int buf);
+EXPORT_SYMBOL(disp_get_ump_secure_id);
+#endif
 static int rk_fb_ioctl(struct fb_info *info, unsigned int cmd,unsigned long arg)
 {
 	struct fb_fix_screeninfo *fix = &info->fix;
@@ -255,8 +265,12 @@ static int rk_fb_ioctl(struct fb_info *info, unsigned int cmd,unsigned long arg)
 	int num_buf; //buffer_number
 	void __user *argp = (void __user *)arg;
 
+#ifdef CONFIG_MALI
+        int secure_id_buf_num = 0; //IAM
+#endif
+	struct rk_fb_inf *inf = dev_get_drvdata(info->device); //IAM //Galland: olegk0 takes this out of below ifdef
 	#if defined(CONFIG_DUAL_DISP_IN_KERNEL)
-	struct rk_fb_inf *inf = dev_get_drvdata(info->device);
+//	struct rk_fb_inf *inf = dev_get_drvdata(info->device); //IAM
 	struct fb_info * info2 = inf->fb[2];
 	struct rk_lcdc_device_driver * dev_drv1  = (struct rk_lcdc_device_driver * )info2->par;
 	#endif
@@ -302,6 +316,20 @@ static int rk_fb_ioctl(struct fb_info *info, unsigned int cmd,unsigned long arg)
 			dev_drv1->num_buf = num_buf;
 			#endif
 			break;
+#ifdef CONFIG_MALI	/*//IAM*/
+		case GET_UMP_SECURE_ID_BUF2: /* flow trough */
+			secure_id_buf_num = 1;
+		case GET_UMP_SECURE_ID_BUF1:
+			{
+			    if (!disp_get_ump_secure_id)
+				request_module("disp_ump");
+			    if (disp_get_ump_secure_id)
+				return disp_get_ump_secure_id(info, inf, arg,
+								secure_id_buf_num);
+			    else
+				return -ENOTSUPP;
+			}
+#endif
 		case FBIOGET_SCREEN_STATE:
 		case FBIOPUT_SET_CURSOR_EN:
 		case FBIOPUT_SET_CURSOR_POS:
@@ -345,8 +373,10 @@ static int rk_fb_check_var(struct fb_var_screeninfo *var, struct fb_info *info)
 {
 	
 	if( 0==var->xres_virtual || 0==var->yres_virtual ||
-		 0==var->xres || 0==var->yres || var->xres<16 ||
-		 ((16!=var->bits_per_pixel)&&(32!=var->bits_per_pixel)) )
+//IAM		 0==var->xres || 0==var->yres || var->xres<16 ||
+		 0==var->yres || var->xres<16 ||
+//		 ((16!=var->bits_per_pixel)&&(32!=var->bits_per_pixel)) )
+		 ((16!=var->bits_per_pixel)&&(24!=var->bits_per_pixel)&&(32!=var->bits_per_pixel)) )  //olegk0 adds 24bpp
 	 {
 		 printk("%s check var fail 1!!! \n",info->fix.id);
 		 printk("xres_vir:%d>>yres_vir:%d\n", var->xres_virtual,var->yres_virtual);
@@ -590,11 +620,16 @@ static struct fb_ops fb_ops = {
 
 
 static struct fb_var_screeninfo def_var = {
+//IAM
     .red    = {11,5,0},//default set to rgb565,the boot logo is rgb565
     .green  = {5,6,0},
     .blue   = {0,5,0},
+/*    .red    = {16,8,0},//default set to rgbx8888
+    .green  = {8,8,0},
+    .blue   = {0,8,0},*/
     .transp = {0,0,0},	
     .nonstd      = HAL_PIXEL_FORMAT_RGB_565,   //(ypos<<20+xpos<<8+format) format
+//    .nonstd      = HAL_PIXEL_FORMAT_RGBX_8888,   //(ypos<<20+xpos<<8+format) format
     .grayscale   = 0,  //(ysize<<20+xsize<<8)
     .activate    = FB_ACTIVATE_NOW,
     .accel_flags = 0,
@@ -770,10 +805,18 @@ static int rk_request_fb_buffer(struct fb_info *fbi,int fb_id)
 	switch(fb_id)
 	{
         	case 0:
+#ifdef OLEGK0_CHANGED
+            		res = platform_get_resource_byname(g_fb_pdev, IORESOURCE_MEM, "ipp buf");
+#else
             		res = platform_get_resource_byname(g_fb_pdev, IORESOURCE_MEM, "fb0 buf");
+#endif
             		if (res == NULL)
             		{
+#ifdef OLEGK0_CHANGED
+                		dev_err(&g_fb_pdev->dev, "failed to get win0 ipp memory \n");
+#else
                 		dev_err(&g_fb_pdev->dev, "failed to get win0 memory \n");
+#endif
                 		ret = -ENOENT;
             		}
 		 	fbi->fix.smem_start = res->start;
@@ -783,6 +826,44 @@ static int rk_request_fb_buffer(struct fb_info *fbi,int fb_id)
 	            	memset(fbi->screen_base, 0, fbi->fix.smem_len);
 		    	printk("fb%d:phy:%lx>>vir:%p>>len:0x%x\n",fb_id,
 				fbi->fix.smem_start,fbi->screen_base,fbi->fix.smem_len);
+#ifdef OLEGK0_CHANGED
+   //IAM
+   #if 0
+           	#ifdef CONFIG_FB_WORK_IPP // alloc ipp buf for rotate
+	               	res = platform_get_resource_byname(g_fb_pdev, IORESOURCE_MEM, "ipp buf");
+	               	if (res == NULL)
+	               	{
+	                   	dev_err(&g_fb_pdev->dev, "failed to get win1 ipp memory \n");
+	                  		ret = -ENOENT;
+	               	}
+	               	fbi->fix.mmio_start = res->start;
+	               	fbi->fix.mmio_len = res->end - res->start + 1;
+	    	#endif
+   #endif
+         //Galland: next three lines copied to fb_id 0 from olegk0's fb_id 1
+	            	fbi->fix.mmio_len = (fbi->fix.smem_len >> 1)& ~7;
+	            	fbi->fix.mmio_start = fbi->fix.smem_start + fbi->fix.mmio_len;
+		    	break;
+
+         //IAM
+        	case 1:
+	            	res = platform_get_resource_byname(g_fb_pdev, IORESOURCE_MEM, "ipp buf");
+	            	if (res == NULL)
+	            	{
+	                	dev_err(&g_fb_pdev->dev, "failed to get win1 ipp memory \n");
+	               		ret = -ENOENT;
+	            	}
+			fbi->fix.smem_start = res->start;
+			fbi->fix.smem_len = res->end - res->start + 1;
+			mem = request_mem_region(res->start, resource_size(res), g_fb_pdev->name);
+			fbi->screen_base = ioremap(res->start, fbi->fix.smem_len);
+			memset(fbi->screen_base, 0, fbi->fix.smem_len);
+			printk("fb%d:phy:%lx>>vir:%p>>len:0x%x\n",fb_id,
+				fbi->fix.smem_start,fbi->screen_base,fbi->fix.smem_len);
+	            	fbi->fix.mmio_len = (fbi->fix.smem_len >> 1)& ~7;
+	            	fbi->fix.mmio_start = fbi->fix.smem_start + fbi->fix.mmio_len;
+		    	break;
+#else
         	#ifdef CONFIG_FB_WORK_IPP // alloc ipp buf for rotate
 	            	res = platform_get_resource_byname(g_fb_pdev, IORESOURCE_MEM, "ipp buf");
 	            	if (res == NULL)
@@ -794,6 +875,7 @@ static int rk_request_fb_buffer(struct fb_info *fbi,int fb_id)
 	            	fbi->fix.mmio_len = res->end - res->start + 1;
 	 	#endif
 		    	break;
+#endif
         	case 2:
 			#if !defined(CONFIG_THREE_FB_BUFFER)
             		res = platform_get_resource_byname(g_fb_pdev, IORESOURCE_MEM, "fb2 buf");
@@ -979,7 +1061,7 @@ int rk_fb_register(struct rk_lcdc_device_driver *dev_drv,
         fbi->var.xres = fb_inf->lcdc_dev_drv[lcdc_id]->screen->x_res;
         fbi->var.yres = fb_inf->lcdc_dev_drv[lcdc_id]->screen->y_res;
 	fbi->var.grayscale |= (fbi->var.xres<<8) + (fbi->var.yres<<20);
-        fbi->var.bits_per_pixel = 16;
+        fbi->var.bits_per_pixel = 16;//IAM 16;
         fbi->var.xres_virtual = fb_inf->lcdc_dev_drv[lcdc_id]->screen->x_res;
         fbi->var.yres_virtual = fb_inf->lcdc_dev_drv[lcdc_id]->screen->y_res;
         fbi->var.width = fb_inf->lcdc_dev_drv[lcdc_id]->screen->width;

@@ -42,13 +42,13 @@ void __sramfunc sram_printch(char byte)
 	u32 clk_gate2, clk_gate4, clk_gate8;
 
 	gate_save_soc_clk(0
-			  | (1 << CLK_GATE_ACLK_PEIRPH % 16)
-			  | (1 << CLK_GATE_HCLK_PEIRPH % 16)
-			  | (1 << CLK_GATE_PCLK_PEIRPH % 16)
+			  | (1 << CLK_GATE_ACLK_PERIPH % 16)
+			  | (1 << CLK_GATE_HCLK_PERIPH % 16)
+			  | (1 << CLK_GATE_PCLK_PERIPH % 16)
 			  , clk_gate2, CRU_CLKGATES_CON(2), 0
-			  | (1 << ((CLK_GATE_ACLK_PEIRPH % 16) + 16))
-			  | (1 << ((CLK_GATE_HCLK_PEIRPH % 16) + 16))
-			  | (1 << ((CLK_GATE_PCLK_PEIRPH % 16) + 16)));
+			  | (1 << ((CLK_GATE_ACLK_PERIPH % 16) + 16))
+			  | (1 << ((CLK_GATE_HCLK_PERIPH % 16) + 16))
+			  | (1 << ((CLK_GATE_PCLK_PERIPH % 16) + 16)));
 	gate_save_soc_clk((1 << CLK_GATE_ACLK_CPU_PERI % 16)
 			  , clk_gate4, CRU_CLKGATES_CON(4),
 			  (1 << ((CLK_GATE_ACLK_CPU_PERI % 16) + 16)));
@@ -220,7 +220,7 @@ static void pm_pll_wait_lock(int pll_idx)
 {
 	u32 pll_state[4] = { 1, 0, 2, 3 };
 	u32 bit = 0x10u << pll_state[pll_idx];
-	u32 delay = pll_idx == APLL_ID ? 24000000U : 2400000000U;
+	u32 delay = pll_idx == APLL_ID ? 600000U : 30000000U;
 	while (delay > 0) {
 		if (grf_readl(GRF_SOC_STATUS0) & bit)
 			break;
@@ -236,9 +236,47 @@ static void pm_pll_wait_lock(int pll_idx)
 	}
 }
 
+#if 0
 #define power_on_pll(id) \
 	cru_writel(PLL_PWR_DN_W_MSK|PLL_PWR_ON,PLL_CONS((id),3));\
 	pm_pll_wait_lock((id))
+#else
+static void power_on_pll(enum rk_plls_id pll_id)
+{
+	u32 pllcon0, pllcon1, pllcon2;
+
+	cru_writel(PLL_PWR_DN_W_MSK | PLL_PWR_ON, PLL_CONS((pll_id),3));
+	pllcon0 = cru_readl(PLL_CONS((pll_id),0));
+	pllcon1 = cru_readl(PLL_CONS((pll_id),1));
+	pllcon2 = cru_readl(PLL_CONS((pll_id),2));
+
+	//enter slowmode
+	cru_writel(PLL_MODE_SLOW(pll_id), CRU_MODE_CON);
+
+	//enter rest
+	cru_writel(PLL_REST_W_MSK | PLL_REST, PLL_CONS(pll_id,3));
+	cru_writel(pllcon0, PLL_CONS(pll_id,0));
+	cru_writel(pllcon1, PLL_CONS(pll_id,1));
+	cru_writel(pllcon2, PLL_CONS(pll_id,2));
+	if (pll_id == APLL_ID)
+		sram_udelay(5);
+	else
+		udelay(5);
+
+	//return form rest
+	cru_writel(PLL_REST_W_MSK | PLL_REST_RESM, PLL_CONS(pll_id,3));
+
+	//wating lock state
+	if (pll_id == APLL_ID)
+		sram_udelay(168);
+	else
+		udelay(168);
+	pm_pll_wait_lock(pll_id);
+
+	//return form slow
+	cru_writel(PLL_MODE_NORM(pll_id), CRU_MODE_CON);
+}
+#endif
 
 #define DDR_SAVE_SP(save_sp)		do { save_sp = ddr_save_sp(((unsigned long)SRAM_DATA_END & (~7))); } while (0)
 #define DDR_RESTORE_SP(save_sp)		do { ddr_save_sp(save_sp); } while (0)
@@ -261,7 +299,7 @@ static noinline void interface_ctr_reg_pread(void)
 	readl_relaxed(RK30_GRF_BASE);
 	readl_relaxed(RK30_DDR_PCTL_BASE);
 	readl_relaxed(RK30_DDR_PUBL_BASE);
-	readl_relaxed(RK30_I2C1_BASE);
+	readl_relaxed(RK30_I2C1_BASE+SZ_4K);
 }
 
 static inline bool pm_pmu_power_domain_is_on(enum pmu_power_domain pd, u32 pmu_pwrdn_st)
@@ -350,7 +388,7 @@ __weak void __sramfunc rk30_pwm_logic_resume_voltage(void){}
 
 static void __sramfunc rk30_sram_suspend(void)
 {
-	u32 cru_clksel0_con;
+	u32 cru_clksel0_con, cru_clksel10_con;
 	u32 clkgt_regs[CRU_CLKGATES_CON_CNT];
 	u32 cru_mode_con;
 	int i;
@@ -373,26 +411,26 @@ static void __sramfunc rk30_sram_suspend(void)
 			  | (1 << CLK_GATE_PCLK_CPU)
 			  , clkgt_regs[0], CRU_CLKGATES_CON(0), 0xffff);
 
-			  
+		  
 #ifdef CONFIG_DWC_REMOTE_WAKEUP	
 	gate_save_soc_clk(0|(3<<5), clkgt_regs[1], CRU_CLKGATES_CON(1), 0xffff);//hzb
 	if(clkgt_regs[8]&((1<<12)|(1<13))){
 		gate_save_soc_clk(0
-				  | (1 << CLK_GATE_PEIRPH_SRC % 16)
-				  | (1 << CLK_GATE_PCLK_PEIRPH % 16)
-				  | (1 << CLK_GATE_HCLK_PEIRPH % 16)
+				  | (1 << CLK_GATE_PERIPH_SRC % 16)
+				  | (1 << CLK_GATE_PCLK_PERIPH % 16)
+				  | (1 << CLK_GATE_HCLK_PERIPH % 16)
 				, clkgt_regs[2], CRU_CLKGATES_CON(2), 0xffff);
 	}else{
-		gate_save_soc_clk(0|(1 << CLK_GATE_HCLK_PEIRPH % 16)
+		gate_save_soc_clk(0|(1 << CLK_GATE_HCLK_PERIPH % 16)
 				, clkgt_regs[2], CRU_CLKGATES_CON(2), 0xffff);
 
 	}
-#else	
+#else
 	gate_save_soc_clk(0, clkgt_regs[1], CRU_CLKGATES_CON(1), 0xffff);
 	if(clkgt_regs[8]&((1<<12)|(1<13))){
 		gate_save_soc_clk(0
-				  | (1 << CLK_GATE_PEIRPH_SRC % 16)
-				  | (1 << CLK_GATE_PCLK_PEIRPH % 16)
+				  | (1 << CLK_GATE_PERIPH_SRC % 16)
+				  | (1 << CLK_GATE_PCLK_PERIPH % 16)
 				, clkgt_regs[2], CRU_CLKGATES_CON(2), 0xffff);
 	}else{
 		gate_save_soc_clk(0
@@ -418,8 +456,12 @@ static void __sramfunc rk30_sram_suspend(void)
 			  | (1 << CLK_GATE_ACLK_INTMEM3 % 16)
 			  , clkgt_regs[9], CRU_CLKGATES_CON(9), 0x07ff);
 
+	cru_clksel0_con = cru_readl(CRU_CLKSELS_CON(0));
 #ifdef CONFIG_CLK_SWITCH_TO_32K
 	cru_mode_con = cru_readl(CRU_MODE_CON);
+	cru_clksel10_con = cru_readl(CRU_CLKSELS_CON(10));
+	cru_writel((0x1f << 16) | 3, CRU_CLKSELS_CON(10));
+	cru_writel((0x1f << 16) | 3, CRU_CLKSELS_CON(0));
 	cru_writel(0|
 		PLL_MODE_DEEP(APLL_ID)|
 		PLL_MODE_DEEP(DPLL_ID)|
@@ -427,7 +469,6 @@ static void __sramfunc rk30_sram_suspend(void)
 	board_pmu_suspend();
 #else
 	board_pmu_suspend();
-	cru_clksel0_con = cru_readl(CRU_CLKSELS_CON(0));
 	cru_writel((0x1f << 16) | 0x1f, CRU_CLKSELS_CON(0));
 #endif
 
@@ -437,6 +478,8 @@ static void __sramfunc rk30_sram_suspend(void)
 #ifdef CONFIG_CLK_SWITCH_TO_32K
 	board_pmu_resume();
 	cru_writel((0xffff<<16) | cru_mode_con, CRU_MODE_CON);
+	cru_writel((0x1f << 16) | cru_clksel0_con, CRU_CLKSELS_CON(0));
+	cru_writel((0x1f << 16) | cru_clksel10_con, CRU_CLKSELS_CON(10));
 #else
 	cru_writel((0x1f << 16) | cru_clksel0_con, CRU_CLKSELS_CON(0));
 	board_pmu_resume();
@@ -509,19 +552,19 @@ static int rk30_pm_enter(suspend_state_t state)
 			  | (1 << CLK_GATE_DDR_GPLL % 16)|(3 <<5)
 			  , clkgt_regs[1], CRU_CLKGATES_CON(1), 0xffff);
 	gate_save_soc_clk(0
-			  | (1 << CLK_GATE_PEIRPH_SRC % 16)
-			  | (1 << CLK_GATE_PCLK_PEIRPH % 16)
-			  | (1 << CLK_GATE_ACLK_PEIRPH % 16)
-			  | (1 << CLK_GATE_HCLK_PEIRPH % 16)
+			  | (1 << CLK_GATE_PERIPH_SRC % 16)
+			  | (1 << CLK_GATE_PCLK_PERIPH % 16)
+			  | (1 << CLK_GATE_ACLK_PERIPH % 16)
+			  | (1 << CLK_GATE_HCLK_PERIPH % 16)
 			  , clkgt_regs[2], CRU_CLKGATES_CON(2), 0xffff);		  
 #else
   gate_save_soc_clk(0
 			  | (1 << CLK_GATE_DDR_GPLL % 16)
 			  , clkgt_regs[1], CRU_CLKGATES_CON(1), 0xffff);
 	gate_save_soc_clk(0
-			  | (1 << CLK_GATE_PEIRPH_SRC % 16)
-			  | (1 << CLK_GATE_PCLK_PEIRPH % 16)
-			  | (1 << CLK_GATE_ACLK_PEIRPH % 16)
+			  | (1 << CLK_GATE_PERIPH_SRC % 16)
+			  | (1 << CLK_GATE_PCLK_PERIPH % 16)
+			  | (1 << CLK_GATE_ACLK_PERIPH % 16)
 			  , clkgt_regs[2], CRU_CLKGATES_CON(2), 0xffff);		  
 #endif	
 		  

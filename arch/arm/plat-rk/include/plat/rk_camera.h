@@ -35,7 +35,7 @@
 #define RK29_CAM_EIO_INVALID -1
 #define RK29_CAM_EIO_REQUESTFAIL -2
 
-#define RK_CAM_NUM 6
+#define RK_CAM_NUM 20
 #define RK29_CAM_SUPPORT_NUMS  RK_CAM_NUM
 #define RK_CAM_SUPPORT_RESOLUTION 0x500000
 /*---------------- Camera Sensor Must Define Macro Begin  ------------------------*/
@@ -58,14 +58,18 @@
 #define RK29_CAM_SENSOR_GC0307  gc0307
 #define RK29_CAM_SENSOR_GC0308  gc0308
 #define RK29_CAM_SENSOR_GC0309  gc0309
+#define RK29_CAM_SENSOR_GC0329  gc0329
 #define RK29_CAM_SENSOR_GC2015  gc2015
 #define RK29_CAM_SENSOR_GC2035  gc2035
 #define RK29_CAM_SENSOR_SIV120B  siv120b
+#define RK29_CAM_SENSOR_SIV121D  siv121d
 #define RK29_CAM_SENSOR_SID130B  sid130B
 #define RK29_CAM_SENSOR_HI253  hi253
 #define RK29_CAM_SENSOR_HI704  hi704
 #define RK29_CAM_SENSOR_NT99250 nt99250
-#define RK_CIF_DECODER_ADV7180	adv7180
+#define RK29_CAM_SENSOR_SP2518 sp2518
+#define RK29_CAM_SENSOR_SP0A19 sp0a19
+#define RK29_CAM_SENSOR_SP0838  sp0838
 
 #define RK29_CAM_SENSOR_NAME_OV7675 "ov7675"
 #define RK29_CAM_SENSOR_NAME_OV9650 "ov9650"
@@ -86,14 +90,18 @@
 #define RK29_CAM_SENSOR_NAME_GC0307  "gc0307"
 #define RK29_CAM_SENSOR_NAME_GC0308  "gc0308"
 #define RK29_CAM_SENSOR_NAME_GC0309  "gc0309"
+#define RK29_CAM_SENSOR_NAME_GC0329  "gc0329"
 #define RK29_CAM_SENSOR_NAME_GC2015  "gc2015"
 #define RK29_CAM_SENSOR_NAME_GC2035  "gc2035"
 #define RK29_CAM_SENSOR_NAME_SIV120B "siv120b"
+#define RK29_CAM_SENSOR_NAME_SIV121D "siv121d"
 #define RK29_CAM_SENSOR_NAME_SID130B "sid130B"
 #define RK29_CAM_SENSOR_NAME_HI253  "hi253"
 #define RK29_CAM_SENSOR_NAME_HI704  "hi704"
 #define RK29_CAM_SENSOR_NAME_NT99250 "nt99250"
-#define RK_CIF_DECODER_NAME_ADV7180	"adv7180"
+#define RK29_CAM_SENSOR_NAME_SP2518 "sp2518"
+#define RK29_CAM_SENSOR_NAME_SP0A19 "sp0a19"
+#define RK29_CAM_SENSOR_NAME_SP0838  "sp0838"
 
 #define ov7675_FULL_RESOLUTION     0x30000            // 0.3 megapixel
 #define ov9650_FULL_RESOLUTION     0x130000           // 1.3 megapixel   
@@ -116,11 +124,13 @@
 #define gc2015_FULL_RESOLUTION     0x200000           // 2 megapixel
 #define gc2035_FULL_RESOLUTION     0x200000           // 2 megapixel
 #define siv120b_FULL_RESOLUTION     0x30000            // 0.3 megapixel
+#define siv121d_FULL_RESOLUTION     0x30000            // 0.3 megapixel
 #define sid130B_FULL_RESOLUTION     0x200000           // 2 megapixel    
 #define hi253_FULL_RESOLUTION       0x200000           // 2 megapixel
 #define hi704_FULL_RESOLUTION       0x30000            // 0.3 megapixel
 #define nt99250_FULL_RESOLUTION     0x200000           // 2 megapixel
-#define adv7180_FULL_RESOLUTION		0x200000           // 2 megapixel
+#define sp0838_FULL_RESOLUTION     0x30000           // // 0.3 megapixel
+#define sp2518_FULL_RESOLUTION     0x200000           // // 2 megapixel
 /*---------------- Camera Sensor Must Define Macro End  ------------------------*/
 
 

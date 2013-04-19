@@ -23,10 +23,10 @@
 #define I2C_CON_MOD(mod)        ((mod) << 1)
 #define I2C_CON_MASK            (3 << 1)
 enum{
-    I2C_CON_MOD_TX = 0,
-    I2C_CON_MOD_TRX,
-    I2C_CON_MOD_RX,
-    I2C_CON_MOD_RRX,
+        I2C_CON_MOD_TX = 0,
+        I2C_CON_MOD_TRX,
+        I2C_CON_MOD_RX,
+        I2C_CON_MOD_RRX,
 };
 #define I2C_CON_START           (1 << 3)
 #define I2C_CON_STOP            (1 << 4)
@@ -603,5 +603,4 @@ int i2c_add_rk30_adapter(struct i2c_adapter *adap)
 
         return ret;
 }
-
 

@@ -211,8 +211,8 @@ int wm831x_post_init(struct wm831x *Wm831x)
 
 	dcdc = regulator_get(NULL, "dcdc4");	// vcc_io
 #ifdef CONFIG_MACH_RK3066_SDK
-	regulator_set_voltage(dcdc, 3300000, 3300000);
-	regulator_set_suspend_voltage(dcdc, 3100000);
+	regulator_set_voltage(dcdc, 3000000, 3000000);
+	regulator_set_suspend_voltage(dcdc, 2800000);
 #else
 	regulator_set_voltage(dcdc, 3000000, 3000000);
 	regulator_set_suspend_voltage(dcdc, 2800000);
@@ -308,8 +308,8 @@ int wm831x_post_init(struct wm831x *Wm831x)
 	udelay(100);
 
 	ldo = regulator_get(NULL, "ldo9");	//vcc_tp
-	regulator_set_voltage(ldo, 3300000, 3300000);
-	regulator_set_suspend_voltage(ldo, 3300000);
+	regulator_set_voltage(ldo, 3000000, 3000000);
+	regulator_set_suspend_voltage(ldo, 3000000);
 	regulator_enable(ldo);
 //	printk("%s set ldo9 vcc_tp=%dmV end\n", __func__, regulator_get_voltage(ldo));
 	regulator_put(ldo);

@@ -242,6 +242,13 @@ config NO_BATTERY_IC
 	help
 	  Say no BQ27510(I2C) chip in board .
 
+config BATTERY_OZ8806
+	tristate "OZ8806 battery driver"
+	depends on I2C_RK29 || I2C_RK30 
+	default n
+	help
+	  Say Y here to enable support for batteries with OZ8806(I2C) chip.  
+
 config BATTERY_JZ4740
 	tristate "Ingenic JZ4740 battery"
 	depends on MACH_JZ4740
@@ -323,17 +330,38 @@ config BATTERY_RK30_ADC
         help
           Say Y to enable support for the battery on the RK30.
 
+config BATTERY_RK30_ADC_FAC
+        tristate "RK30 ADC Battery Factory"
+        depends on ADC_RK30
+        help
+          Say Y to enable support for the battery on the RK30.
+
 config BATTERY_RK30_AC_CHARGE
         tristate "RK30 AC CHARGE"
-        depends on BATTERY_RK30_ADC
+        depends on BATTERY_RK30_ADC||BATTERY_RK30_ADC_FAC
         help
           say Y to enable suspport for the AC battery charge
 
 config BATTERY_RK30_VOL3V8
        tristate "the battery voltage is 3.8V"
-        depends on BATTERY_RK30_ADC
+        depends on BATTERY_RK30_ADC||BATTERY_RK30_ADC_FAC
         help
           say Y to enable suspport for the battery voltage 3.8V	
+
+config BATTERY_TYPE
+	bool "Support battery type"
+
+config BATTERY_BT_B0BFN_3474107
+        tristate "yokuenergy BT-BOBFN 3474107"
+        depends on BATTERY_TYPE
+        help
+          say Y to enable suspport for BT-BOBFN battery
+          
+config BATTERY_BT_B0BDN_3574108
+        tristate "yokuenergy BT-BOBDN 3474108"
+        depends on BATTERY_TYPE
+        help
+          say Y to enable suspport for BT-BOBDN battery
 
 config POWER_ON_CHARGER_DISPLAY
 	bool "Support charger display"
@@ -341,5 +369,19 @@ config POWER_ON_CHARGER_DISPLAY
 config WM8326_VBAT_LOW_DETECTION
 	tristate "Support for WM8326 battery voltage detection."
 	default n
+
+config TWL60xx_VBAT_LOW_DETECTION
+	tristate "Support for twl60xx low battery detection."
+	default n
+
+config CHARGER_SMB347
+	tristate "Summit Microelectronics SMB347 Battery Charger"
+	depends on I2C
+	select REGMAP_I2C
+	help
+	  Say Y to include support for Summit Microelectronics SMB347
+	  Battery Charger.
+
+source "drivers/power/axp_power/Kconfig"
 
 endif # POWER_SUPPLY

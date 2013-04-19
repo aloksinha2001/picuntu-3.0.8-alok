@@ -28,6 +28,8 @@
 //unsigned int   pre_cnt = 0;   //for long press counter 
 //int charge_disp_mode = 0;
 int pwr_on_thrsd = 5;          //power on capcity threshold
+int charger_in_logo = 0;
+int battery_low = 0;
 
 //extern int board_boot_mode(void);
 //extern int boot_mode_init(char * s);
@@ -73,6 +75,8 @@ static int  __init start_charge_logo_display(void)
 	int online = 0;
 
 	printk("start_charge_logo_display\n");
+	charger_in_logo = 0;
+	battery_low = 0;
 
 	if(board_boot_mode() == BOOT_MODE_RECOVERY)  //recovery mode
 	{
@@ -94,18 +98,25 @@ static int  __init start_charge_logo_display(void)
 		val_status.intval = POWER_SUPPLY_STATUS_CHARGING;
 
 	// low power   and  discharging
-#if 0
+#if 1
 	if((val_capacity.intval < pwr_on_thrsd )&&(val_status.intval != POWER_SUPPLY_STATUS_CHARGING))
 	{
 		printk("low power\n");
-		kernel_power_off();
-		while(1);
+		add_bootmode_charger_to_cmdline();
+		//boot_mode_init("charge");
+		printk("power in low mode\n");
+		charger_in_logo = 1;
+		battery_low = 1;
+
+		//kernel_power_off();
+		//while(1);
 		return 0;
 	}
 #endif
 
 
 	//low power and charging
+#if 0
 	if((val_capacity.intval < pwr_on_thrsd )&&(val_status.intval == POWER_SUPPLY_STATUS_CHARGING))
 	{
 		while((val_capacity.intval < pwr_on_thrsd ))
@@ -118,6 +129,7 @@ static int  __init start_charge_logo_display(void)
 			//printk("charging ... \n");
 		}
 	}
+#endif
 
 
 
@@ -128,6 +140,7 @@ static int  __init start_charge_logo_display(void)
 			add_bootmode_charger_to_cmdline();
 			//boot_mode_init("charge");
 			printk("power in charge mode\n");
+			charger_in_logo = 1;
 		}
 	}
 

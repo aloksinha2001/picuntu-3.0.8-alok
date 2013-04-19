@@ -630,6 +630,11 @@ static void switch_cpu(struct fiq_debugger_state *state, int cpu)
 	else {
 		struct cpumask cpumask;
 
+		if (!cpu_online(cpu)) {
+			debug_printf(state, "cpu %d offline\n", cpu);
+			return;
+		}
+
 		cpumask_clear(&cpumask);
 		cpumask_set_cpu(cpu, &cpumask);
 
@@ -1080,6 +1085,13 @@ static void debug_console_write(struct console *co,
 
 	if (!state->console_enable && !state->syslog_dumping)
 		return;
+
+#ifdef CONFIG_RK_CONSOLE_THREAD
+	if (state->pdata->console_write) {
+		state->pdata->console_write(state->pdev, s, count);
+		return;
+	}
+#endif
 
 	debug_uart_enable(state);
 	while (count--) {

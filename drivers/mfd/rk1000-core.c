@@ -17,7 +17,9 @@
 
 struct i2c_client * rk1000_control_client = NULL;
 
-
+//Galland: to avoid losing RK1000 TV_OUT functionality, I leave this file here
+//   even though it's not included in JB kernel. To make it work I modified
+//   the last "#if 1" in sound/soc/codecs/rk1000_codec.c to "#if 0"
 
 
 int reg_send_data(struct i2c_client *client, const char start_reg,

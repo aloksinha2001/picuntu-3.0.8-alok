@@ -1,4 +1,3 @@
-
 if ARCH_RK30
 
 choice
@@ -11,6 +10,11 @@ config MACH_RK30_SDK
 config MACH_RK3066_SDK
 	bool "RK3066 SDK board"
 
+config MACH_RK30_DS1001B
+        bool "RK30 DS1001B board"
+
+config MACH_RK30_PHONE_PAD
+        bool "RK30 smart phone pad board"
 config MACH_RK30_PHONE
 	bool "RK30 smart phone board"
 	

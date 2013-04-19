@@ -1,0 +1,177 @@
+menuconfig KP_AXP
+	bool "X-Powers AXP Series Power drivers"
+	select REGULATOR
+	default n
+	---help---
+	  This option allows you to select X-Powers AXP power driver
+
+if KP_AXP
+
+choice
+	prompt "AXP PMU type"
+	default KP_AXP20
+
+	config KP_AXP19
+		bool "AXP19 driver"
+		---help---
+	  		AXP19 driver
+
+	config KP_AXP20
+		bool "AXP20 driver"
+		---help---
+	  		AXP20 driver
+
+endchoice
+
+choice
+	prompt "AXP calculate type:"
+	default USE_COL
+
+	config USE_COL
+		bool "COULOMB"
+		---help---
+			AXP driver for coulomb
+		
+	config USE_OCV
+		bool "OCV"
+		---help---
+			AXP driver for ocv
+
+endchoice
+
+	config KP_OUTPUTINIT
+		bool "AXP output init"
+		default n
+	
+	config KP_USEIRQ
+		bool "AXP irq enable"
+		default y
+
+	config AXP_DEBUG
+		bool "AXP debug interface"
+		select AXP_FRQSET
+		select AXP_CHGCURCHG
+		select AXP_CHGINIT
+		select AXP_CHGVOLSET
+		select AXP_CHGCURSET
+		select AXP_CHGRATESET
+		select AXP_PRECHGSET
+		select AXP_CSTCHGSET
+		select AXP_OPCLINIT
+		select AXP_PEKSET
+		select AXP_PEKOPEN
+		select AXP_PEKLONG
+		select AXP_PEKOFFEN
+		select AXP_PEKDELAY
+		select AXP_PEKOFF
+		select AXP_NOESET
+		select AXP_OTPOFFEN
+		select AXP_OCVINIT
+		select AXP_WARNVOL
+		select AXP_USBVOLLIM
+		select AXP_USBCURLIM
+		default n
+
+	config AXP_FRQSET
+		bool "AXP adc frequency change"
+		default n
+
+	config AXP_CHGCURCHG
+		bool "AXP charging current change when suspend\resume\shutdown"
+		select AXP_CHGINIT
+		select AXP_CHGCURSET
+		default n
+
+	menuconfig AXP_CHGINIT
+		bool "AXP charge parameter set"
+		default n
+	
+	if AXP_CHGINIT
+
+		config AXP_CHGVOLSET
+			bool "AXP change charge target voltage"
+			default n
+	
+		config AXP_CHGCURSET
+			bool "AXP change init charge current"
+			default n
+	
+		config AXP_CHGRATESET
+			bool "AXP change end charge current rate"
+			default n
+
+		config AXP_PRECHGSET
+			bool "AXP pre-charge time set"
+			default n
+
+		config AXP_CSTCHGSET
+			bool "AXP constant current charge time set"
+			default n
+
+	endif #!AXP_CHGINIT
+
+	config AXP_PEKINFO
+		bool "AXP set KEY_POWER information"
+		default y
+
+	menuconfig AXP_OPCLINIT
+		bool "AXP pek n_oe overtemperture shutdown set"
+		default n
+
+	if AXP_OPCLINIT
+
+		menuconfig AXP_PEKSET
+			bool "AXP pek set"
+			default n
+		
+		if AXP_PEKSET
+
+			config AXP_PEKOPEN
+				bool "AXP pek open time set"
+				default n
+	
+			config AXP_PEKLONG
+				bool "AXP pek long time set"
+				default n
+
+			config AXP_PEKOFFEN
+				bool "AXP shutdown itself after press pek over off time"
+				default n
+
+			config AXP_PEKDELAY
+				bool "AXP powerok delay time set"
+				default n
+
+			config AXP_PEKOFF
+				bool "AXP pek shutdown time set"
+				default n
+
+		endif #!AXP_PEKSET
+
+		config AXP_NOESET
+			bool "AXP n_oe shutdown time set"
+			default n	
+
+		config AXP_OTPOFFEN
+			bool "AXP shutdown itself after pmu overtemperture"
+			default n
+
+	endif #!AXP_OPCLINIT
+
+	config AXP_OCVINIT
+		bool "AXP ocv to capicaty table init set"
+		default n
+
+	config AXP_WARNVOL
+		bool "AXP low warning voltage set"
+		default n
+
+	config AXP_USBVOLLIM
+		bool "AXP usb voltage limite"
+		default n
+	
+	config AXP_USBCURLIM
+		bool "AXP usb current limite"
+		default n
+
+endif # !KP_AXP

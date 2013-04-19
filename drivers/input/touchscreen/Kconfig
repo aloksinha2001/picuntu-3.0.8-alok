@@ -11,6 +11,9 @@ menuconfig INPUT_TOUCHSCREEN
 
 if INPUT_TOUCHSCREEN
 
+config TOUCHSCREEN_SSL
+	tristate "SSD253X based touchscreens"
+	depends on I2C2_RK30 || I2C2_RK29
 config TOUCHSCREEN_XPT2046_SPI
 	tristate "XPT2046 based touchscreens:SPI Interface"
 	depends on SPIM_RK29
@@ -135,6 +138,32 @@ config TOUCHSCREEN_GT8XX
                 default 800
                 help
                   goodix touch max y resolution
+config TOUCHSCREEN_GT801PLUS_819_8105_8110
+        tristate "Goodix touch screen gt801plus_819_8105_8110 support for rockchip based platform"
+        help
+          Say Y here if you have a touchscreen interface using the
+          two goodix gt801plus_819_8105_8110, and your board-specific initialization
+          code includes that in its table of IIC devices.
+	  If unsure, say N.
+
+config TOUCHSCREEN_GT800_801
+        tristate "Goodix touch screen gt801"
+        help
+          Say Y here if you have a touchscreen interface using the
+          goodix gt801  , and your board-specific initialization
+          code includes that in its table of IIC devices.
+	  If unsure, say N (but it's safe to say "Y").
+
+config TOUCHSCREEN_GT813_827_828
+        tristate "Goodix touch screen gt813_827_828 support for rockchip based platform"
+        help
+          Say Y here if you have a touchscreen interface using the
+          two goodix gt813_827_828, and your board-specific initialization
+          code includes that in its table of IIC devices.
+	  If unsure, say N.
+
+config TOUCHSCREEN_CT36X
+	tristate "CT36X based touchscreens"
 
 config RK28_I2C_TS_NTP070
 	tristate "NTP070 based touchscreens: NTP070 Interface"
@@ -146,6 +175,13 @@ config TOUCHSCREEN_IT7250
 	  Say Y here if you have a touchscreen interface using the
 	  xpt2046 controller, and your board-specific initialization
 	  code includes that in its table of SPI devices.
+	  If unsure, say N (but it's safe to say "Y").
+	  
+config TOUCHSCREEN_GT82X_IIC
+	tristate "GT828 based touchscreens"
+	help
+	  Say Y here if you have a touchscreen interface using the
+	  gt828 controller.
 
 	  If unsure, say N (but it's safe to say "Y").
 
@@ -969,10 +1005,18 @@ config LAIBAO_TS
 config TOUCHSCREEN_GT801_IIC
 	tristate "GT801_IIC based touchscreens"
 	depends on I2C2_RK29
+config TOUCHSCREEN_GT82X_IIC
+	tristate "GT82x_IIC based touchscreens"
+	depends on I2C2_RK30
 
 config TOUCHSCREEN_GT818_IIC
 	tristate "GT818_IIC based touchscreens"
 	depends on I2C2_RK29
+config TOUCHSCREEN_GT811_MALATA
+	tristate "GT811_IIC malata based touchscreens"
+
+config TOUCHSCREEN_GT8110_MALATA
+	tristate "GT8110 IIC malata based touchscreens"
 
 config TOUCHSCREEN_PIXCIR
 	tristate "PIXCIR_IIC based touchscreens"
@@ -995,10 +1039,24 @@ config TOUCHSCREEN_GT819
 	tristate "GT819 based touchscreens"
 	depends on I2C2_RK29
 
+config TOUCHSCREEN_CYTTSP4
+	tristate "CYTTSP4 based touchscreens"
+	depends on I2C2_RK29 || I2C2_RK30
+
+config TOUCHSCREEN_NOVATEK
+	tristate "novatek NT11003 based touchscreens"
+	depends on I2C2_RK29 || I2C2_RK30
 config TOUCHSCREEN_FT5306
 	tristate "FT5306 based touchscreens: FT5306 Interface"
 	depends on I2C2_RK29 || I2C2_RK30
 
+config TOUCHSCREEN_BF6931A
+	tristate "BF6931A based touchscreens"
+	depends on I2C2_RK29 || I2C2_RK30
+	
+config TOUCHSCREEN_GSLX680
+	tristate "GSLX680 based touchscreens: GSLX680 Interface"
+	depends on I2C2_RK29 || I2C2_RK30
 config TOUCHSCREEN_FT5306_WPX2
         tristate "FT5306 based touchscreens: FT5306 Interface,only used for umeox wpx2 board"
         depends on I2C2_RK29 || I2C2_RK30

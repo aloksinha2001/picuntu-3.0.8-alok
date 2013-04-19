@@ -335,6 +335,7 @@ void kernel_restart_prepare(char *cmd)
 	syscore_shutdown();
 }
 
+extern void rk29_backlight_set(bool on);
 /**
  *	kernel_restart - reboot the system
  *	@cmd: pointer to buffer containing command to execute for restart
@@ -350,6 +351,7 @@ void kernel_restart(char *cmd)
 	*/
 	restart_dbg("%s->%d->cmd=%s",__FUNCTION__,__LINE__,cmd);
 	
+	rk29_backlight_set(false);
 	kernel_restart_prepare(cmd);
 	if (!cmd)
 		printk(KERN_EMERG "Restarting system.\n");

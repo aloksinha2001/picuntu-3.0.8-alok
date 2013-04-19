@@ -43,7 +43,7 @@
 #define RESUME_PROBLEM 0
 
 #ifdef CONFIG_ARCH_RK30
-#define RK610_SPK_CTRL_PIN  RK30_PIN4_PC6
+#define RK610_SPK_CTRL_PIN  RK30_PIN2_PA0
 #else
 #define RK610_SPK_CTRL_PIN  RK29_PIN6_PB6
 #endif
@@ -520,7 +520,7 @@ static int rk610_codec_pcm_hw_params(struct snd_pcm_substream *substream,
 	#endif
 	rk610_codec_write(codec, ACCELCODEC_R09, iface);
 	if (coeff >= 0){
-	    rk610_codec_write(codec, ACCELCODEC_R00, srate|coeff_div[coeff].bclk);
+	    //rk610_codec_write(codec, ACCELCODEC_R00, srate|coeff_div[coeff].bclk);
 		rk610_codec_write(codec, ACCELCODEC_R0A, (coeff_div[coeff].sr << 1) | coeff_div[coeff].usb|ASC_CLKNODIV|ASC_CLK_ENABLE);
 	}
 	rk610_codec_write(codec,ACCELCODEC_R0B, gR0BReg);
@@ -550,6 +550,8 @@ static int rk610_codec_mute(struct snd_soc_dai *dai, int mute)
     }
 	else
 	{
+		if(rk610_codec->hdmi_ndet)
+			spk_ctrl_fun(GPIO_HIGH);
 	//	rk610_codec_write(codec,ACCELCODEC_R1D, 0x2a);  //setup Vmid and Vref, other module power down
 	//	rk610_codec_write(codec,ACCELCODEC_R1E, 0x40);  ///|ASC_PDASDML_ENABLE);
 		rk610_codec_write(codec,ACCELCODEC_R17, gVolReg|ASC_OUTPUT_ACTIVE|ASC_CROSSZERO_EN);  //AOL gVolReg|ASC_OUTPUT_ACTIVE|ASC_CROSSZERO_EN);  //AOL
@@ -564,8 +566,6 @@ static int rk610_codec_mute(struct snd_soc_dai *dai, int mute)
 		#endif
 	//	schedule_delayed_work(&rk610_codec->rk610_delayed_work, 0);
 	//	rk610_codec_reg_read();
-		if(rk610_codec->hdmi_ndet)
-			spk_ctrl_fun(GPIO_HIGH);
     }
 
     return 0;
@@ -576,12 +576,12 @@ static void rk610_delayedwork_fun(struct work_struct *work)
     struct snd_soc_codec *codec = rk610_codec_codec;
 	DBG("--------%s----------\n",__FUNCTION__);
 
+	spk_ctrl_fun(GPIO_HIGH);
 	#if OUT_CAPLESS
 	rk610_codec_write(codec,ACCELCODEC_R1F, 0x09|ASC_PDMIXM_ENABLE);
 	#else
 	rk610_codec_write(codec,ACCELCODEC_R1F, 0x09|ASC_PDMIXM_ENABLE|ASC_PDPAM_ENABLE);
 	#endif
-	spk_ctrl_fun(GPIO_HIGH);
 }
 
 static struct snd_soc_dai_ops rk610_codec_ops = {
@@ -688,7 +688,7 @@ void rk610_codec_reg_set(void)
     gR0AReg = ASC_NORMAL_MODE|(0x10 << 1)|ASC_CLKNODIV|ASC_CLK_DISABLE;
     //2Config audio  interface
     rk610_codec_write(codec,ACCELCODEC_R09, ASC_I2S_MODE|ASC_16BIT_MODE|ASC_NORMAL_LRCLK|ASC_LRSWAP_DISABLE|ASC_MASTER_MODE|ASC_NORMAL_BCLK);
-    rk610_codec_write(codec,ACCELCODEC_R00, ASC_HPF_ENABLE|ASC_DSM_MODE_DISABLE|ASC_SCRAMBLE_DISABLE|ASC_DITHER_ENABLE|ASC_BCLKDIV_4);
+    rk610_codec_write(codec,ACCELCODEC_R00, ASC_HPF_ENABLE|ASC_DSM_MODE_ENABLE|ASC_SCRAMBLE_ENABLE|ASC_DITHER_ENABLE|ASC_BCLKDIV_4);
     //2volume,input,output
     digital_gain = Volume_Output;
     rk610_codec_write(codec,ACCELCODEC_R05, (digital_gain >> 8) & 0xFF);
@@ -746,7 +746,7 @@ static int rk610_codec_probe(struct snd_soc_codec *codec)
 		return ret;
     }
     gpio_direction_output(rk610_codec->spk_ctrl_io, GPIO_LOW);
-    gpio_set_value(rk610_codec->spk_ctrl_io, GPIO_LOW);
+   	gpio_pull_updown(rk610_codec->spk_ctrl_io, 1);
 #else
 	rk610_codec->spk_ctrl_io = 0;
 #endif
@@ -863,6 +863,9 @@ static ssize_t RK610_PROC_write(struct file *file, const char __user *buffer,
 			   unsigned long len, void *data)
 {
 	char *cookie_pot; 
+	char *p;
+	int reg;
+	int value;
 	
 	cookie_pot = (char *)vmalloc( len );
 	if (!cookie_pot) 
@@ -883,6 +886,52 @@ static ssize_t RK610_PROC_write(struct file *file, const char __user *buffer,
 	case 'o':
 		spk_ctrl_fun(GPIO_LOW);
 		break;		
+	case 'r':
+	case 'R':
+		printk("Read reg debug\n");		
+		if(cookie_pot[1] ==':')
+		{
+			strsep(&cookie_pot,":");
+			while((p=strsep(&cookie_pot,",")))
+			{
+				reg = simple_strtol(p,NULL,16);
+				value = rk610_codec_read(rk610_codec_codec,reg);
+				printk("wm8994_read:0x%04x = 0x%04x\n",reg,value);
+			}
+			printk("\n");
+		}
+		else
+		{
+			printk("Error Read reg debug.\n");
+			printk("For example: echo 'r:22,23,24,25'>wm8994_ts\n");
+		}
+		break;
+	case 'w':
+	case 'W':
+		printk("Write reg debug\n");		
+		if(cookie_pot[1] ==':')
+		{
+			strsep(&cookie_pot,":");
+			while((p=strsep(&cookie_pot,"=")))
+			{
+				reg = simple_strtol(p,NULL,16);
+				p=strsep(&cookie_pot,",");
+				value = simple_strtol(p,NULL,16);
+				rk610_codec_write(rk610_codec_codec,reg,value);
+				printk("wm8994_write:0x%04x = 0x%04x\n",reg,value);
+			}
+			printk("\n");
+		}
+		else
+		{
+			printk("Error Write reg debug.\n");
+			printk("For example: w:22=0,23=0,24=0,25=0\n");
+		}
+		break;	
+	case 'D' :
+		printk("Dump reg\n");
+		rk610_codec_reg_read();
+		break;
 	}
 
 	return len;
