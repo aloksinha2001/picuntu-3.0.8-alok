@@ -1,1 +1,0 @@
-cmd_lib/crc-itu-t.ko := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL -r  -T /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/scripts/module-common.lds --build-id  -o lib/crc-itu-t.ko lib/crc-itu-t.o lib/crc-itu-t.mod.o

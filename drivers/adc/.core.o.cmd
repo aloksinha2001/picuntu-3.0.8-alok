@@ -253,9 +253,11 @@ deps_drivers/adc/core.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -318,6 +320,7 @@ deps_drivers/adc/core.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/debugobjects.h \
     $(wildcard include/config/debug/objects.h) \
     $(wildcard include/config/debug/objects/free.h) \
@@ -409,8 +412,12 @@ deps_drivers/adc/core.o := \
   include/linux/timerqueue.h \
   include/trace/events/irq.h \
   arch/arm/mach-rk30/include/mach/board.h \
+    $(wildcard include/config/mfd/rk610.h) \
     $(wildcard include/config/touchscreen/ft5306.h) \
     $(wildcard include/config/touchscreen/ft5306/wpx2.h) \
+    $(wildcard include/config/touchscreen/byd693x.h) \
+    $(wildcard include/config/touchscreen/bf6931a.h) \
+    $(wildcard include/config/touchscreen/novatek.h) \
     $(wildcard include/config/rk30/pwm/regulator.h) \
     $(wildcard include/config/rk29/vmac.h) \
   include/linux/platform_device.h \
@@ -523,6 +530,7 @@ deps_drivers/adc/core.o := \
     $(wildcard include/config/rk/early/printk.h) \
   include/linux/rk_screen.h \
     $(wildcard include/config/hdmi/dual/disp.h) \
+    $(wildcard include/config/one/lcdc/dual/output/inf.h) \
   arch/arm/mach-rk30/include/mach/sram.h \
   arch/arm/plat-rk/include/plat/sram.h \
   include/linux/i2c-gpio.h \

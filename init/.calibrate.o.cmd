@@ -185,6 +185,7 @@ deps_init/calibrate.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/delay.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/delay.h \
   include/linux/smp.h \

@@ -1,1 +1,0 @@
-cmd_fs/nfs_common/nfs_acl.ko := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL -r  -T /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/scripts/module-common.lds --build-id  -o fs/nfs_common/nfs_acl.ko fs/nfs_common/nfs_acl.o fs/nfs_common/nfs_acl.mod.o

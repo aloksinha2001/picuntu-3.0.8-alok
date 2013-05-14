@@ -248,9 +248,11 @@ deps_kernel/uid16.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -480,6 +482,7 @@ deps_kernel/uid16.o := \
   include/linux/param.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/jiffies.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/cputime.h \
   include/asm-generic/cputime.h \

@@ -1,4 +1,0 @@
-kernel/drivers/net/wireless/rtlwifi/rtlwifi.ko
-kernel/drivers/net/wireless/rtlwifi/rtl8192c/rtl8192c-common.ko
-kernel/drivers/net/wireless/rtlwifi/rtl8192cu/rtl8192cu.ko
-kernel/drivers/net/wireless/rtlwifi/rtl8192se/rtl8192se.ko

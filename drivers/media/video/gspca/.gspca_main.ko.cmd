@@ -1,1 +1,0 @@
-cmd_drivers/media/video/gspca/gspca_main.ko := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL -r  -T /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/scripts/module-common.lds --build-id  -o drivers/media/video/gspca/gspca_main.ko drivers/media/video/gspca/gspca_main.o drivers/media/video/gspca/gspca_main.mod.o

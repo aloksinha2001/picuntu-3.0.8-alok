@@ -1,1 +1,0 @@
-cmd_drivers/usb/serial/usb_wwan.ko := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL -r  -T /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/scripts/module-common.lds --build-id  -o drivers/usb/serial/usb_wwan.ko drivers/usb/serial/usb_wwan.o drivers/usb/serial/usb_wwan.mod.o

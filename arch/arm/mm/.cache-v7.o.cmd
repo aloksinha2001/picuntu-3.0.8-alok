@@ -5,6 +5,7 @@ source_arch/arm/mm/cache-v7.o := arch/arm/mm/cache-v7.S
 deps_arch/arm/mm/cache-v7.o := \
     $(wildcard include/config/preempt.h) \
     $(wildcard include/config/arm/errata/764369.h) \
+    $(wildcard include/config/arm/errata/775420.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/unified.h \
     $(wildcard include/config/arm/asm/unified.h) \
     $(wildcard include/config/thumb2/kernel.h) \

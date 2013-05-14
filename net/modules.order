@@ -1,5 +1,4 @@
 kernel/net/8021q/8021q.ko
-kernel/net/wireless/lib80211.ko
 kernel/net/bluetooth/bluetooth.ko
 kernel/net/bluetooth/rfcomm/rfcomm.ko
 kernel/net/bluetooth/bnep/bnep.ko

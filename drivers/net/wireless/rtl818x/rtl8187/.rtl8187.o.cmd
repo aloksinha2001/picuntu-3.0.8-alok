@@ -1,1 +1,0 @@
-cmd_drivers/net/wireless/rtl818x/rtl8187/rtl8187.o := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/net/wireless/rtl818x/rtl8187/rtl8187.o drivers/net/wireless/rtl818x/rtl8187/dev.o drivers/net/wireless/rtl818x/rtl8187/rtl8225.o drivers/net/wireless/rtl818x/rtl8187/leds.o drivers/net/wireless/rtl818x/rtl8187/rfkill.o 

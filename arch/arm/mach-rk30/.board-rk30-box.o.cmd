@@ -141,6 +141,7 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
     $(wildcard include/config/sensor/reset/ioctl/usr.h) \
     $(wildcard include/config/sensor/powerdown/ioctl/usr.h) \
     $(wildcard include/config/sensor/flash/ioctl/usr.h) \
+    $(wildcard include/config/mfd/tps65910.h) \
     $(wildcard include/config/touchscreen/gt8xx.h) \
     $(wildcard include/config/backlight/rk29/bl.h) \
     $(wildcard include/config/rk29/support/modem.h) \
@@ -194,7 +195,6 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
     $(wildcard include/config/eeprom/at24c16.h) \
     $(wildcard include/config/i2c1/rk30.h) \
     $(wildcard include/config/mfd/wm831x/i2c.h) \
-    $(wildcard include/config/mfd/tps65910.h) \
     $(wildcard include/config/i2c2/rk30.h) \
     $(wildcard include/config/mfd/rk1000.h) \
     $(wildcard include/config/snd/soc/rk1000.h) \
@@ -470,9 +470,11 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -531,6 +533,7 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/debugobjects.h \
     $(wildcard include/config/debug/objects.h) \
     $(wildcard include/config/debug/objects/free.h) \
@@ -865,6 +868,9 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
     $(wildcard include/config/cpu/freq/default/gov/ondemand.h) \
     $(wildcard include/config/cpu/freq/default/gov/conservative.h) \
     $(wildcard include/config/cpu/freq/default/gov/interactive.h) \
+    $(wildcard include/config/cpu/freq/default/gov/smartass2.h) \
+    $(wildcard include/config/cpu/freq/default/gov/interactivex.h) \
+    $(wildcard include/config/cpu/freq/default/gov/savagedzen.h) \
     $(wildcard include/config/cpu/freq/default/gov/hotplug.h) \
   include/linux/clk.h \
   arch/arm/mach-rk30/include/mach/dvfs.h \
@@ -1974,11 +1980,15 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
   arch/arm/mach-rk30/include/mach/board.h \
     $(wildcard include/config/touchscreen/ft5306.h) \
     $(wildcard include/config/touchscreen/ft5306/wpx2.h) \
+    $(wildcard include/config/touchscreen/byd693x.h) \
+    $(wildcard include/config/touchscreen/bf6931a.h) \
+    $(wildcard include/config/touchscreen/novatek.h) \
   arch/arm/plat-rk/include/plat/board.h \
     $(wildcard include/config/usb/gadget.h) \
     $(wildcard include/config/rk/early/printk.h) \
   include/linux/rk_screen.h \
     $(wildcard include/config/hdmi/dual/disp.h) \
+    $(wildcard include/config/one/lcdc/dual/output/inf.h) \
   arch/arm/mach-rk30/include/mach/sram.h \
   arch/arm/plat-rk/include/plat/sram.h \
   include/linux/i2c-gpio.h \
@@ -1992,6 +2002,7 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
     $(wildcard include/config/gpio/wm8994/num.h) \
     $(wildcard include/config/gpio/tps65910.h) \
     $(wildcard include/config/gpio/tps65910/num.h) \
+  arch/arm/plat-rk/include/plat/gpio.h \
   include/asm-generic/gpio.h \
     $(wildcard include/config/gpiolib.h) \
     $(wildcard include/config/of/gpio.h) \
@@ -2077,6 +2088,7 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/gpio.h \
   include/linux/regulator/rk29-pwm-regulator.h \
   arch/arm/mach-rk30/../../../drivers/video/rockchip/hdmi/rk_hdmi.h \
+    $(wildcard include/config/switch.h) \
     $(wildcard include/config/video.h) \
     $(wildcard include/config/audio.h) \
     $(wildcard include/config/none.h) \
@@ -2088,6 +2100,7 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
   arch/arm/mach-rk30/include/mach/remotectl.h \
   arch/arm/mach-rk30/../../../drivers/media/video/rk30_camera.c \
     $(wildcard include/config/video/rk29/work/ipp.h) \
+    $(wildcard include/config/video/rkcif/work/simul/off.h) \
     $(wildcard include/config/video/rk.h) \
   include/media/soc_camera.h \
   include/linux/videodev2.h \
@@ -2117,10 +2130,291 @@ deps_arch/arm/mach-rk30/board-rk30-box.o := \
   arch/arm/mach-rk30/include/mach/rk30_camera.h \
   arch/arm/plat-rk/include/plat/rk_camera.h \
   arch/arm/mach-rk30/../../../drivers/media/video/../../../arch/arm/plat-rk/rk_camera.c \
-    $(wildcard include/config/video/rkcif/work/simul/off.h) \
+    $(wildcard include/config/sensor/iic/addr/03.h) \
+    $(wildcard include/config/sensor/03.h) \
+    $(wildcard include/config/sensor/cif/index/03.h) \
+    $(wildcard include/config/sensor/iic/addr/04.h) \
+    $(wildcard include/config/sensor/04.h) \
+    $(wildcard include/config/sensor/cif/index/04.h) \
+    $(wildcard include/config/sensor/iic/addr/05.h) \
+    $(wildcard include/config/sensor/05.h) \
+    $(wildcard include/config/sensor/cif/index/05.h) \
+    $(wildcard include/config/sensor/iic/addr/06.h) \
+    $(wildcard include/config/sensor/06.h) \
+    $(wildcard include/config/sensor/cif/index/06.h) \
+    $(wildcard include/config/sensor/iic/addr/07.h) \
+    $(wildcard include/config/sensor/07.h) \
+    $(wildcard include/config/sensor/cif/index/07.h) \
+    $(wildcard include/config/sensor/iic/addr/08.h) \
+    $(wildcard include/config/sensor/08.h) \
+    $(wildcard include/config/sensor/cif/index/08.h) \
+    $(wildcard include/config/sensor/iic/addr/09.h) \
+    $(wildcard include/config/sensor/09.h) \
+    $(wildcard include/config/sensor/cif/index/09.h) \
+    $(wildcard include/config/sensor/iic/addr/13.h) \
+    $(wildcard include/config/sensor/13.h) \
+    $(wildcard include/config/sensor/cif/index/13.h) \
+    $(wildcard include/config/sensor/iic/addr/14.h) \
+    $(wildcard include/config/sensor/14.h) \
+    $(wildcard include/config/sensor/cif/index/14.h) \
+    $(wildcard include/config/sensor/iic/addr/15.h) \
+    $(wildcard include/config/sensor/15.h) \
+    $(wildcard include/config/sensor/cif/index/15.h) \
+    $(wildcard include/config/sensor/iic/addr/16.h) \
+    $(wildcard include/config/sensor/16.h) \
+    $(wildcard include/config/sensor/cif/index/16.h) \
+    $(wildcard include/config/sensor/iic/addr/17.h) \
+    $(wildcard include/config/sensor/17.h) \
+    $(wildcard include/config/sensor/cif/index/17.h) \
+    $(wildcard include/config/sensor/iic/addr/18.h) \
+    $(wildcard include/config/sensor/18.h) \
+    $(wildcard include/config/sensor/cif/index/18.h) \
+    $(wildcard include/config/sensor/iic/addr/19.h) \
+    $(wildcard include/config/sensor/19.h) \
+    $(wildcard include/config/sensor/cif/index/19.h) \
     $(wildcard include/config/arch/rk29.h) \
     $(wildcard include/config/video/rk29/cammem/ion.h) \
+    $(wildcard include/config/sensor/reset/pin/03.h) \
+    $(wildcard include/config/sensor/power/pin/03.h) \
+    $(wildcard include/config/sensor/powerdn/pin/03.h) \
+    $(wildcard include/config/sensor/falsh/pin/03.h) \
+    $(wildcard include/config/sensor/poweractive/level/03.h) \
+    $(wildcard include/config/sensor/resetactive/level/03.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/03.h) \
+    $(wildcard include/config/sensor/flashactive/level/03.h) \
+    $(wildcard include/config/sensor/reset/pin/04.h) \
+    $(wildcard include/config/sensor/power/pin/04.h) \
+    $(wildcard include/config/sensor/powerdn/pin/04.h) \
+    $(wildcard include/config/sensor/falsh/pin/04.h) \
+    $(wildcard include/config/sensor/poweractive/level/04.h) \
+    $(wildcard include/config/sensor/resetactive/level/04.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/04.h) \
+    $(wildcard include/config/sensor/flashactive/level/04.h) \
+    $(wildcard include/config/sensor/reset/pin/05.h) \
+    $(wildcard include/config/sensor/power/pin/05.h) \
+    $(wildcard include/config/sensor/powerdn/pin/05.h) \
+    $(wildcard include/config/sensor/falsh/pin/05.h) \
+    $(wildcard include/config/sensor/poweractive/level/05.h) \
+    $(wildcard include/config/sensor/resetactive/level/05.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/05.h) \
+    $(wildcard include/config/sensor/flashactive/level/05.h) \
+    $(wildcard include/config/sensor/reset/pin/06.h) \
+    $(wildcard include/config/sensor/power/pin/06.h) \
+    $(wildcard include/config/sensor/powerdn/pin/06.h) \
+    $(wildcard include/config/sensor/falsh/pin/06.h) \
+    $(wildcard include/config/sensor/poweractive/level/06.h) \
+    $(wildcard include/config/sensor/resetactive/level/06.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/06.h) \
+    $(wildcard include/config/sensor/flashactive/level/06.h) \
+    $(wildcard include/config/sensor/reset/pin/07.h) \
+    $(wildcard include/config/sensor/power/pin/07.h) \
+    $(wildcard include/config/sensor/powerdn/pin/07.h) \
+    $(wildcard include/config/sensor/falsh/pin/07.h) \
+    $(wildcard include/config/sensor/poweractive/level/07.h) \
+    $(wildcard include/config/sensor/resetactive/level/07.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/07.h) \
+    $(wildcard include/config/sensor/flashactive/level/07.h) \
+    $(wildcard include/config/sensor/reset/pin/08.h) \
+    $(wildcard include/config/sensor/power/pin/08.h) \
+    $(wildcard include/config/sensor/powerdn/pin/08.h) \
+    $(wildcard include/config/sensor/falsh/pin/08.h) \
+    $(wildcard include/config/sensor/poweractive/level/08.h) \
+    $(wildcard include/config/sensor/resetactive/level/08.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/08.h) \
+    $(wildcard include/config/sensor/flashactive/level/08.h) \
+    $(wildcard include/config/sensor/reset/pin/09.h) \
+    $(wildcard include/config/sensor/power/pin/09.h) \
+    $(wildcard include/config/sensor/powerdn/pin/09.h) \
+    $(wildcard include/config/sensor/falsh/pin/09.h) \
+    $(wildcard include/config/sensor/poweractive/level/09.h) \
+    $(wildcard include/config/sensor/resetactive/level/09.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/09.h) \
+    $(wildcard include/config/sensor/flashactive/level/09.h) \
+    $(wildcard include/config/sensor/reset/pin/13.h) \
+    $(wildcard include/config/sensor/power/pin/13.h) \
+    $(wildcard include/config/sensor/powerdn/pin/13.h) \
+    $(wildcard include/config/sensor/falsh/pin/13.h) \
+    $(wildcard include/config/sensor/poweractive/level/13.h) \
+    $(wildcard include/config/sensor/resetactive/level/13.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/13.h) \
+    $(wildcard include/config/sensor/flashactive/level/13.h) \
+    $(wildcard include/config/sensor/reset/pin/14.h) \
+    $(wildcard include/config/sensor/power/pin/14.h) \
+    $(wildcard include/config/sensor/powerdn/pin/14.h) \
+    $(wildcard include/config/sensor/falsh/pin/14.h) \
+    $(wildcard include/config/sensor/poweractive/level/14.h) \
+    $(wildcard include/config/sensor/resetactive/level/14.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/14.h) \
+    $(wildcard include/config/sensor/flashactive/level/14.h) \
+    $(wildcard include/config/sensor/reset/pin/15.h) \
+    $(wildcard include/config/sensor/power/pin/15.h) \
+    $(wildcard include/config/sensor/powerdn/pin/15.h) \
+    $(wildcard include/config/sensor/falsh/pin/15.h) \
+    $(wildcard include/config/sensor/poweractive/level/15.h) \
+    $(wildcard include/config/sensor/resetactive/level/15.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/15.h) \
+    $(wildcard include/config/sensor/flashactive/level/15.h) \
+    $(wildcard include/config/sensor/reset/pin/16.h) \
+    $(wildcard include/config/sensor/power/pin/16.h) \
+    $(wildcard include/config/sensor/powerdn/pin/16.h) \
+    $(wildcard include/config/sensor/falsh/pin/16.h) \
+    $(wildcard include/config/sensor/poweractive/level/16.h) \
+    $(wildcard include/config/sensor/resetactive/level/16.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/16.h) \
+    $(wildcard include/config/sensor/flashactive/level/16.h) \
+    $(wildcard include/config/sensor/reset/pin/17.h) \
+    $(wildcard include/config/sensor/power/pin/17.h) \
+    $(wildcard include/config/sensor/powerdn/pin/17.h) \
+    $(wildcard include/config/sensor/falsh/pin/17.h) \
+    $(wildcard include/config/sensor/poweractive/level/17.h) \
+    $(wildcard include/config/sensor/resetactive/level/17.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/17.h) \
+    $(wildcard include/config/sensor/flashactive/level/17.h) \
+    $(wildcard include/config/sensor/reset/pin/18.h) \
+    $(wildcard include/config/sensor/power/pin/18.h) \
+    $(wildcard include/config/sensor/powerdn/pin/18.h) \
+    $(wildcard include/config/sensor/falsh/pin/18.h) \
+    $(wildcard include/config/sensor/poweractive/level/18.h) \
+    $(wildcard include/config/sensor/resetactive/level/18.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/18.h) \
+    $(wildcard include/config/sensor/flashactive/level/18.h) \
+    $(wildcard include/config/sensor/reset/pin/19.h) \
+    $(wildcard include/config/sensor/power/pin/19.h) \
+    $(wildcard include/config/sensor/powerdn/pin/19.h) \
+    $(wildcard include/config/sensor/falsh/pin/19.h) \
+    $(wildcard include/config/sensor/poweractive/level/19.h) \
+    $(wildcard include/config/sensor/resetactive/level/19.h) \
+    $(wildcard include/config/sensor/powerdnactive/level/19.h) \
+    $(wildcard include/config/sensor/flashactive/level/19.h) \
+    $(wildcard include/config/sensor/orientation/03.h) \
+    $(wildcard include/config/sensor/orientation/04.h) \
+    $(wildcard include/config/sensor/orientation/05.h) \
+    $(wildcard include/config/sensor/orientation/06.h) \
+    $(wildcard include/config/sensor/orientation/07.h) \
+    $(wildcard include/config/sensor/orientation/08.h) \
+    $(wildcard include/config/sensor/orientation/09.h) \
+    $(wildcard include/config/sensor/orientation/13.h) \
+    $(wildcard include/config/sensor/orientation/14.h) \
+    $(wildcard include/config/sensor/orientation/15.h) \
+    $(wildcard include/config/sensor/orientation/16.h) \
+    $(wildcard include/config/sensor/orientation/17.h) \
+    $(wildcard include/config/sensor/orientation/18.h) \
+    $(wildcard include/config/sensor/orientation/19.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/03.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/04.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/05.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/06.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/07.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/08.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/09.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/13.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/14.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/15.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/16.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/17.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/18.h) \
+    $(wildcard include/config/sensor/iic/adapter/id/19.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/03.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/03.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/03.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/03.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/03.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/03.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/03.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/04.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/04.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/04.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/04.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/04.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/04.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/04.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/05.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/05.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/05.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/05.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/05.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/05.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/05.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/06.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/06.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/06.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/06.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/06.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/06.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/06.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/07.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/07.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/07.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/07.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/07.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/07.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/07.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/08.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/08.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/08.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/08.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/08.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/08.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/08.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/09.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/09.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/09.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/09.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/09.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/09.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/09.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/13.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/13.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/13.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/13.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/13.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/13.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/13.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/14.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/14.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/14.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/14.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/14.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/14.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/14.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/15.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/15.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/15.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/15.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/15.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/15.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/15.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/16.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/16.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/16.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/16.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/16.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/16.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/16.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/17.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/17.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/17.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/17.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/17.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/17.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/17.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/18.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/18.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/18.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/18.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/18.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/18.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/18.h) \
+    $(wildcard include/config/sensor/qcif/fps/fixed/19.h) \
+    $(wildcard include/config/sensor/240x160/fps/fixed/19.h) \
+    $(wildcard include/config/sensor/qvga/fps/fixed/19.h) \
+    $(wildcard include/config/sensor/cif/fps/fixed/19.h) \
+    $(wildcard include/config/sensor/vga/fps/fixed/19.h) \
+    $(wildcard include/config/sensor/480p/fps/fixed/19.h) \
+    $(wildcard include/config/sensor/720p/fps/fixed/19.h) \
   arch/arm/mach-rk30/board-rk30-sdk-sdmmc.c \
+    $(wildcard include/config/wifi/combo/module/control/func.h) \
+    $(wildcard include/config/use/sdmmc0/for/wifi/develop/board.h) \
   arch/arm/mach-rk30/board-rk30-sdk-tps65910.c \
     $(wildcard include/config/rtl8192cu.h) \
     $(wildcard include/config/rtl8188eus.h) \

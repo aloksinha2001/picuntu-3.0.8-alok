@@ -289,6 +289,7 @@ deps_arch/arm/oprofile/../../../drivers/oprofile/oprofile_files.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   arch/arm/oprofile/../../../drivers/oprofile/event_buffer.h \
   arch/arm/oprofile/../../../drivers/oprofile/oprofile_stats.h \
   arch/arm/oprofile/../../../drivers/oprofile/oprof.h \

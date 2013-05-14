@@ -111,9 +111,11 @@ deps_drivers/i2c/busses/i2c-rk30.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -384,6 +386,7 @@ deps_drivers/i2c/busses/i2c-rk30.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/sysctl.h \
   include/linux/elf.h \
   include/linux/elf-em.h \
@@ -548,6 +551,9 @@ deps_drivers/i2c/busses/i2c-rk30.o := \
     $(wildcard include/config/cpu/freq/default/gov/ondemand.h) \
     $(wildcard include/config/cpu/freq/default/gov/conservative.h) \
     $(wildcard include/config/cpu/freq/default/gov/interactive.h) \
+    $(wildcard include/config/cpu/freq/default/gov/smartass2.h) \
+    $(wildcard include/config/cpu/freq/default/gov/interactivex.h) \
+    $(wildcard include/config/cpu/freq/default/gov/savagedzen.h) \
     $(wildcard include/config/cpu/freq/default/gov/hotplug.h) \
   include/linux/slab.h \
     $(wildcard include/config/slab/debug.h) \
@@ -567,8 +573,12 @@ deps_drivers/i2c/busses/i2c-rk30.o := \
   include/linux/miscdevice.h \
   include/linux/major.h \
   arch/arm/mach-rk30/include/mach/board.h \
+    $(wildcard include/config/mfd/rk610.h) \
     $(wildcard include/config/touchscreen/ft5306.h) \
     $(wildcard include/config/touchscreen/ft5306/wpx2.h) \
+    $(wildcard include/config/touchscreen/byd693x.h) \
+    $(wildcard include/config/touchscreen/bf6931a.h) \
+    $(wildcard include/config/touchscreen/novatek.h) \
     $(wildcard include/config/rk30/pwm/regulator.h) \
     $(wildcard include/config/rk29/vmac.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/setup.h \
@@ -577,6 +587,7 @@ deps_drivers/i2c/busses/i2c-rk30.o := \
     $(wildcard include/config/rk/early/printk.h) \
   include/linux/rk_screen.h \
     $(wildcard include/config/hdmi/dual/disp.h) \
+    $(wildcard include/config/one/lcdc/dual/output/inf.h) \
   arch/arm/mach-rk30/include/mach/sram.h \
   arch/arm/plat-rk/include/plat/sram.h \
   include/linux/i2c-gpio.h \

@@ -1,3 +1,0 @@
-kernel/drivers/cpufreq/cpufreq_powersave.ko
-kernel/drivers/cpufreq/cpufreq_userspace.ko
-kernel/drivers/cpufreq/cpufreq_conservative.ko

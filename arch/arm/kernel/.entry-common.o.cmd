@@ -23,8 +23,10 @@ deps_arch/arm/kernel/entry-common.o := \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/ftrace.h \
     $(wildcard include/config/arm/unwind.h) \
   arch/arm/mach-rk30/include/mach/entry-macro.S \
+  arch/arm/plat-rk/include/plat/entry-macro.S \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/hardware/entry-macro-gic.S \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/hardware/gic.h \
   include/linux/compiler.h \

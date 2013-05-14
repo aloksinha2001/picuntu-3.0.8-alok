@@ -267,9 +267,11 @@ deps_arch/arm/plat-rk/mem_reserve.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -328,6 +330,7 @@ deps_arch/arm/plat-rk/mem_reserve.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/debugobjects.h \
     $(wildcard include/config/debug/objects.h) \
     $(wildcard include/config/debug/objects/free.h) \
@@ -367,7 +370,9 @@ deps_arch/arm/plat-rk/mem_reserve.o := \
     $(wildcard include/config/dmabounce.h) \
   include/linux/pm_wakeup.h \
   include/linux/rk_screen.h \
+    $(wildcard include/config/mfd/rk610.h) \
     $(wildcard include/config/hdmi/dual/disp.h) \
+    $(wildcard include/config/one/lcdc/dual/output/inf.h) \
   include/linux/memblock.h \
     $(wildcard include/config/have/memblock.h) \
   include/linux/mm.h \

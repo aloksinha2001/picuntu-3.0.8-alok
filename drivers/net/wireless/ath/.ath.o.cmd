@@ -1,1 +1,0 @@
-cmd_drivers/net/wireless/ath/ath.o := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/net/wireless/ath/ath.o drivers/net/wireless/ath/main.o drivers/net/wireless/ath/regd.o drivers/net/wireless/ath/hw.o drivers/net/wireless/ath/key.o 

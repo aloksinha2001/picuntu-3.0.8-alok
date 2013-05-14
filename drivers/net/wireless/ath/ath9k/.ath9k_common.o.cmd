@@ -1,1 +1,0 @@
-cmd_drivers/net/wireless/ath/ath9k/ath9k_common.o := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/net/wireless/ath/ath9k/ath9k_common.o drivers/net/wireless/ath/ath9k/common.o 

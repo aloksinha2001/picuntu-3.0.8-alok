@@ -126,4 +126,5 @@ kernel/net/sched/cls_u32.ko
 kernel/net/sched/em_u32.ko
 kernel/net/unix/unix.ko
 kernel/net/wireless/cfg80211.ko
+kernel/net/wireless/lib80211.ko
 kernel/net/xfrm/xfrm_ipcomp.ko

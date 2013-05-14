@@ -4,7 +4,6 @@ source_arch/arm/mach-rk30/cpufreq.o := arch/arm/mach-rk30/cpufreq.c
 
 deps_arch/arm/mach-rk30/cpufreq.o := \
     $(wildcard include/config/rk30/cpu/freq/limit/by/temp.h) \
-    $(wildcard include/config/mach/rk30/box/hotdog.h) \
     $(wildcard include/config/hotplug/cpu.h) \
     $(wildcard include/config/smp.h) \
     $(wildcard include/config/pm/verbose.h) \
@@ -18,6 +17,9 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
     $(wildcard include/config/cpu/freq/default/gov/ondemand.h) \
     $(wildcard include/config/cpu/freq/default/gov/conservative.h) \
     $(wildcard include/config/cpu/freq/default/gov/interactive.h) \
+    $(wildcard include/config/cpu/freq/default/gov/smartass2.h) \
+    $(wildcard include/config/cpu/freq/default/gov/interactivex.h) \
+    $(wildcard include/config/cpu/freq/default/gov/savagedzen.h) \
     $(wildcard include/config/cpu/freq/default/gov/hotplug.h) \
   include/linux/mutex.h \
     $(wildcard include/config/debug/mutexes.h) \
@@ -287,9 +289,11 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -339,6 +343,7 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/debugobjects.h \
     $(wildcard include/config/debug/objects.h) \
     $(wildcard include/config/debug/objects/free.h) \
@@ -378,6 +383,42 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
     $(wildcard include/config/dmabounce.h) \
   include/linux/pm_wakeup.h \
   include/linux/err.h \
+  include/linux/kernel_stat.h \
+    $(wildcard include/config/generic/hardirqs.h) \
+  include/linux/interrupt.h \
+    $(wildcard include/config/irq/forced/threading.h) \
+    $(wildcard include/config/generic/irq/probe.h) \
+    $(wildcard include/config/proc/fs.h) \
+  include/linux/irqreturn.h \
+  include/linux/irqnr.h \
+  include/linux/hardirq.h \
+    $(wildcard include/config/virt/cpu/accounting.h) \
+    $(wildcard include/config/irq/time/accounting.h) \
+  include/linux/ftrace_irq.h \
+    $(wildcard include/config/ftrace/nmi/enter.h) \
+  /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/hardirq.h \
+    $(wildcard include/config/local/timers.h) \
+  /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/irq.h \
+  arch/arm/mach-rk30/include/mach/irqs.h \
+  include/linux/irq_cpustat.h \
+  include/linux/hrtimer.h \
+    $(wildcard include/config/high/res/timers.h) \
+    $(wildcard include/config/timerfd.h) \
+  include/linux/rbtree.h \
+  include/linux/timerqueue.h \
+  include/trace/events/irq.h \
+  /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/cputime.h \
+  include/asm-generic/cputime.h \
+  include/linux/irq.h \
+    $(wildcard include/config/s390.h) \
+    $(wildcard include/config/irq/release/method.h) \
+    $(wildcard include/config/generic/pending/irq.h) \
+  /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/irq_regs.h \
+  include/asm-generic/irq_regs.h \
+  include/linux/irqdesc.h \
+    $(wildcard include/config/irq/preflow/fasteoi.h) \
+    $(wildcard include/config/sparse/irq.h) \
+  /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/hw_irq.h \
   include/linux/reboot.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/emergency-restart.h \
   include/asm-generic/emergency-restart.h \
@@ -403,7 +444,6 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
     $(wildcard include/config/detect/hung/task.h) \
     $(wildcard include/config/core/dump/default/elf/headers.h) \
     $(wildcard include/config/sched/autogroup.h) \
-    $(wildcard include/config/virt/cpu/accounting.h) \
     $(wildcard include/config/bsd/process/acct.h) \
     $(wildcard include/config/taskstats.h) \
     $(wildcard include/config/audit.h) \
@@ -423,7 +463,6 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
     $(wildcard include/config/cc/stackprotector.h) \
     $(wildcard include/config/sysvipc.h) \
     $(wildcard include/config/auditsyscall.h) \
-    $(wildcard include/config/generic/hardirqs.h) \
     $(wildcard include/config/rt/mutexes.h) \
     $(wildcard include/config/block.h) \
     $(wildcard include/config/task/xacct.h) \
@@ -432,14 +471,11 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
     $(wildcard include/config/fault/injection.h) \
     $(wildcard include/config/latencytop.h) \
     $(wildcard include/config/have/unstable/sched/clock.h) \
-    $(wildcard include/config/irq/time/accounting.h) \
-    $(wildcard include/config/proc/fs.h) \
     $(wildcard include/config/stack/growsup.h) \
     $(wildcard include/config/debug/stack/usage.h) \
     $(wildcard include/config/cgroup/sched.h) \
     $(wildcard include/config/mm/owner.h) \
   include/linux/capability.h \
-  include/linux/rbtree.h \
   include/linux/mm_types.h \
     $(wildcard include/config/split/ptlock/cpus.h) \
     $(wildcard include/config/want/page/debug/flags.h) \
@@ -453,8 +489,6 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
     $(wildcard include/config/page/debug/something/else.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/mmu.h \
     $(wildcard include/config/cpu/has/asid.h) \
-  /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/cputime.h \
-  include/asm-generic/cputime.h \
   include/linux/sem.h \
   include/linux/ipc.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/ipcbuf.h \
@@ -478,10 +512,6 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
   include/linux/resource.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/resource.h \
   include/asm-generic/resource.h \
-  include/linux/hrtimer.h \
-    $(wildcard include/config/high/res/timers.h) \
-    $(wildcard include/config/timerfd.h) \
-  include/linux/timerqueue.h \
   include/linux/task_io_accounting.h \
     $(wildcard include/config/task/io/accounting.h) \
   include/linux/latencytop.h \
@@ -551,7 +581,6 @@ deps_arch/arm/mach-rk30/cpufreq.o := \
   include/linux/page-flags.h \
     $(wildcard include/config/pageflags/extended.h) \
     $(wildcard include/config/arch/uses/pg/uncached.h) \
-    $(wildcard include/config/s390.h) \
   include/linux/huge_mm.h \
   include/linux/vmstat.h \
     $(wildcard include/config/vm/event/counters.h) \

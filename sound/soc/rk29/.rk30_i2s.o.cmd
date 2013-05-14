@@ -260,9 +260,11 @@ deps_sound/soc/rk29/rk30_i2s.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -325,6 +327,7 @@ deps_sound/soc/rk29/rk30_i2s.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/debugobjects.h \
     $(wildcard include/config/debug/objects.h) \
     $(wildcard include/config/debug/objects/free.h) \
@@ -625,8 +628,12 @@ deps_sound/soc/rk29/rk30_i2s.o := \
   include/sound/soc-dai.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/io.h \
   arch/arm/mach-rk30/include/mach/board.h \
+    $(wildcard include/config/mfd/rk610.h) \
     $(wildcard include/config/touchscreen/ft5306.h) \
     $(wildcard include/config/touchscreen/ft5306/wpx2.h) \
+    $(wildcard include/config/touchscreen/byd693x.h) \
+    $(wildcard include/config/touchscreen/bf6931a.h) \
+    $(wildcard include/config/touchscreen/novatek.h) \
     $(wildcard include/config/rk30/pwm/regulator.h) \
     $(wildcard include/config/rk29/vmac.h) \
   include/linux/i2c.h \
@@ -643,6 +650,7 @@ deps_sound/soc/rk29/rk30_i2s.o := \
     $(wildcard include/config/rk/early/printk.h) \
   include/linux/rk_screen.h \
     $(wildcard include/config/hdmi/dual/disp.h) \
+    $(wildcard include/config/one/lcdc/dual/output/inf.h) \
   arch/arm/mach-rk30/include/mach/sram.h \
   arch/arm/plat-rk/include/plat/sram.h \
   include/linux/i2c-gpio.h \
@@ -656,6 +664,7 @@ deps_sound/soc/rk29/rk30_i2s.o := \
     $(wildcard include/config/gpio/wm8994/num.h) \
     $(wildcard include/config/gpio/tps65910.h) \
     $(wildcard include/config/gpio/tps65910/num.h) \
+  arch/arm/plat-rk/include/plat/gpio.h \
   include/asm-generic/gpio.h \
     $(wildcard include/config/of/gpio.h) \
     $(wildcard include/config/gpio/sysfs.h) \

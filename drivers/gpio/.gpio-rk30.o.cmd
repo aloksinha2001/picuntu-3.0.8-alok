@@ -163,6 +163,7 @@ deps_drivers/gpio/gpio-rk30.o := \
     $(wildcard include/config/aeabi.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/irq.h \
   arch/arm/mach-rk30/include/mach/irqs.h \
+    $(wildcard include/config/rk/debug/uart.h) \
   include/linux/irq_cpustat.h \
   include/linux/smp.h \
     $(wildcard include/config/use/generic/smp/helpers.h) \
@@ -244,6 +245,7 @@ deps_drivers/gpio/gpio-rk30.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/wait.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/current.h \
   include/linux/timer.h \
@@ -324,9 +326,10 @@ deps_drivers/gpio/gpio-rk30.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
-    $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -450,6 +453,7 @@ deps_drivers/gpio/gpio-rk30.o := \
     $(wildcard include/config/gpio/wm8994/num.h) \
     $(wildcard include/config/gpio/tps65910.h) \
     $(wildcard include/config/gpio/tps65910/num.h) \
+  arch/arm/plat-rk/include/plat/gpio.h \
   include/asm-generic/gpio.h \
     $(wildcard include/config/gpiolib.h) \
     $(wildcard include/config/of/gpio.h) \

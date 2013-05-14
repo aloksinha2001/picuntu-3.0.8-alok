@@ -4,7 +4,7 @@ source_arch/arm/mach-rk30/clock.o := arch/arm/mach-rk30/clock.c
 
 deps_arch/arm/mach-rk30/clock.o := \
     $(wildcard include/config/participant.h) \
-    $(wildcard include/config/proc/fs.h) \
+    $(wildcard include/config/rk/clock/proc.h) \
   include/linux/clk.h \
   include/linux/clkdev.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/clkdev.h \
@@ -246,9 +246,11 @@ deps_arch/arm/mach-rk30/clock.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -318,6 +320,7 @@ deps_arch/arm/mach-rk30/clock.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/debugobjects.h \
     $(wildcard include/config/debug/objects/free.h) \
   include/linux/kobject.h \
@@ -327,6 +330,7 @@ deps_arch/arm/mach-rk30/clock.o := \
   include/linux/kmemleak.h \
     $(wildcard include/config/debug/kmemleak.h) \
   arch/arm/mach-rk30/include/mach/clkdev.h \
+  arch/arm/plat-rk/include/plat/clkdev.h \
   include/linux/err.h \
   include/linux/module.h \
     $(wildcard include/config/symbol/prefix.h) \
@@ -385,6 +389,7 @@ deps_arch/arm/mach-rk30/clock.o := \
   arch/arm/mach-rk30/include/mach/clock.h \
   arch/arm/mach-rk30/clock.h \
     $(wildcard include/config/arch/rk30.h) \
+    $(wildcard include/config/proc/fs.h) \
   include/linux/proc_fs.h \
     $(wildcard include/config/proc/devicetree.h) \
     $(wildcard include/config/proc/kcore.h) \

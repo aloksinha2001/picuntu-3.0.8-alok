@@ -322,6 +322,9 @@
  * These aren't exported outside the kernel to avoid name space clashes
  */
 /*
+ * Physical DRAM offset.
+ */
+/*
  * RK30 IO memory map:
  *
  * Virt         Phys            Size    What
@@ -334,9 +337,6 @@
  * FECE0000     1FFE0000        128K    CPU Debug
  * FED00000     20000000        640K
  * FEF00000     10080000/0      64K     SRAM
- */
-/*
- * Physical DRAM offset.
  */
 /*
  * SRAM memory whereabouts

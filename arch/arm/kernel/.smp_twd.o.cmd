@@ -106,6 +106,9 @@ deps_arch/arm/kernel/smp_twd.o := \
     $(wildcard include/config/cpu/freq/default/gov/ondemand.h) \
     $(wildcard include/config/cpu/freq/default/gov/conservative.h) \
     $(wildcard include/config/cpu/freq/default/gov/interactive.h) \
+    $(wildcard include/config/cpu/freq/default/gov/smartass2.h) \
+    $(wildcard include/config/cpu/freq/default/gov/interactivex.h) \
+    $(wildcard include/config/cpu/freq/default/gov/savagedzen.h) \
     $(wildcard include/config/cpu/freq/default/gov/hotplug.h) \
   include/linux/mutex.h \
     $(wildcard include/config/debug/mutexes.h) \
@@ -283,9 +286,11 @@ deps_arch/arm/kernel/smp_twd.o := \
     $(wildcard include/config/arm/patch/phys/virt.h) \
     $(wildcard include/config/arm/patch/phys/virt/16bit.h) \
   arch/arm/mach-rk30/include/mach/memory.h \
+  arch/arm/plat-rk/include/plat/memory.h \
   include/linux/version.h \
   arch/arm/mach-rk30/include/mach/io.h \
     $(wildcard include/config/rk/debug/uart.h) \
+  arch/arm/plat-rk/include/plat/io.h \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/sizes.h \
   include/asm-generic/sizes.h \
   include/asm-generic/memory_model.h \
@@ -336,6 +341,7 @@ deps_arch/arm/kernel/smp_twd.o := \
     $(wildcard include/config/hz.h) \
   /mnt/disk2/Dev/UG802/kernel/picuntu-3.0.8-alok/arch/arm/include/asm/timex.h \
   arch/arm/mach-rk30/include/mach/timex.h \
+  arch/arm/plat-rk/include/plat/timex.h \
   include/linux/debugobjects.h \
     $(wildcard include/config/debug/objects.h) \
     $(wildcard include/config/debug/objects/free.h) \

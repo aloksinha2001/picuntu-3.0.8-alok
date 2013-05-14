@@ -1,1 +1,0 @@
-cmd_drivers/regulator/built-in.o :=  /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/regulator/built-in.o drivers/regulator/core.o drivers/regulator/dummy.o drivers/regulator/rk30-pwm-regulator.o drivers/regulator/tps65910-regulator.o 

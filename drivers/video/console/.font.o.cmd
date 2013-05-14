@@ -1,1 +1,0 @@
-cmd_drivers/video/console/font.o := /mnt/disk2/Dev/UG802/kernel/toolchains/arm-eabi-linaro-4.6.2/bin/arm-eabi-ld.bfd -EL    -r -o drivers/video/console/font.o drivers/video/console/fonts.o drivers/video/console/font_8x16.o 

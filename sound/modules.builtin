@@ -6,9 +6,11 @@ kernel/sound/core/snd-pcm.ko
 kernel/sound/core/snd-page-alloc.ko
 kernel/sound/core/snd-rawmidi.ko
 kernel/sound/soc/snd-soc-core.ko
+kernel/sound/soc/codecs/snd-soc-rk1000.ko
 kernel/sound/soc/codecs/snd-soc-rockchip-hdmi.ko
 kernel/sound/soc/rk29/snd-soc-rockchip.ko
 kernel/sound/soc/rk29/snd-soc-rockchip-i2s.ko
+kernel/sound/soc/rk29/snd-soc-rk1000.ko
 kernel/sound/soc/rk29/snd-soc-hdmi.ko
 kernel/sound/usb/snd-usb-audio.ko
 kernel/sound/usb/snd-usbmidi-lib.ko
