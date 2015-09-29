@@ -25,7 +25,7 @@ Changelog - Kernel - 3.0.8-alok+
 - Added USB SCSI adapter - I have lots of SCSI harddisk lying around, and USB adapter for them, but they seemed not to work earlier.
 - Added Pegasus network support
 - FB set - all options enabled - you should have better control for fb setting.
-- Added auxilary Video - If you have a USB LED,LCD screen lying around - try connecting to PIcUntu, should work. (in addition to HDMI) - required for in-car applications.
+- Added auxiliary Video - If you have a USB LED,LCD screen lying around - try connecting to PIcUntu, should work. (in addition to HDMI) - required for in-car applications.
 - Modules for USB Printer - now you should be able to connect USB printers to PicUntu
 - Serial Modem drivers - Qualcom, NAVMAN,
 - Added Joliet/UDF support - You should be able to connect USB CDROM
